@@ -1,0 +1,24 @@
+name = "Advent"
+uuid = "dec698bd-a454-4487-9a46-aabee34de6b1"
+authors = ["Dmitry Shemetov <dshemetov@ucdavis.edu>"]
+version = "0.1.0"
+
+[deps]
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+DotEnv = "4dc1fcf4-5e3b-5448-94ab-0c38ec0385c1"
+DuckDB = "d2f5444f-75bc-4fdf-ac35-56f514c445e1"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+DataFrames = "1.7.0"
+DataStructures = "0.18.20"
+DotEnv = "1.0.0"
+DuckDB = "1.1.0"
+HTTP = "1.10.14"
+LinearAlgebra = "1.11.0"
+Revise = "3.6.4"
+Test = "1.11.0"

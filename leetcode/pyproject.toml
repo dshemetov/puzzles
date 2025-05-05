@@ -1,0 +1,45 @@
+[project]
+name = "leetcode"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "matplotlib>=3.9.2",
+    "numpy>=2.1.1",
+    "pytest>=8.3.3",
+    "requests>=2.32.3",
+    "typer>=0.12.5",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--doctest-modules --doctest-continue-on-failure"
+doctest_optionflags = "NORMALIZE_WHITESPACE"
+
+[tool.ruff]
+line-length = 120
+lint.extend-select = [
+    "F", # Pyflakes
+    "I", # isort
+    # "D",    # pydocstyle
+    "PD",   # pandas-vet
+    "NPY",  # numpy
+    "PERF", # perflint
+    "FURB", # refurbish
+    # "PL",   # pylint
+    "FLY", # flynt
+    "B",   # flakes-bugbear
+    "UP",  # pyupgrade
+    "C4",  # comprehensions
+    "A",   # builtins
+    "ISC", # implicit-str-concat
+    "LOG", # logging
+    "G",   # logging-format
+    "PT",  # pytest-style
+    "RET", # return
+    "SIM", # simplify
+    "PTH", # use-pathlib
+]
+lint.ignore = ["SIM108", "B905"]
+format.docstring-code-format = true

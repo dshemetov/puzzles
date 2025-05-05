@@ -1,0 +1,43 @@
+(z // l5) * (25 * ((z % 26 + l6) != a) + 1) + (a + 6) * ((z % 26 + l6) != a)
+
+inp w
+x: x
+z: (z // 1) * (25 * (((z % 26 + 11) == w) == 0) + 1) + (w + 6) * (((z % 26 + 11) == w) == 0)
+x: ((z % 26 + 11) == w) == 0
+mul x 0
+x: (((x + z) % 26 + 11) == w) == 0
+add x z
+x: ((x % 26 + 11) == w) == 0
+mod x 26
+z: (z // 1) * (25 * x + 1) + (w + 6) * x
+div z 1
+x: ((x + 11) == w) == 0
+add x 11
+x: (x == w) == 0
+eql x w
+x: x == 0
+eql x 0
+y: y
+z: z * (25 * x + 1) + (w + 6) * x
+y: 25 * x + 1
+mul y 0
+y: ((y + 25) * x + 1)
+add y 25
+y: (y * x + 1)
+mul y x
+y: y + 1
+add y 1
+z: z * y + (w + 6) * x
+mul z y
+y: y
+z: z + (w + 6) * x
+y: (w + 6) * x
+mul y 0
+y: (y + w + 6) * x
+add y w
+y: (y + 6) * x
+add y 6
+y: y * x
+mul y x
+z: z + y
+add z y

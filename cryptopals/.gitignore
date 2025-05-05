@@ -1,0 +1,13 @@
+__pycache__
+.pytest_cache
+.vscode
+*.egg-info
+.joblib_cache
+.env
+.venv
+env
+venv
+*.so
+*.html
+build
+.coverage

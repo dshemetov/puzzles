@@ -1,0 +1,27 @@
+(**A custom pairing function solution to: https://math.stackexchange.com/questions/1085980/puzzle-give-an-algorithm-for-finding-a-frog-that-jumps-along-the-number-line*)
+(**https://en.wikipedia.org/wiki/Pairing_function *)
+(**Starting at the origin, we move in a spiral, enumerating larger and larger squares. *)
+up = {0, 1};
+right = {1, 0};
+down = -up;
+left = -right;
+directions = {up, right, down, left};
+start = {0, 0};
+length = 100;
+
+corners = Table[
+   start + Sum[Ceiling[i/2] directions[[Mod[i, 4, 1]]], {i, 1, n}],
+   {n, 0, length}];
+
+Interpolate[a_, b_] :=
+  Table[a + i (b - a)/Norm[b - a], {i, 1, Norm[b - a]}];
+spiral = Join[
+   {{0, 0}},
+   Join @@
+    MapThread[Interpolate, {corners[[1 ;; -2]], corners[[2 ;;]]}]
+   ];
+
+ListLinePlot[spiral, PlotLabel -> "Spiral Bijection"]
+FindFrog[f_, t_] := f[[1]] t + f[[2]];
+frogSequence = MapThread[FindFrog, {spiral, Range[Length[spiral]]}];
+ListPlot[frogSequence, PlotLabel -> "Integer Sequence"]
