@@ -7,34 +7,32 @@ function solve(input::Question{2024,19,'a'})
     first, last = split(s, "\n\n")
     options = split(strip(first), ", ")
     targets = split(strip(last), "\n")
-
+    option_lengths = length.(options)
     cache = Dict{String, Bool}()
 
     function recurse(prefix, target)
-        if length(prefix) > length(target)
-            return false
-        end
-
         if prefix == target
             return true
         end
 
-        out = []
-        for option in options
-            if length(prefix * option) > length(target)
+        prefix_len = length(prefix)
+        target_len = length(target)
+
+        for (i, option) in enumerate(options)
+            if prefix_len + option_lengths[i] > target_len
                 continue
             end
-            if prefix * option == target[1:length(prefix * option)]
-                if haskey(cache, prefix * option)
-                    out = vcat(out, cache[prefix * option])
-                else
-                    res = recurse(prefix * option, target)
-                    out = vcat(out, res)
-                    cache[prefix * option] = res
+            if prefix * option == target[1:prefix_len + option_lengths[i]]
+                res = get!(cache, prefix * option) do
+                    recurse(prefix * option, target)
                 end
+                if res
+                    return true
+                end
+                cache[prefix] = res
             end
         end
-        return any(out)
+        return false
     end
 
     total = 0
@@ -58,38 +56,31 @@ function solve(input::Question{2024,19,'b'})
     first, last = split(s, "\n\n")
     options = split(strip(first), ", ")
     targets = split(strip(last), "\n")
-
+    option_lengths = length.(options)
     cache = Dict{String, Int}()
 
     function recurse(prefix, target)
-        if length(prefix) > length(target)
-            return false
-        end
-
         if prefix == target
             return true
         end
 
-        out = []
-        for option in options
-            if length(prefix * option) > length(target)
+        prefix_len = length(prefix)
+        target_len = length(target)
+
+        target_total = 0
+        for (i, option) in enumerate(options)
+            if prefix_len + option_lengths[i] > target_len
                 continue
             end
-            if prefix * option == target[1:length(prefix * option)]
-                if haskey(cache, prefix * option)
-                    out = vcat(out, cache[prefix * option])
-                else
-                    res = recurse(prefix * option, target)
-                    out = vcat(out, res)
-                    cache[prefix * option] = res
+            if prefix * option == target[1:prefix_len + option_lengths[i]]
+                res = get!(cache, prefix * option) do
+                    recurse(prefix * option, target)
                 end
+                target_total += res
             end
         end
-        if length(out) == 0
-            return 0
-        else
-            return sum(out)
-        end
+        cache[prefix] = target_total
+        return target_total
     end
 
     total = 0
