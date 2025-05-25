@@ -58,6 +58,4 @@ function solve(year::Int, test::Bool=true)
     println("Total time: $(round(sum(df.time), digits=5)) seconds")
 end
 
-# solve(Question{2024,10,'a'}(""))
-
 end
