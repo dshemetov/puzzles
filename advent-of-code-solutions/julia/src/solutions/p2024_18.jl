@@ -1,3 +1,5 @@
+"""18. https://adventofcode.com/2024/day/18"""
+
 function solve(input::Question{2024,18,'a'})
     if input.s == ""
         n, m = 7, 7

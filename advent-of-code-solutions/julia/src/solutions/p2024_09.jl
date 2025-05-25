@@ -1,3 +1,5 @@
+"""9. https://adventofcode.com/2024/day/9"""
+
 import Base: length, <, -
 
 struct Range

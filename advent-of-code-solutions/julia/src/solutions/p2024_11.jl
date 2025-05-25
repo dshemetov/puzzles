@@ -1,3 +1,5 @@
+"""11. https://adventofcode.com/2024/day/11"""
+
 function transform(s::AbstractString)
     if s == "0"
         return ["1"]

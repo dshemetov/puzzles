@@ -69,6 +69,8 @@ end
 
 function get_template(year, day)
     solution_template = """
+"$(year). https://adventofcode.com/$year/day/$day"
+
 function solve(input::Question{$year,$day,'a'})
     if input.s == ""
         s = test_string_$(year)_$day

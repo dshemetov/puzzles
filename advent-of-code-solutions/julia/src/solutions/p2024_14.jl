@@ -1,3 +1,5 @@
+"""14. https://adventofcode.com/2024/day/14"""
+
 function solve(input::Question{2024,14,'a'})
     if input.s == ""
         s = test_string_2024_14

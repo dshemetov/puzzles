@@ -1,3 +1,5 @@
+"""12. https://adventofcode.com/2024/day/12"""
+
 function solve(input::Question{2024,12,'a'})
     if input.s == ""
         s = split(test_string_2024_12, "\n\n")[2]

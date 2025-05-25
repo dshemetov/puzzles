@@ -1,3 +1,5 @@
+"""15. https://adventofcode.com/2024/day/15"""
+
 function solve(input::Question{2024,15,'a'})
     s = isempty(input.s) ? test_string_2024_15_a : input.s
     s = strip(s, '\n')

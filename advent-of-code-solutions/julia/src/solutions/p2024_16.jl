@@ -1,3 +1,5 @@
+"""16. https://adventofcode.com/2024/day/16"""
+
 using DataStructures: PriorityQueue, enqueue!, dequeue!
 
 const DIRS = [(0, 1), (1, 0), (0, -1), (-1, 0)]

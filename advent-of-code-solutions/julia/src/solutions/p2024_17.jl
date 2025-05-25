@@ -1,3 +1,5 @@
+"""17. https://adventofcode.com/2024/day/17"""
+
 # My program: 2,4,1,1,7,5,1,5,4,1,5,5,0,3,3,0
 # Decompile:
 # 2,4 - b = a % 8
