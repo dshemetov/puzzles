@@ -7,7 +7,7 @@ function solve(input::Question{2024,10,'a'})
         s = input.s
     end
     s = strip(s, '\n')
-    grid = string_to_matrix(s)
+    grid = parse_int_matrix(s)
     m, n = size(grid)
 
     starts = [(i, j) for j in 1:n, i in 1:m if grid[i, j] == 0]
@@ -50,7 +50,7 @@ function solve(input::Question{2024,10,'b'})
         s = input.s
     end
     s = strip(s, '\n')
-    grid = string_to_matrix(s)
+    grid = parse_int_matrix(s)
     m, n = size(grid)
 
     starts = [(i, j) for j in 1:n, i in 1:m if grid[i, j] == 0]

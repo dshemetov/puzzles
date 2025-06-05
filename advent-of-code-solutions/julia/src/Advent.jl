@@ -4,7 +4,7 @@ export solve
 using DataFrames
 include("utils.jl")
 
-# Dispatch to the right function by using parametric types
+# Dispatch to the right `solve` function by using parametric types
 # https://discourse.julialang.org/t/how-to-dispatch-by-value/43266
 struct Question{Y,D,P}
     s::AbstractString
@@ -22,7 +22,7 @@ function do_solve(year::Int, day::Int, part::Char, test::Bool=true)
         arg = Question{year,day,part}(input)
     end
     out = @timed solve(arg)
-    return (out.value, out.time - out.compile_time)
+    return (out.value, out.time - (out.compile_time + out.recompile_time), out.bytes, out.gctime)
 end
 
 function solve(year::Int, day::Int, part::Char, test::Bool=true)
@@ -37,7 +37,7 @@ function solve(year::Int, day::Int, test::Bool=true)
 end
 
 function solve(year::Int, test::Bool=true)
-    df = DataFrame(year=Int[], day=Int[], part=Char[], value=String[], time=Float64[])
+    df = DataFrame(year=Int[], day=Int[], part=Char[], value=String[], time=Float64[], kilobytes=Float64[], gctime=Float64[])
     pattern = r"p(\d{4})_(\d{2}).jl"
     for file in solution_files
         m = match(pattern, file)
@@ -47,15 +47,17 @@ function solve(year::Int, test::Bool=true)
         end
         day = parse(Int, m.captures[2])
         part1 = do_solve(year, day, 'a', test)
-        push!(df, (year, day, 'a', part1[1], round(part1[2], digits=7)), promote=true)
+        push!(df, (year, day, 'a', part1[1], round(part1[2], digits=7), part1[3] / 1024, part1[4]), promote=true)
         part2 = do_solve(year, day, 'b', test)
-        push!(df, (year, day, 'b', part2[1], round(part2[2], digits=7)), promote=true)
+        push!(df, (year, day, 'b', part2[1], round(part2[2], digits=7), part2[3] / 1024, part2[4]), promote=true)
     end
     # # Sort the DataFrame by year, day, and part
     # sort!(df, [:year, :day, :part])
     println(df)
     println()
     println("Total time: $(round(sum(df.time), digits=5)) seconds")
+    println("Total kilobytes: $(round(sum(df.kilobytes), digits=5)) kilobytes")
+    println("Total GC time: $(round(sum(df.gctime), digits=5)) seconds")
 end
 
 end

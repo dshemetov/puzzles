@@ -1,82 +1,59 @@
 """20. https://adventofcode.com/2024/day/20
 
-This is a neat problem. The path-finding is a red-herring, since there is only
-one path. The real work is in finding the cheats. With the path length ~10_000,
-I considered a few approaches:
+I learned a lot by doing this problem. The path-finding is a red-herring, since
+there is only one path through the maze. The real work is in finding the cheats.
+With the maze path being length ~10_000, there are two main approaches:
 
-- For part (a), the Manhattan ball is only 2 units, so I could just look at all
-  the points 2 units away from each point in the path. This took about 0.05
-  seconds.
-- For part (b), the naive approach is to check all pairs of points in the path,
-  which is O(n^2), so O(100M) operations. This takes about 5 seconds.
-- Checking a 20 unit ball around each point, the complexity is about O(200
-  * n = 2M) operations. Despite the drastic estimated operation reduction, it
-  still took 2.5s (bad estimates due to constants, more expensive operations
-  like hash maps, etc.). Pre-computing the ball pattern didn't really help, but
-  it was clean, so I kept it. Adding a sizehint! to the seen_cheats gave about
-  ~0.3s. Adding early bound checks and wall checks added another ~0.3s. Finally,
-  realizing that I only need half the ball by symmetry brought it down to ~1s.
-  Out of ideas after that, but 1s is my upper limit goal for these problems.
-- I thought about k-d trees and ball trees for part (b), but they felt too
-  heavy.
+- Check pairs of points along the path. If they're within the radius and the
+  cheat is above threshold, count it. This takes O(n^2 = 100M) operations.
+- Check all points in a ball around each point in the path. If they're within
+  the radius and the cheat is above threshold, count it. This takes O(200 * n =
+  2M) operations (however, these operations involve hash maps).
+
+You can optimize both of these a bit:
+
+- For the pairwise approach, you can make sure that the i and j pairs are always
+  time_diff_thresh apart, to improve the O(n^2) constant.
+- For the ball approach, you can check only half the ball (due to symmetry) and
+  improve the O(n) constant by a factor of 2.
+
+However, both of these improvements are no match for using Julia correctly
+(surprise!). There were two key ideas here:
+
+- Consulting a friend who's more proficient with Julia, he prodded me to type
+  annotate everything. While the compiler can deduce types, it's better to
+  annotate them explicitly. This made the above algorithmic optimizations moot
+  and brought the time to about ~1s for both approaches.
+- Removing hash maps and replacing them with pre-allocated matrices was another
+  huge gain. It brought the time down to ~20ms for both approaches. Turns out,
+  hash maps are CPU cache unfriendly, more expensive than a matrix lookup, and
+  don't play well with vectorization/SIMD.
 """
 
-function solve(input::Question{2024,20,'a'})
+function solve(input::Question{2024,20,'a'}, method::String="pairwise")
     if input.s == ""
-        time_diff_thresh = 2
+        time_diff_thresh = 50
         s = test_string_2024_20
     else
         time_diff_thresh = 100
         s = input.s
     end
-    grid = string_to_char_matrix(strip(s, '\n'))
-    m, n = size(grid)
-    s = Tuple(findfirst(==('S'), grid))
-    t = Tuple(findfirst(==('E'), grid))
+    radius = 2
 
-    # Get maze path (there's only one)
-    dist, prev_map = maze_solver(grid, s, t, m, n)
-    path = []
-    current = t
-    while current != s
-        push!(path, current)
-        current = prev_map[current]
+    if method == "ball"
+        return ball_cheat_solver(strip(s, '\n'), radius, time_diff_thresh)
+    elseif method == "pairwise"
+        return pairwise_cheat_solver(strip(s, '\n'), radius, time_diff_thresh)
+    else
+        error("Invalid method: $method")
     end
-    push!(path, s)
-    reverse!(path)
-    path_map = Dict{Tuple{Int,Int},Int}((x, y) => i for (i, (x, y)) in enumerate(path))
-
-    # Count cheats by trying all points 2 units away from each point in the path
-    total_cheats = 0
-    seen_cheats = Set{Tuple{Int,Int}}()
-    for (i, (x, y)) in enumerate(path)
-        # Get Manhattan ball of radius 2
-        neighbors = [(x + dx, y + dy) for dx in -2:2 for dy in (-2+abs(dx)):(2-abs(dx))]
-        for (x2, y2) in neighbors
-            if !haskey(path_map, (x2, y2))
-                continue
-            end
-            j = path_map[(x2, y2)]
-            if (i, j) in seen_cheats
-                continue
-            end
-            # The time saved is the difference in the track position minus the
-            # time taken to walk that distance in Manhattan distance.
-            time_diff = abs(i - j) - 2
-            if time_diff >= time_diff_thresh
-                push!(seen_cheats, (i, j))
-                push!(seen_cheats, (j, i))
-                total_cheats += 1
-            end
-        end
-    end
-    return total_cheats
 end
 
-function maze_solver(grid, s, t, m, n)
-    queue = [(0, s[1], s[2])]
-    visited = Set{Tuple{Int,Int}}()
-    prev_map = Dict{Tuple{Int,Int},Tuple{Int,Int}}()
+function maze_solver(grid, s, t)
+    m::Int, n::Int = size(grid)
+    queue::Vector{Tuple{Int,Int,Int}} = [(0, s[1], s[2])]
+    visited::Set{Tuple{Int,Int}} = Set{Tuple{Int,Int}}()
+    prev_map::Dict{Tuple{Int,Int},Tuple{Int,Int}} = Dict{Tuple{Int,Int},Tuple{Int,Int}}()
     while !isempty(queue)
         dist, x, y = popfirst!(queue)
         if x == t[1] && y == t[2]
@@ -94,7 +71,7 @@ function maze_solver(grid, s, t, m, n)
     return 0, prev_map
 end
 
-function solve(input::Question{2024,20,'b'})
+function solve(input::Question{2024,20,'b'}, method::String="pairwise")
     if input.s == ""
         time_diff_thresh = 50
         s = test_string_2024_20
@@ -102,52 +79,101 @@ function solve(input::Question{2024,20,'b'})
         time_diff_thresh = 100
         s = input.s
     end
-    grid = string_to_char_matrix(strip(s, '\n'))
+    radius = 20
+
+    if method == "pairwise"
+        return pairwise_cheat_solver(strip(s, '\n'), radius, time_diff_thresh)
+    elseif method == "ball"
+        return ball_cheat_solver(strip(s, '\n'), radius, time_diff_thresh)
+    else
+        error("Invalid method: $method")
+    end
+end
+
+function ball_cheat_solver(s::String, radius::Int, time_diff_thresh::Int)
+    grid = parse_char_matrix(s)
     m, n = size(grid)
-    s = Tuple(findfirst(==('S'), grid))
-    t = Tuple(findfirst(==('E'), grid))
+    st::Tuple{Int,Int} = Tuple(findfirst(==('S'), grid))
+    ta::Tuple{Int,Int} = Tuple(findfirst(==('E'), grid))
     # Get maze path (there's only one)
-    dist, prev_map = maze_solver(grid, s, t, m, n)
-    path = []
-    current = t
-    while current != s
+    dist::Int, prev_map::Dict{Tuple{Int,Int},Tuple{Int,Int}} = maze_solver(grid, st, ta)
+    path::Vector{Tuple{Int,Int}} = []
+    current::Tuple{Int,Int} = ta
+    while current != st
         push!(path, current)
         current = prev_map[current]
     end
-    push!(path, s)
+    push!(path, st)
     reverse!(path)
-    path_map = Dict{Tuple{Int,Int},Int}([(x, y) => i for (i, (x, y)) in enumerate(path)])
 
-    # Pre-compute Manhattan ball of radius 20 pattern
+    # The matrix here doesn't improve much over a dictionary.
+    path_map::Matrix{Int} = fill(-1, m, n)
+    for (i, (x, y)) in enumerate(path)
+        path_map[x, y] = i
+    end
+
+    # Pre-compute Manhattan ball pattern
     # only need half the ball, by symmetry
-    ball_pattern = [(dx, dy) for dx in 0:20 for dy in (-20+abs(dx)):(20-abs(dx))]
+    ball_pattern::Vector{Tuple{Int,Int}} = [(dx, dy) for dx in 0:radius for dy in (-radius+abs(dx)):(radius-abs(dx))]
 
-    # Count cheats by trying all points 20 units away from each point in the path
-    seen_cheats = Set{Tuple{Int,Int}}()
-    sizehint!(seen_cheats, 50_000)
-    total_cheats = 0
+    # Count cheats by trying all points in the ball pattern from each point in the path
+    seen_cheats::Matrix{Bool} = fill(false, length(path), length(path))
+    total_cheats::Int = 0
     for (i, (x, y)) in enumerate(path)
         for (dx, dy) in ball_pattern
-            x2, y2 = x + dx, y + dy
+            x2::Int, y2::Int = x + dx, y + dy
             if !(1 <= x2 <= m && 1 <= y2 <= n)
                 continue
             end
             if grid[x2, y2] == '#'
                 continue
             end
-            j = path_map[(x2, y2)]
+            j::Int = path_map[x2, y2]
+            if j == -1
+                continue
+            end
             # The time saved is the difference in the track position minus
             # the time taken to walk that distance in Manhattan distance.
-            time_diff = abs(i - j) - (abs(x - x2) + abs(y - y2))
-            if time_diff >= time_diff_thresh && (i, j) ∉ seen_cheats
-                push!(seen_cheats, (i, j))
-                push!(seen_cheats, (j, i))
+            time_diff::Int = abs(i - j) - (abs(x - x2) + abs(y - y2))
+            if time_diff >= time_diff_thresh && !seen_cheats[i, j]
+                seen_cheats[i, j] = true
+                seen_cheats[j, i] = true
                 total_cheats += 1
             end
 
         end
     end
     return total_cheats
+end
+
+function pairwise_cheat_solver(s::String, radius::Int, time_diff_thresh::Int)
+    grid = parse_char_matrix(s)
+    m, n = size(grid)
+    st::Tuple{Int,Int} = Tuple(findfirst(==('S'), grid))
+    ta::Tuple{Int,Int} = Tuple(findfirst(==('E'), grid))
+    # Get maze path (there's only one)
+    dist::Int, prev_map::Dict{Tuple{Int,Int},Tuple{Int,Int}} = maze_solver(grid, st, ta)
+    path::Vector{Tuple{Int,Int}} = []
+    current::Tuple{Int,Int} = ta
+    while current != st
+        push!(path, current)
+        current = prev_map[current]
+    end
+    push!(path, st)
+    reverse!(path)
+
+    cheats::Int = 0
+    for j::Int in time_diff_thresh:length(path)
+        for i::Int in 1:j-time_diff_thresh
+            x1::Int, y1::Int = path[i]
+            x2::Int, y2::Int = path[j]
+            distance::Int = abs(x1 - x2) + abs(y1 - y2)
+            if distance <= radius && j - i - distance >= time_diff_thresh
+                cheats += 1
+            end
+        end
+    end
+    return cheats
 end
 
 

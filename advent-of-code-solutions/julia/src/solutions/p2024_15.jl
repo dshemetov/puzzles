@@ -4,7 +4,7 @@ function solve(input::Question{2024,15,'a'})
     s = isempty(input.s) ? test_string_2024_15_a : input.s
     s = strip(s, '\n')
     grid, path = split(s, "\n\n")
-    grid = string_to_char_matrix(grid)
+    grid = parse_char_matrix(grid)
     path = replace(path, '\n' => "")
     m, n = size(grid)
 
@@ -43,7 +43,7 @@ function solve(input::Question{2024,15,'b'})
     s = strip(s, '\n')
     s = replace(s, "#" => "##", "@" => "@.", "O" => "[]", "." => "..")
     grid, path = split(s, "\n\n")
-    grid = string_to_char_matrix(grid)
+    grid = parse_char_matrix(grid)
     path = replace(path, '\n' => "")
     m, n = size(grid)
 

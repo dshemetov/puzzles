@@ -25,7 +25,7 @@ function db_cache_read(year::Int, day::Int)
     return nothing
 end
 
-function get_input_string(year, day)
+function get_input_string(year, day)::String
     if (input = db_cache_read(year, day)) !== nothing
         return input
     end
@@ -34,10 +34,10 @@ function get_input_string(year, day)
     headers = ["cookie" => """session=$(ENV["AOC_TOKEN"])"""]
     s = HTTP.request("GET", url, headers).body |> String
     db_cache_write(year, day, s)
-    s
+    return s
 end
 
-function string_to_matrix(s::AbstractString, dlm=nothing)
+function parse_int_matrix(s::AbstractString, dlm=nothing)::Matrix{Int}
     if dlm === nothing
         return stack([parse.(Int, collect(x)) for x in split(s, "\n")], dims=1)
     elseif dlm == ""
@@ -47,11 +47,11 @@ function string_to_matrix(s::AbstractString, dlm=nothing)
     end
 end
 
-function string_to_char_matrix(s::AbstractString)
-    return stack([collect(x) for x in split(s, "\n")], dims=1)
+function parse_char_matrix(s::AbstractString)::Matrix{Char}
+    return stack(split(s, "\n"))
 end
 
-function eachmatch_vector(s::AbstractString, regex::Regex)
+function eachmatch_vector(s::AbstractString, regex::Regex)::Vector{String}
     return [m.match for m in eachmatch(regex, s)]
 end
 

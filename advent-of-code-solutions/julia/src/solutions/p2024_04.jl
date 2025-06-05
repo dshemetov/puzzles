@@ -8,18 +8,18 @@ function solve(input::Question{2024,4,'a'})
         s = input.s
     end
     s = strip(s, '\n')
-    grid = stack([collect(row) for row in split(s, '\n')], dims=1)
+    grid = parse_char_matrix(s)
     m, n = size(grid)
-    total = 0
-    word = ['X', 'M', 'A', 'S']
-    directions = [(0, 1), (1, 0), (1, 1), (-1, 1)]
+    total::Int = 0
+    word::Vector{Char} = ['X', 'M', 'A', 'S']
+    directions::Vector{Tuple{Int,Int}} = [(0, 1), (1, 0), (1, 1), (-1, 1)]
 
     for i in 1:m
         for j in 1:n
             for d in directions
                 for sgn in [1, -1]
-                    grid_word = [grid[i+sgn*(k-1)*d[1], j+sgn*(k-1)*d[2]] for k in 1:4
-                                 if 1 <= i + sgn * (k - 1) * d[1] <= m && 1 <= j + sgn * (k - 1) * d[2] <= n]
+                    grid_word::Vector{Char} = [grid[i+sgn*(k-1)*d[1], j+sgn*(k-1)*d[2]] for k in 1:4
+                                               if 1 <= i + sgn * (k - 1) * d[1] <= m && 1 <= j + sgn * (k - 1) * d[2] <= n]
                     if grid_word == word
                         total += 1
                     end
@@ -37,22 +37,21 @@ function solve(input::Question{2024,4,'b'})
         s = input.s
     end
     s = strip(s, '\n')
-    grid = stack([collect(row) for row in split(s, '\n')], dims=1)
+    grid = parse_char_matrix(s)
     m, n = size(grid)
-    total = 0
-    word = ['M', 'A', 'S']
-    rword = reverse(word)
+    total::Int = 0
+    word::Vector{Char} = ['M', 'A', 'S']
+    rword::Vector{Char} = reverse(word)
 
     for i in 2:m-1
         for j in 2:n-1
-            upright = [grid[i-k, j+k] for k in -1:1 if 1 <= i - k <= m && 1 <= j + k <= n]
-            downright = [grid[i+k, j+k] for k in -1:1 if 1 <= i + k <= m && 1 <= j + k <= n]
+            upright::Vector{Char} = [grid[i-k, j+k] for k in -1:1 if 1 <= i - k <= m && 1 <= j + k <= n]
+            downright::Vector{Char} = [grid[i+k, j+k] for k in -1:1 if 1 <= i + k <= m && 1 <= j + k <= n]
             if (upright == word || upright == rword) && (downright == word || downright == rword)
                 total += 1
             end
         end
     end
-
     return total
 end
 

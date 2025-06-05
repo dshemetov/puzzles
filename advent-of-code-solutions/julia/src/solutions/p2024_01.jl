@@ -6,15 +6,10 @@ function solve(input::Question{2024,1,'a'})
     else
         s = input.s
     end
-    s = strip(s, '\n')
-    m = string_to_matrix(s, "")
+    m = parse_int_matrix(strip(s, '\n'), "")
     m[:, 1] = sort(m[:, 1])
     m[:, 2] = sort(m[:, 2])
     sum(abs.(m[:, 1] - m[:, 2]))
-end
-
-function Counter(a::AbstractArray)
-    Dict(x => count(e -> e == x, a) for x in unique(a))
 end
 
 function solve(input::Question{2024,1,'b'})
@@ -23,10 +18,12 @@ function solve(input::Question{2024,1,'b'})
     else
         s = input.s
     end
-    s = strip(s, '\n')
-    m = string_to_matrix(s, "")
-    c = Counter(m[:, 2])
-    sum(abs.(x * get!(c, x, 0) for x in m[:, 1]))
+    m = parse_int_matrix(strip(s, '\n'), "")
+    c = zeros(Int, maximum(m[:, 1]))
+    for x in m[:, 2]
+        c[x] += 1
+    end
+    sum(abs.(x * c[x] for x in m[:, 1]))
 end
 
 test_string_2024_01 = """

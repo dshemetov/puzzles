@@ -6,42 +6,105 @@ function solve(input::Question{2024,2,'a'})
     else
         s = input.s
     end
-    s = strip(s, '\n')
-    lines = [parse.(Int, split(line)) for line in split(s, '\n')]
-    diffs = [diff(line) for line in lines]
-    all_increasing = [all(diff .>= 0) for diff in diffs]
-    all_decreasing = [all(diff .<= 0) for diff in diffs]
-    changes_bounded = [all(1 .<= abs.(diff) .<= 3) for diff in diffs]
-    return sum((all_increasing .| all_decreasing) .& changes_bounded)
+    lines::Vector{Vector{Int}} = [parse.(Int, split(line, " ")) for line in split(strip(s, '\n'), "\n")]
+    total::Int = 0
+    for line in lines
+        all_increasing::Bool = true
+        all_decreasing::Bool = true
+        changes_bounded::Bool = true
+        for i = 1:length(line)-1
+            all_increasing &= line[i] < line[i+1]
+            all_decreasing &= line[i] > line[i+1]
+            changes_bounded &= 1 <= abs(line[i] - line[i+1]) <= 3
+            if !(all_increasing || all_decreasing) || !changes_bounded
+                break
+            end
+        end
+        total += (all_increasing || all_decreasing) && changes_bounded
+    end
+    return total
 end
 
-function solve(input::Question{2024,2,'b'})
+function solve(input::Question{2024,2,'b'}, method::String="method1")
     if input.s == ""
         s = test_string_2024_02
     else
         s = input.s
     end
-    s = strip(s, '\n')
-    lines = [parse.(Int, split(line)) for line in split(s, '\n')]
-    diffs = [diff(line) for line in lines]
-    all_increasing = [all(diff .>= 0) for diff in diffs]
-    all_decreasing = [all(diff .<= 0) for diff in diffs]
-    changes_bounded = [all(1 .<= abs.(diff) .<= 3) for diff in diffs]
+    if method == "method1"
+        return method1(s)
+    elseif method == "method2"
+        return method2(s)
+    else
+        error("Invalid method: $method")
+    end
+end
+
+function method1(s::String)
+    lines::Vector{Vector{Int}} = [parse.(Int, split(line, " ")) for line in split(strip(s, '\n'), "\n")]
+    diffs::Vector{Vector{Int}} = [diff(line) for line in lines]
+    all_increasing::Vector{Bool} = [all(diff .>= 0) for diff in diffs]
+    all_decreasing::Vector{Bool} = [all(diff .<= 0) for diff in diffs]
+    changes_bounded::Vector{Bool} = [all(1 .<= abs.(diff) .<= 3) for diff in diffs]
     valid_vector = vec((all_increasing .| all_decreasing) .& changes_bounded)
     bad_lines = lines[.!valid_vector]
     total = sum(valid_vector)
     for line in bad_lines
         for i in 1:length(line)
             new_line = vcat(line[1:i-1], line[i+1:end])
-            diffs = diff(new_line)
-            all_increasing = all(diffs .>= 0)
-            all_decreasing = all(diffs .<= 0)
-            changes_bounded = all(1 .<= abs.(diffs) .<= 3)
-            if (all_increasing || all_decreasing) && changes_bounded
+            diffs_new = diff(new_line)
+            all_increasing_new::Bool = all(diffs_new .>= 0)
+            all_decreasing_new::Bool = all(diffs_new .<= 0)
+            changes_bounded_new::Bool = all(1 .<= abs.(diffs_new) .<= 3)
+            if (all_increasing_new || all_decreasing_new) && changes_bounded_new
                 total += 1
                 break
             end
         end
+    end
+    return total
+end
+
+
+function method2(s::String)
+    lines::Vector{Vector{Int}} = [parse.(Int, split(line, " ")) for line in split(strip(s, '\n'), "\n")]
+    total::Int = 0
+    for line in lines
+        all_increasing::Bool = true
+        all_decreasing::Bool = true
+        changes_bounded::Bool = true
+        retry::Bool = false
+        for i = 1:length(line)-1
+            all_increasing &= line[i] < line[i+1]
+            all_decreasing &= line[i] > line[i+1]
+            changes_bounded &= 1 <= abs(line[i] - line[i+1]) <= 3
+            if !(all_increasing || all_decreasing) || !changes_bounded
+                retry = true
+                break
+            end
+        end
+        if retry
+            retry_success::Bool = false
+            for j = 1:length(line)
+                new_line = vcat(line[1:j-1], line[j+1:end])
+                all_increasing = true
+                all_decreasing = true
+                changes_bounded = true
+                for i = 1:length(new_line)-1
+                    all_increasing &= new_line[i] < new_line[i+1]
+                    all_decreasing &= new_line[i] > new_line[i+1]
+                    changes_bounded &= 1 <= abs(new_line[i] - new_line[i+1]) <= 3
+                    if !(all_increasing || all_decreasing) || !changes_bounded
+                        break
+                    end
+                end
+                if (all_increasing || all_decreasing) && changes_bounded
+                    retry_success = true
+                    break
+                end
+            end
+        end
+        total += (all_increasing || all_decreasing) && changes_bounded || retry_success
     end
     return total
 end
