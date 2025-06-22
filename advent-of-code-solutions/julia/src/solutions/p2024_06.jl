@@ -6,8 +6,12 @@ const DIRECTIONS = (CartesianIndex(-1, 0), CartesianIndex(0, 1), CartesianIndex(
 const TURN_RIGHT = (2, 3, 4, 1)
 
 function solve(input::Question{2024,6,'a'})
-    s::String = input.s == "" ? test_string_2024_06 : input.s
-    grid::Matrix{Char} = parse_char_matrix(strip(s, '\n')) |> permutedims
+    if input.s == ""
+        s = strip(test_string_2024_06, '\n')
+    else
+        s = strip(input.s, '\n')
+    end
+    grid::Matrix{Char} = parse_char_matrix(s) |> permutedims
     m::Int, n::Int = size(grid)
     start_pos::CartesianIndex{2} = findfirst(==('^'), grid)
     grid[start_pos] = '.'
@@ -33,14 +37,21 @@ function solve(input::Question{2024,6,'a'})
 end
 
 function solve(input::Question{2024,6,'b'})
-    s::String = input.s == "" ? test_string_2024_06 : input.s
-    grid::Matrix{Char} = parse_char_matrix(strip(s, '\n')) |> permutedims
+    if input.s == ""
+        s = strip(test_string_2024_06, '\n')
+    else
+        s = strip(input.s, '\n')
+    end
+    grid::Matrix{Char} = parse_char_matrix(s) |> permutedims
     m::Int, n::Int = size(grid)
     start_pos::CartesianIndex{2} = findfirst(==('^'), grid)
     grid[start_pos] = '.'
 
     # Get original path
     original_path::Vector{CartesianIndex{2}} = get_path(grid, start_pos, m, n)
+
+    # Pre-allocate reusable BitArray
+    visited_states::BitArray{3} = falses(m, n, 4)
 
     # Try placing an obstacle in each position on the original path
     total::Int = 0
@@ -49,7 +60,7 @@ function solve(input::Question{2024,6,'b'})
             continue
         end
         # If the obstacle creates a loop, it's a valid obstacle
-        if creates_loop(grid, start_pos, test_pos)
+        if creates_loop(grid, start_pos, test_pos, visited_states)
             total += 1
         end
     end
@@ -77,22 +88,29 @@ function get_path(grid::Matrix{Char}, start_pos::CartesianIndex{2}, m::Int, n::I
     return path
 end
 
-function creates_loop(grid::Matrix{Char}, start_pos::CartesianIndex{2}, obstacle_pos::CartesianIndex{2})::Bool
+function creates_loop(
+    grid::Matrix{Char},
+    start_pos::CartesianIndex{2},
+    obstacle_pos::CartesianIndex{2},
+    visited_states::BitArray{3}
+)::Bool
+    # Efficiently clear the BitArray instead of allocating new one
+    fill!(visited_states, false)
+
     # Temporarily add obstacle
     original_char::Char = grid[obstacle_pos]
     grid[obstacle_pos] = '#'
 
-    # Track visited states (position + direction)
-    m, n = size(grid)
-    visited_states::BitArray{3} = falses(m, n, 4)
     pos::CartesianIndex{2} = start_pos
     dir::Int = 1
     result::Bool = false
+
     while checkbounds(Bool, grid, pos)
         if visited_states[pos, dir]
             result = true
             break
         end
+
         visited_states[pos, dir] = true
         next_pos = pos + DIRECTIONS[dir]
 

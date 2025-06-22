@@ -2,11 +2,10 @@
 
 function solve(input::Question{2024,8,'a'})
     if input.s == ""
-        s = test_string_2024_8
+        s = strip(test_string_2024_8, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
     grid = stack([collect(row) for row in split(s, '\n')], dims=1)
     m, n = size(grid)
     antenna = Dict{Char,Vector{Tuple{Int,Int}}}()
@@ -41,11 +40,10 @@ end
 
 function solve(input::Question{2024,8,'b'})
     if input.s == ""
-        s = test_string_2024_8
+        s = strip(test_string_2024_8, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
     grid = stack([collect(row) for row in split(s, '\n')], dims=1)
     m, n = size(grid)
     antenna = Dict{Char,Vector{Tuple{Int,Int}}}()

@@ -2,11 +2,10 @@
 
 function solve(input::Question{2024,10,'a'})
     if input.s == ""
-        s = test_string_2024_10
+        s = strip(test_string_2024_10, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
     grid = parse_int_matrix(s)
     m, n = size(grid)
 
@@ -45,11 +44,10 @@ end
 
 function solve(input::Question{2024,10,'b'})
     if input.s == ""
-        s = test_string_2024_10
+        s = strip(test_string_2024_10, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
     grid = parse_int_matrix(s)
     m, n = size(grid)
 

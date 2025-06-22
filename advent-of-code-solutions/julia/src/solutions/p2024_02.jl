@@ -2,11 +2,11 @@
 
 function solve(input::Question{2024,2,'a'})
     if input.s == ""
-        s = test_string_2024_02
+        s = strip(test_string_2024_02, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    lines::Vector{Vector{Int}} = [parse.(Int, split(line, " ")) for line in split(strip(s, '\n'), "\n")]
+    lines::Vector{Vector{Int}} = [parse.(Int, split(line, " ")) for line in split(s, "\n")]
     total::Int = 0
     for line in lines
         all_increasing::Bool = true
@@ -25,11 +25,11 @@ function solve(input::Question{2024,2,'a'})
     return total
 end
 
-function solve(input::Question{2024,2,'b'}, method::String="method1")
+function solve(input::Question{2024,2,'b'}, method::String="method2")
     if input.s == ""
-        s = test_string_2024_02
+        s = strip(test_string_2024_02, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
     if method == "method1"
         return method1(s)
@@ -40,7 +40,7 @@ function solve(input::Question{2024,2,'b'}, method::String="method1")
     end
 end
 
-function method1(s::String)
+function method1(s::AbstractString)
     lines::Vector{Vector{Int}} = [parse.(Int, split(line, " ")) for line in split(strip(s, '\n'), "\n")]
     diffs::Vector{Vector{Int}} = [diff(line) for line in lines]
     all_increasing::Vector{Bool} = [all(diff .>= 0) for diff in diffs]
@@ -66,7 +66,7 @@ function method1(s::String)
 end
 
 
-function method2(s::String)
+function method2(s::AbstractString)
     lines::Vector{Vector{Int}} = [parse.(Int, split(line, " ")) for line in split(strip(s, '\n'), "\n")]
     total::Int = 0
     for line in lines

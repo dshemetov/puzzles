@@ -3,28 +3,27 @@
 
 function solve(input::Question{2024,4,'a'})
     if input.s == ""
-        s = test_string_2024_04
+        s = strip(test_string_2024_04, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
     grid = parse_char_matrix(s)
-    m, n = size(grid)
-    total::Int = 0
-    word::Vector{Char} = ['X', 'M', 'A', 'S']
-    directions::Vector{Tuple{Int,Int}} = [(0, 1), (1, 0), (1, 1), (-1, 1)]
 
-    for i in 1:m
-        for j in 1:n
-            for d in directions
-                for sgn in [1, -1]
-                    grid_word::Vector{Char} = [grid[i+sgn*(k-1)*d[1], j+sgn*(k-1)*d[2]] for k in 1:4
-                                               if 1 <= i + sgn * (k - 1) * d[1] <= m && 1 <= j + sgn * (k - 1) * d[2] <= n]
-                    if grid_word == word
-                        total += 1
-                    end
-                end
+    total::Int = 0
+    directions::NTuple{4,CartesianIndex{2}} = (CartesianIndex(0, 1), CartesianIndex(1, 0), CartesianIndex(1, 1), CartesianIndex(-1, 1))
+    for pos::CartesianIndex{2} in eachindex(IndexCartesian(), grid), d in directions, sgn in [1, -1]
+        valid::Bool = true
+        for k in 1:4
+            if !checkbounds(Bool, grid, pos + sgn * (k - 1) * d)
+                valid = false
+                break
             end
+        end
+        if !valid
+            continue
+        end
+        if grid[pos] == 'X' && grid[pos+sgn*d] == 'M' && grid[pos+sgn*2*d] == 'A' && grid[pos+sgn*3*d] == 'S'
+            total += 1
         end
     end
     return total
@@ -32,24 +31,39 @@ end
 
 function solve(input::Question{2024,4,'b'})
     if input.s == ""
-        s = test_string_2024_04
+        s = strip(test_string_2024_04, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
     grid = parse_char_matrix(s)
-    m, n = size(grid)
-    total::Int = 0
-    word::Vector{Char} = ['M', 'A', 'S']
-    rword::Vector{Char} = reverse(word)
 
-    for i in 2:m-1
-        for j in 2:n-1
-            upright::Vector{Char} = [grid[i-k, j+k] for k in -1:1 if 1 <= i - k <= m && 1 <= j + k <= n]
-            downright::Vector{Char} = [grid[i+k, j+k] for k in -1:1 if 1 <= i + k <= m && 1 <= j + k <= n]
-            if (upright == word || upright == rword) && (downright == word || downright == rword)
-                total += 1
+    total::Int = 0
+    for pos::CartesianIndex{2} in eachindex(IndexCartesian(), grid)
+        if pos[1] == 1 || pos[1] == size(grid, 1) || pos[2] == 1 || pos[2] == size(grid, 2)
+            continue
+        end
+        valid::Bool = true
+        for k in -1:1
+            if !checkbounds(Bool, grid, pos + CartesianIndex(-k, k))
+                valid = false
+                break
             end
+            if !checkbounds(Bool, grid, pos + CartesianIndex(k, k))
+                valid = false
+                break
+            end
+        end
+        if !valid
+            continue
+        end
+        d1 = CartesianIndex(-1, 1)
+        d2 = CartesianIndex(1, -1)
+        one = grid[pos-d1] == 'M' && grid[pos] == 'A' && grid[pos+d1] == 'S'
+        two = grid[pos-d1] == 'S' && grid[pos] == 'A' && grid[pos+d1] == 'M'
+        three = grid[pos-d2] == 'M' && grid[pos] == 'A' && grid[pos+d2] == 'S'
+        four = grid[pos-d2] == 'S' && grid[pos] == 'A' && grid[pos+d2] == 'M'
+        if valid && (one || two) && (three || four)
+            total += 1
         end
     end
     return total

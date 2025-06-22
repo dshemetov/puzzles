@@ -3,21 +3,24 @@
 
 function solve(input::Question{2024,5,'a'})
     if input.s == ""
-        s = test_string_2024_05
+        s = strip(test_string_2024_05, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
-    rules_str, updates_str = split(s, "\n\n")
-    rules = Set([parse.(Int, split(x, "|")) for x in split(rules_str, "\n")])
-    updates = [parse.(Int, split(x, ",")) for x in split(updates_str, "\n")]
+    rules_str::String, updates_str::String = split(s, "\n\n")
+    rules_nums::Matrix{Int} = parse_int_matrix(rules_str, "|")
+    rules_matrix::BitMatrix = falses(maximum(rules_nums[:, 1]), maximum(rules_nums[:, 2]))
+    for i in axes(rules_nums, 1)
+        rules_matrix[rules_nums[i, 1], rules_nums[i, 2]] = true
+    end
+    updates::Vector{Vector{Int}} = [parse.(Int, split(x, ",")) for x in split(updates_str, "\n")]
 
-    total = 0
+    total::Int = 0
     for update in updates
-        valid = true
+        valid::Bool = true
         for i in eachindex(update)
-            for j in range(i + 1, length(update))
-                if [update[i], update[j]] ∉ rules
+            for j in i+1:length(update)
+                if !rules_matrix[update[i], update[j]]
                     valid = false
                     break
                 end
@@ -27,7 +30,7 @@ function solve(input::Question{2024,5,'a'})
             end
         end
         if valid
-            total += update[Int(ceil(length(update) / 2))]
+            total += update[cld(length(update), 2)]
         end
     end
     return total
@@ -35,21 +38,24 @@ end
 
 function solve(input::Question{2024,5,'b'})
     if input.s == ""
-        s = test_string_2024_05
+        s = strip(test_string_2024_05, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
-    rules_str, updates_str = split(s, "\n\n")
-    rules = Set([parse.(Int, split(x, "|")) for x in split(rules_str, "\n")])
-    updates = [parse.(Int, split(x, ",")) for x in split(updates_str, "\n")]
+    rules_str::String, updates_str::String = split(s, "\n\n")
+    rules_nums::Matrix{Int} = parse_int_matrix(rules_str, "|")
+    rules_matrix::BitMatrix = falses(maximum(rules_nums[:, 1]), maximum(rules_nums[:, 2]))
+    for i in axes(rules_nums, 1)
+        rules_matrix[rules_nums[i, 1], rules_nums[i, 2]] = true
+    end
+    updates::Vector{Vector{Int}} = [parse.(Int, split(x, ",")) for x in split(updates_str, "\n")]
 
-    invalid = []
+    invalid::Vector{Vector{Int}} = []
     for update in updates
-        valid = true
+        valid::Bool = true
         for i in eachindex(update)
             for j in i+1:length(update)
-                if [update[i], update[j]] ∉ rules
+                if !rules_matrix[update[i], update[j]]
                     valid = false
                     break
                 end
@@ -63,16 +69,16 @@ function solve(input::Question{2024,5,'b'})
         end
     end
 
-    total = 0
+    total::Int = 0
     for update in invalid
         for i in eachindex(update)
             for j in i+1:length(update)
-                if [update[j], update[i]] in rules
+                if rules_matrix[update[j], update[i]]
                     update[i], update[j] = update[j], update[i]
                 end
             end
         end
-        total += update[Int(ceil(length(update) / 2))]
+        total += update[cld(length(update), 2)]
     end
     return total
 end

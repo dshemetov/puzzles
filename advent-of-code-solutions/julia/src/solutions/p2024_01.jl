@@ -2,11 +2,11 @@
 
 function solve(input::Question{2024,1,'a'})
     if input.s == ""
-        s = test_string_2024_01
+        s = strip(test_string_2024_01, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    m = parse_int_matrix(strip(s, '\n'), "")
+    m = parse_int_matrix(s, "")
     m[:, 1] = sort(m[:, 1])
     m[:, 2] = sort(m[:, 2])
     sum(abs.(m[:, 1] - m[:, 2]))
@@ -14,11 +14,11 @@ end
 
 function solve(input::Question{2024,1,'b'})
     if input.s == ""
-        s = test_string_2024_01
+        s = strip(test_string_2024_01, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    m = parse_int_matrix(strip(s, '\n'), "")
+    m = parse_int_matrix(s, "")
     c = zeros(Int, maximum(m[:, 1]))
     for x in m[:, 2]
         c[x] += 1
