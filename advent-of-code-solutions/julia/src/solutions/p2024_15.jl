@@ -1,8 +1,11 @@
 """15. https://adventofcode.com/2024/day/15"""
 
 function solve(input::Question{2024,15,'a'})
-    s = isempty(input.s) ? test_string_2024_15_a : input.s
-    s = strip(s, '\n')
+    if input.s == ""
+        s = strip(test_string_2024_15_a, '\n')
+    else
+        s = strip(input.s, '\n')
+    end
     grid, path = split(s, "\n\n")
     grid = parse_char_matrix(grid)
     path = replace(path, '\n' => "")
@@ -39,8 +42,11 @@ function score(grid)
 end
 
 function solve(input::Question{2024,15,'b'})
-    s = isempty(input.s) ? test_string_2024_15_b : input.s
-    s = strip(s, '\n')
+    if input.s == ""
+        s = strip(test_string_2024_15_b, '\n')
+    else
+        s = strip(input.s, '\n')
+    end
     s = replace(s, "#" => "##", "@" => "@.", "O" => "[]", "." => "..")
     grid, path = split(s, "\n\n")
     grid = parse_char_matrix(grid)

@@ -4,11 +4,10 @@ import LinearAlgebra: det, dot
 
 function solve(input::Question{2024,13,'a'})
     if input.s == ""
-        s = test_string_2024_13
+        s = strip(test_string_2024_13, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
     machines = split(s, "\n\n")
 
     total = 0
@@ -56,11 +55,10 @@ end
 
 function solve(input::Question{2024,13,'b'})
     if input.s == ""
-        s = test_string_2024_13
+        s = strip(test_string_2024_13, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
     machines = split(s, "\n\n")
 
     total = 0

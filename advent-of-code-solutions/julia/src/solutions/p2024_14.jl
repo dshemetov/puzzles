@@ -2,15 +2,14 @@
 
 function solve(input::Question{2024,14,'a'})
     if input.s == ""
-        s = test_string_2024_14
+        s = strip(test_string_2024_14, '\n')
         width = 11
         height = 7
     else
-        s = input.s
+        s = strip(input.s, '\n')
         width = 101
         height = 103
     end
-    s = strip(s, '\n')
     nums = [parse.(Int, eachmatch_vector(line, r"-?\d+")) for line in split(s, '\n')]
     pos = hcat([[n[1], n[2]] for n in nums]...)'  # m x 2 matrix of positions
     vel = hcat([[n[3], n[4]] for n in nums]...)'  # m x 2 matrix of velocities
@@ -24,15 +23,14 @@ end
 
 function solve(input::Question{2024,14,'b'})
     if input.s == ""
-        s = test_string_2024_14
+        s = strip(test_string_2024_14, '\n')
         width = 11
         height = 7
     else
-        s = input.s
+        s = strip(input.s, '\n')
         width = 101
         height = 103
     end
-    s = strip(s, '\n')
     nums = [parse.(Int, eachmatch_vector(line, r"-?\d+")) for line in split(s, '\n')]
     pos = hcat([[n[1], n[2]] for n in nums]...)'  # m x 2 matrix of positions
     vel = hcat([[n[3], n[4]] for n in nums]...)'  # m x 2 matrix of velocities

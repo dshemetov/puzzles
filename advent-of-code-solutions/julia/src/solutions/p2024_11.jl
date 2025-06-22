@@ -1,59 +1,65 @@
 """11. https://adventofcode.com/2024/day/11"""
 
-function transform(s::AbstractString)
-    if s == "0"
-        return ["1"]
-    elseif length(s) % 2 == 0
-        left_half = parse(Int, s[1:div(end, 2)])
-        right_half = parse(Int, s[div(end, 2)+1:end])
-        return ["$left_half", "$right_half"]
+function transform_int(n::Int)::Vector{Int}
+    if n == 0
+        return [1]
+    end
+
+    digits = ndigits(n)
+    if digits % 2 == 0
+        divisor = 10^(digits ÷ 2)
+        left = n ÷ divisor
+        right = n % divisor
+        return [left, right]
     else
-        return ["$(parse(Int, s) * 2024)"]
+        return [n * 2024]
     end
 end
 
 function solve(input::Question{2024,11,'a'})
     if input.s == ""
-        s = test_string_2024_11
+        s = strip(test_string_2024_11, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
 
-    d = Dict(x => 1 for x in split(s))
+    # Use integers directly instead of strings
+    counts::Dict{Int,Int} = Dict(parse(Int, x) => 1 for x in split(s))
+
     for _ in 1:25
-        d_ = Dict{String,Int}()
-        for (k, v) in d
-            for k_ in transform(k)
-                d_[k_] = get(d_, k_, 0) + v
+        new_counts::Dict{Int,Int} = Dict{Int,Int}()
+        for (num, count) in counts
+            for new_num in transform_int(num)
+                new_counts[new_num] = get(new_counts, new_num, 0) + count
             end
         end
-        d = d_
+        counts = new_counts
     end
 
-    return sum(values(d))
+    return sum(values(counts))
 end
 
 function solve(input::Question{2024,11,'b'})
     if input.s == ""
-        s = test_string_2024_11
+        s = strip(test_string_2024_11, '\n')
     else
-        s = input.s
+        s = strip(input.s, '\n')
     end
-    s = strip(s, '\n')
 
-    d = Dict(x => 1 for x in split(s))
+    # Use integers directly instead of strings
+    counts::Dict{Int,Int} = Dict(parse(Int, x) => 1 for x in split(s))
+
     for _ in 1:75
-        d_ = Dict{String,Int}()
-        for (k, v) in d
-            for k_ in transform(k)
-                d_[k_] = get(d_, k_, 0) + v
+        new_counts::Dict{Int,Int} = Dict{Int,Int}()
+        for (num, count) in counts
+            for new_num in transform_int(num)
+                new_counts[new_num] = get(new_counts, new_num, 0) + count
             end
         end
-        d = d_
+        counts = new_counts
     end
 
-    return sum(values(d))
+    return sum(values(counts))
 end
 
 test_string_2024_11 = """
