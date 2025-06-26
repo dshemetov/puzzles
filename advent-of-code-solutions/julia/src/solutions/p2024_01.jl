@@ -6,7 +6,7 @@ function solve(input::Question{2024,1,'a'})
     else
         s = strip(input.s, '\n')
     end
-    m = parse_int_matrix(s, "")
+    m::Matrix{Int} = parse.(Int, stack([split(x) for x in split(s, "\n")], dims=1))
     m[:, 1] = sort(m[:, 1])
     m[:, 2] = sort(m[:, 2])
     sum(abs.(m[:, 1] - m[:, 2]))
@@ -18,8 +18,8 @@ function solve(input::Question{2024,1,'b'})
     else
         s = strip(input.s, '\n')
     end
-    m = parse_int_matrix(s, "")
-    c = zeros(Int, maximum(m[:, 1]))
+    m::Matrix{Int} = parse.(Int, stack([split(x) for x in split(s, "\n")], dims=1))
+    c = zeros(Int, maximum(m))
     for x in m[:, 2]
         c[x] += 1
     end

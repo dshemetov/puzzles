@@ -6,7 +6,7 @@ function solve(input::Question{2024,10,'a'})
     else
         s = strip(input.s, '\n')
     end
-    grid = parse_int_matrix(s)
+    grid::Matrix{Int} = stack([parse.(Int, collect(x)) for x in split(s, "\n")], dims=1)
     m, n = size(grid)
 
     starts = [(i, j) for j in 1:n, i in 1:m if grid[i, j] == 0]
@@ -48,7 +48,7 @@ function solve(input::Question{2024,10,'b'})
     else
         s = strip(input.s, '\n')
     end
-    grid = parse_int_matrix(s)
+    grid::Matrix{Int} = stack([parse.(Int, collect(x)) for x in split(s, "\n")], dims=1)
     m, n = size(grid)
 
     starts = [(i, j) for j in 1:n, i in 1:m if grid[i, j] == 0]

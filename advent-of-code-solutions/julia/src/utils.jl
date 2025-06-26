@@ -37,20 +37,6 @@ function get_input_string(year, day)::String
     return s
 end
 
-function parse_int_matrix(s::AbstractString, dlm=nothing)::Matrix{Int}
-    if dlm === nothing
-        return stack([parse.(Int, collect(x)) for x in split(s, "\n")], dims=1)
-    elseif dlm == ""
-        return stack([parse.(Int, split(x)) for x in split(s, "\n")], dims=1)
-    else
-        return stack([parse.(Int, split(x, dlm)) for x in split(s, "\n")], dims=1)
-    end
-end
-
-function parse_char_matrix(s::AbstractString)::Matrix{Char}
-    return stack(split(s, "\n"))
-end
-
 function eachmatch_vector(s::AbstractString, regex::Regex)::Vector{String}
     return [m.match for m in eachmatch(regex, s)]
 end

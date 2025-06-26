@@ -35,8 +35,6 @@ function solve(input::Question{2024,17,'a'})
 
     j = 1 # j for Julia (1-indexed)
     out = []
-    # println(registers)
-    # println(program)
     while j < length(program)
         op, literal, combo = program[j], program[j+1], parse_combo_operand(program[j+1], registers)
         if op == 0 # adv
@@ -59,8 +57,6 @@ function solve(input::Question{2024,17,'a'})
         end
         j += 2
     end
-
-    # println(registers)
 
     # Join out into a string, with commas
     return join(out, ",")
@@ -91,7 +87,6 @@ function solve(input::Question{2024,17,'b'})
 
     valid = []
     function recurse(a, i)
-        # println("RECURSE: a = ", a, ", i = ", i, ", length(program) = ", length(program))
         if i > length(program)
             push!(valid, a)
             return a
@@ -101,7 +96,7 @@ function solve(input::Question{2024,17,'b'})
         # at a time
         a2 = a << 3
         for b_ in 0:7
-            # Inline the decompiled program, to be extra annoying
+            # Inline the decompiled program, because golf == readable code right?
             if (b_ ⊻ 4) ⊻ ((a2 + b_) ÷ 2^(b_ ⊻ 1)) % 8 == rev_program[i]
                 recurse(a2 + b_, i + 1)
             end

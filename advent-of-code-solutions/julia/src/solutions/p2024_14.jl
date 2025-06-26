@@ -10,15 +10,14 @@ function solve(input::Question{2024,14,'a'})
         width = 101
         height = 103
     end
-    nums = [parse.(Int, eachmatch_vector(line, r"-?\d+")) for line in split(s, '\n')]
-    pos = hcat([[n[1], n[2]] for n in nums]...)'  # m x 2 matrix of positions
-    vel = hcat([[n[3], n[4]] for n in nums]...)'  # m x 2 matrix of velocities
+    digits::Vector{Vector{String}} = [eachmatch_vector(line, r"-?\d+") for line in split(s, '\n')]
+    nums::Matrix{Int} = parse.(Int, stack(digits, dims=1))
 
     for _ in 1:100
-        pos .= mod.(pos .+ vel, [width height])
+        nums[:, 1:2] .= mod.(nums[:, 1:2] .+ nums[:, 3:4], [width height])
     end
 
-    return get_score(pos, width, height)
+    return get_score(nums[:, 1:2], width, height)
 end
 
 function solve(input::Question{2024,14,'b'})
@@ -31,15 +30,14 @@ function solve(input::Question{2024,14,'b'})
         width = 101
         height = 103
     end
-    nums = [parse.(Int, eachmatch_vector(line, r"-?\d+")) for line in split(s, '\n')]
-    pos = hcat([[n[1], n[2]] for n in nums]...)'  # m x 2 matrix of positions
-    vel = hcat([[n[3], n[4]] for n in nums]...)'  # m x 2 matrix of velocities
+    digits::Vector{Vector{String}} = [eachmatch_vector(line, r"-?\d+") for line in split(s, '\n')]
+    nums::Matrix{Int} = parse.(Int, stack(digits, dims=1))
 
     smallest_score = Inf
     step_of_smallest_score = 0
     for i in 1:10000
-        pos .= mod.(pos .+ vel, [width height])
-        score = check_cluster(pos, width, height)
+        nums[:, 1:2] .= mod.(nums[:, 1:2] .+ nums[:, 3:4], [width height])
+        score = check_cluster(nums[:, 1:2], width, height)
         if score < smallest_score
             smallest_score = score
             step_of_smallest_score = i
@@ -51,33 +49,33 @@ function solve(input::Question{2024,14,'b'})
     return step_of_smallest_score
 end
 
-function check_cluster(pos, width, height)
+function check_cluster(m::Matrix{Int}, width::Int, height::Int)::Int
     mw = div(width, 2)
     mh = div(height, 2)
-    return -sum([1 for i in axes(pos, 1) if mw - 5 <= pos[i, 1] <= mw + 5 && mh - 5 <= pos[i, 2] <= mh + 5], init=0)
+    return -sum([1 for i in axes(m, 1) if mw - 5 <= m[i, 1] <= mw + 5 && mh - 5 <= m[i, 2] <= mh + 5], init=0)
 end
 
-function get_score(pos, width, height)
+function get_score(m::Matrix{Int}, width::Int, height::Int)::Int
     quadrants = [0, 0, 0, 0]
-    for i in axes(pos, 1)
-        if pos[i, 1] < div(width, 2) && pos[i, 2] < div(height, 2)
+    for i in axes(m, 1)
+        if m[i, 1] < div(width, 2) && m[i, 2] < div(height, 2)
             quadrants[1] += 1
-        elseif pos[i, 1] < div(width, 2) && pos[i, 2] > div(height, 2)
+        elseif m[i, 1] < div(width, 2) && m[i, 2] > div(height, 2)
             quadrants[2] += 1
-        elseif pos[i, 1] > div(width, 2) && pos[i, 2] < div(height, 2)
+        elseif m[i, 1] > div(width, 2) && m[i, 2] < div(height, 2)
             quadrants[3] += 1
-        elseif pos[i, 1] > div(width, 2) && pos[i, 2] > div(height, 2)
+        elseif m[i, 1] > div(width, 2) && m[i, 2] > div(height, 2)
             quadrants[4] += 1
         end
     end
     return prod(quadrants)
 end
 
-function view_robots(pos, width, height)
-    grid = fill('.', height, width)
+function view_robots(m::Matrix{Int}, width::Int, height::Int)
+    grid::Matrix{Char} = fill('.', height, width)
 
-    for i in axes(pos, 1)
-        grid[pos[i, 2]+1, pos[i, 1]+1] = 'R'
+    for i in axes(m, 1)
+        grid[m[i, 2]+1, m[i, 1]+1] = 'R'
     end
 
     print_grid(grid)

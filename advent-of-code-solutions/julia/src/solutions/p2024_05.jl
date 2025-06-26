@@ -8,8 +8,9 @@ function solve(input::Question{2024,5,'a'})
         s = strip(input.s, '\n')
     end
     rules_str::String, updates_str::String = split(s, "\n\n")
-    rules_nums::Matrix{Int} = parse_int_matrix(rules_str, "|")
-    rules_matrix::BitMatrix = falses(maximum(rules_nums[:, 1]), maximum(rules_nums[:, 2]))
+    rules_nums::Matrix{Int} = parse.(Int, stack([split(x, "|") for x in split(rules_str, "\n")], dims=1))
+    m = maximum(rules_nums)
+    rules_matrix::BitMatrix = falses(m, m)
     for i in axes(rules_nums, 1)
         rules_matrix[rules_nums[i, 1], rules_nums[i, 2]] = true
     end
@@ -43,8 +44,9 @@ function solve(input::Question{2024,5,'b'})
         s = strip(input.s, '\n')
     end
     rules_str::String, updates_str::String = split(s, "\n\n")
-    rules_nums::Matrix{Int} = parse_int_matrix(rules_str, "|")
-    rules_matrix::BitMatrix = falses(maximum(rules_nums[:, 1]), maximum(rules_nums[:, 2]))
+    rules_nums::Matrix{Int} = parse.(Int, stack([split(x, "|") for x in split(rules_str, "\n")], dims=1))
+    m = maximum(rules_nums)
+    rules_matrix::BitMatrix = falses(m, m)
     for i in axes(rules_nums, 1)
         rules_matrix[rules_nums[i, 1], rules_nums[i, 2]] = true
     end

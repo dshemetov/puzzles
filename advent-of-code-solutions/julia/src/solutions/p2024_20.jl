@@ -91,7 +91,7 @@ function solve(input::Question{2024,20,'b'}, method::String="pairwise")
 end
 
 function ball_cheat_solver(s::AbstractString, radius::Int, time_diff_thresh::Int)
-    grid = parse_char_matrix(s)
+    grid::Matrix{Char} = stack(split(s, "\n"))
     m, n = size(grid)
     st::Tuple{Int,Int} = Tuple(findfirst(==('S'), grid))
     ta::Tuple{Int,Int} = Tuple(findfirst(==('E'), grid))
@@ -147,7 +147,7 @@ function ball_cheat_solver(s::AbstractString, radius::Int, time_diff_thresh::Int
 end
 
 function pairwise_cheat_solver(s::AbstractString, radius::Int, time_diff_thresh::Int)
-    grid = parse_char_matrix(s)
+    grid::Matrix{Char} = stack(split(s, "\n"))
     m, n = size(grid)
     st::Tuple{Int,Int} = Tuple(findfirst(==('S'), grid))
     ta::Tuple{Int,Int} = Tuple(findfirst(==('E'), grid))

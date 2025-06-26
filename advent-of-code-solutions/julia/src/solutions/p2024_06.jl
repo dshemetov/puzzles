@@ -11,7 +11,7 @@ function solve(input::Question{2024,6,'a'})
     else
         s = strip(input.s, '\n')
     end
-    grid::Matrix{Char} = parse_char_matrix(s) |> permutedims
+    grid::Matrix{Char} = stack(split(s, "\n")) |> permutedims
     m::Int, n::Int = size(grid)
     start_pos::CartesianIndex{2} = findfirst(==('^'), grid)
     grid[start_pos] = '.'
@@ -42,7 +42,7 @@ function solve(input::Question{2024,6,'b'})
     else
         s = strip(input.s, '\n')
     end
-    grid::Matrix{Char} = parse_char_matrix(s) |> permutedims
+    grid::Matrix{Char} = stack(split(s, "\n")) |> permutedims
     m::Int, n::Int = size(grid)
     start_pos::CartesianIndex{2} = findfirst(==('^'), grid)
     grid[start_pos] = '.'

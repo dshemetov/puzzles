@@ -6,10 +6,9 @@ function solve(input::Question{2024,15,'a'})
     else
         s = strip(input.s, '\n')
     end
-    grid, path = split(s, "\n\n")
-    grid = parse_char_matrix(grid)
-    path = replace(path, '\n' => "")
-    m, n = size(grid)
+    g, p = split(s, "\n\n")
+    grid::Matrix{Char} = stack(split(g, "\n"), dims=1)
+    path::String = replace(p, '\n' => "")
 
     cur = Tuple(findfirst(==('@'), grid))
     dirs = Dict('>' => (0, 1), '<' => (0, -1), '^' => (-1, 0), 'v' => (1, 0))
@@ -48,10 +47,9 @@ function solve(input::Question{2024,15,'b'})
         s = strip(input.s, '\n')
     end
     s = replace(s, "#" => "##", "@" => "@.", "O" => "[]", "." => "..")
-    grid, path = split(s, "\n\n")
-    grid = parse_char_matrix(grid)
-    path = replace(path, '\n' => "")
-    m, n = size(grid)
+    g, p = split(s, "\n\n")
+    grid::Matrix{Char} = stack(split(g, "\n"), dims=1)
+    path::String = replace(p, '\n' => "")
 
     cur = Tuple(findfirst(==('@'), grid))
     dirs = Dict('>' => (0, 1), '<' => (0, -1), '^' => (-1, 0), 'v' => (1, 0))

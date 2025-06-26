@@ -7,7 +7,7 @@ function solve(input::Question{2024,4,'a'})
     else
         s = strip(input.s, '\n')
     end
-    grid = parse_char_matrix(s)
+    grid::Matrix{Char} = stack(split(s, "\n"))
 
     total::Int = 0
     directions::NTuple{4,CartesianIndex{2}} = (CartesianIndex(0, 1), CartesianIndex(1, 0), CartesianIndex(1, 1), CartesianIndex(-1, 1))
@@ -35,7 +35,7 @@ function solve(input::Question{2024,4,'b'})
     else
         s = strip(input.s, '\n')
     end
-    grid = parse_char_matrix(s)
+    grid::Matrix{Char} = stack(split(s, "\n"))
 
     total::Int = 0
     for pos::CartesianIndex{2} in eachindex(IndexCartesian(), grid)

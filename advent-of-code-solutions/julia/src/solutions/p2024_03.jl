@@ -6,7 +6,8 @@ function solve(input::Question{2024,3,'a'})
     else
         s = strip(input.s, '\n')
     end
-    m::Matrix{Int} = stack([parse.(Int, [x[1], x[2]]) for x in eachmatch(r"mul\((\d+),(\d+)\)", s)], dims=1)
+    digits::Vector{Vector{String}} = [[x[1], x[2]] for x in eachmatch(r"mul\((\d+),(\d+)\)", s)]
+    m::Matrix{Int} = parse.(Int, stack(digits, dims=1))
     return sum(m[:, 1] .* m[:, 2])
 end
 

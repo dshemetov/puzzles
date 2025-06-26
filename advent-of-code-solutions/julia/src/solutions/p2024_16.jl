@@ -226,8 +226,6 @@ function solve_original(input::Question{2024,16,'a'})
 
     start_pos = Tuple(findfirst(==('S'), grid))
     end_pos = Tuple(findfirst(==('E'), grid))
-    # println(start_pos)
-    # println(end_pos)
 
     # A* search
     function h((pos, _))  # heuristic function - manhattan distance
@@ -322,8 +320,6 @@ function solve_original(input::Question{2024,16,'b'})
 
     start_pos = Tuple(findfirst(==('S'), grid))
     end_pos = Tuple(findfirst(==('E'), grid))
-    # println(start_pos)
-    # println(end_pos)
 
     # A* search
     function h((pos, _))  # heuristic function - manhattan distance
