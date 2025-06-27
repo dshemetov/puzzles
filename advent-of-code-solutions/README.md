@@ -61,7 +61,7 @@ After a few days of only playing SSX Tricky and drinking peppermint schnapps, we
 Evin got functional with JavaScript and I was just getting started with Python.
 Doing puzzles while cozy with friends is one of my favorite things to do.
 
-- AoC 2024: 7/50 Python, a few in Julia.
+- AoC 2024: 7/50 Python, 49/50 Julia.
 - AoC 2023: 7/50 Python.
 - AoC 2022: 12/50 Python (with Numba and Cython).
 - AoC 2021: 43/50 Python.
