@@ -43,18 +43,18 @@ function solve(input::Question{2024,6,'b'})
         s = strip(input.s, '\n')
     end
     grid::Matrix{Char} = stack(split(s, "\n")) |> permutedims
-    m::Int, n::Int = size(grid)
-    start_pos::CartesianIndex{2} = findfirst(==('^'), grid)
+    m, n = size(grid)
+    start_pos = findfirst(==('^'), grid)
     grid[start_pos] = '.'
 
     # Get original path
-    original_path::Vector{CartesianIndex{2}} = get_path(grid, start_pos, m, n)
+    original_path = get_path(grid, start_pos, m, n)
 
     # Pre-allocate reusable BitArray
-    visited_states::BitArray{3} = falses(m, n, 4)
+    visited_states = falses(m, n, 4)
 
     # Try placing an obstacle in each position on the original path
-    total::Int = 0
+    total = 0
     for test_pos in original_path
         if grid[test_pos] == '#' || test_pos == start_pos
             continue
@@ -69,7 +69,7 @@ end
 
 function get_path(grid::Matrix{Char}, start_pos::CartesianIndex{2}, m::Int, n::Int)::Vector{CartesianIndex{2}}
     visited::BitMatrix = falses(m, n)
-    path::Vector{CartesianIndex{2}} = CartesianIndex{2}[]
+    path = CartesianIndex{2}[]
     pos::CartesianIndex{2} = start_pos
     dir::Int = 1  # Start facing up
     while checkbounds(Bool, grid, pos)

@@ -13,11 +13,11 @@ function solve_block(input::Question{2024,9,'a'})
     else
         s = strip(input.s, '\n')
     end
-    nums::Vector{Int} = [parse(Int, c) for c in s]
+    nums = Int[parse(Int, c) for c in s]
 
     # Create a more efficient representation using a simple vector of blocks
-    blocks::Vector{Block} = Vector{Block}()
-    pos::Int = 0
+    blocks = Block[]
+    pos = 0
 
     for (i, n) in enumerate(nums)
         if n == 0
@@ -95,11 +95,11 @@ function solve_block(input::Question{2024,9,'b'})
     else
         s = strip(input.s, '\n')
     end
-    nums::Vector{Int} = [parse(Int, c) for c in s]
+    nums = Int[parse(Int, c) for c in s]
 
     # Create blocks representation
-    blocks::Vector{Block} = Vector{Block}()
-    pos::Int = 0
+    blocks = Block[]
+    pos = 0
 
     for (i, n) in enumerate(nums)
         if n == 0
@@ -115,7 +115,7 @@ function solve_block(input::Question{2024,9,'b'})
     end
 
     # Get max file ID and work backwards
-    max_file_id::Int = maximum(block.id for block in blocks if block.id != -1)
+    max_file_id = maximum(block.id for block in blocks if block.id != -1)
 
     for file_id in max_file_id:-1:0
         # Find the file block
@@ -249,18 +249,18 @@ function solve_fastest(input::Question{2024,9,'b'})
     end
 
     # Parse and create file/free space lists
-    nums::Vector{Int8} = [parse(Int8, c) for c in s]
+    nums = Int8[parse(Int8, c) for c in s]
 
     # Pre-allocate arrays for file and free space tracking
-    max_files::Int = (length(nums) + 1) ÷ 2
-    file_positions::Vector{Int} = Vector{Int}(undef, max_files)
-    file_sizes::Vector{Int8} = Vector{Int8}(undef, max_files)
+    max_files = (length(nums) + 1) ÷ 2
+    file_positions = Vector{Int}(undef, max_files)
+    file_sizes = Vector{Int8}(undef, max_files)
 
-    free_positions::Vector{Int} = Vector{Int}()
-    free_sizes::Vector{Int8} = Vector{Int8}()
+    free_positions = Int[]
+    free_sizes = Int8[]
 
-    pos::Int = 0
-    file_count::Int = 0
+    pos = 0
+    file_count = 0
 
     for (i, n) in enumerate(nums)
         if n == 0

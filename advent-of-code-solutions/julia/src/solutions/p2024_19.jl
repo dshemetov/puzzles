@@ -1,20 +1,24 @@
 """19. https://adventofcode.com/2024/day/19
 
-The dynamic programming part is really interesting.
-It's much faster than the recursive + memoized approach, about 5x faster.
+The dynamic programming part is really interesting. It's much faster than the
+recursive + memoized approach, about 5x faster.
 
 The dynamic programming recursive relation is:
     dp[i] = sum(dp[j] for j in max(1, i - max_len):(i-1) if target[j:(i-1)] in options)
     dp[1] = 1
 
-In words, dp[i] is the number of ways to form the first i characters of the target string using the given options.
+In words, dp[i] is the number of ways to form the first i characters of the
+target string using the given options.
 
 The base case is dp[1] = 1, because there is one way to form the empty string.
 
-In the recursive case, for a given state i, we try all shorter prefixes of the target string and see if there exists a prefix of the right length to get to i.
-If so, we add the number of ways to get to the shorter prefix to the number of ways to get to i.
+In the recursive case, for a given state i, we try all shorter prefixes of the
+target string and see if there exists a prefix of the right length to get to i.
+If so, we add the number of ways to get to the shorter prefix to the number of
+ways to get to i.
 
-The max_len is the maximum length of the options, which helps reduce the number of previous states we need to consider.
+The max_len is the maximum length of the options, which helps reduce the number
+of previous states we need to consider.
 """
 
 function solve(input::Question{2024,19,'a'})
@@ -27,7 +31,7 @@ function solve(input::Question{2024,19,'a'})
     options = split(strip(first), ", ")
     targets = split(strip(last), "\n")
     option_lengths = length.(options)
-    cache = Dict{String, Bool}()
+    cache = Dict{String,Bool}()
 
     function recurse(prefix, target)
         if prefix == target
@@ -41,7 +45,7 @@ function solve(input::Question{2024,19,'a'})
             if prefix_len + option_lengths[i] > target_len
                 continue
             end
-            if prefix * option == target[1:prefix_len + option_lengths[i]]
+            if prefix * option == target[1:prefix_len+option_lengths[i]]
                 res = get!(cache, prefix * option) do
                     recurse(prefix * option, target)
                 end
@@ -56,7 +60,7 @@ function solve(input::Question{2024,19,'a'})
 
     total = 0
     for target in targets
-        cache = Dict{String, Bool}()
+        cache = Dict{String,Bool}()
         if recurse("", target)
             total += 1
         end

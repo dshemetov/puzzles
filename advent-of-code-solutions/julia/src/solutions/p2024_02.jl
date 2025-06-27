@@ -43,9 +43,9 @@ end
 function method1(s::AbstractString)
     lines::Vector{Vector{Int}} = [parse.(Int, split(line, " ")) for line in split(strip(s, '\n'), "\n")]
     diffs::Vector{Vector{Int}} = [diff(line) for line in lines]
-    all_increasing::Vector{Bool} = [all(diff .>= 0) for diff in diffs]
-    all_decreasing::Vector{Bool} = [all(diff .<= 0) for diff in diffs]
-    changes_bounded::Vector{Bool} = [all(1 .<= abs.(diff) .<= 3) for diff in diffs]
+    all_increasing = Bool[all(diff .>= 0) for diff in diffs]
+    all_decreasing = Bool[all(diff .<= 0) for diff in diffs]
+    changes_bounded = Bool[all(1 .<= abs.(diff) .<= 3) for diff in diffs]
     valid_vector = vec((all_increasing .| all_decreasing) .& changes_bounded)
     bad_lines = lines[.!valid_vector]
     total = sum(valid_vector)

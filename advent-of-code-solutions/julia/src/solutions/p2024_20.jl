@@ -50,10 +50,10 @@ function solve(input::Question{2024,20,'a'}, method::String="pairwise")
 end
 
 function maze_solver(grid, s, t)
-    m::Int, n::Int = size(grid)
-    queue::Vector{Tuple{Int,Int,Int}} = [(0, s[1], s[2])]
-    visited::Set{Tuple{Int,Int}} = Set{Tuple{Int,Int}}()
-    prev_map::Dict{Tuple{Int,Int},Tuple{Int,Int}} = Dict{Tuple{Int,Int},Tuple{Int,Int}}()
+    m, n = size(grid)
+    queue = Tuple{Int,Int,Int}[(0, s[1], s[2])]
+    visited = Set{Tuple{Int,Int}}()
+    prev_map = Dict{Tuple{Int,Int},Tuple{Int,Int}}()
     while !isempty(queue)
         dist, x, y = popfirst!(queue)
         if x == t[1] && y == t[2]
@@ -93,8 +93,8 @@ end
 function ball_cheat_solver(s::AbstractString, radius::Int, time_diff_thresh::Int)
     grid::Matrix{Char} = stack(split(s, "\n"))
     m, n = size(grid)
-    st::Tuple{Int,Int} = Tuple(findfirst(==('S'), grid))
-    ta::Tuple{Int,Int} = Tuple(findfirst(==('E'), grid))
+    st = Tuple(findfirst(==('S'), grid))
+    ta = Tuple(findfirst(==('E'), grid))
     # Get maze path (there's only one)
     dist::Int, prev_map::Dict{Tuple{Int,Int},Tuple{Int,Int}} = maze_solver(grid, st, ta)
     path::Vector{Tuple{Int,Int}} = []
@@ -107,18 +107,18 @@ function ball_cheat_solver(s::AbstractString, radius::Int, time_diff_thresh::Int
     reverse!(path)
 
     # The matrix here doesn't improve much over a dictionary.
-    path_map::Matrix{Int} = fill(-1, m, n)
+    path_map = fill(-1, m, n)
     for (i, (x, y)) in enumerate(path)
         path_map[x, y] = i
     end
 
     # Pre-compute Manhattan ball pattern
     # only need half the ball, by symmetry
-    ball_pattern::Vector{Tuple{Int,Int}} = [(dx, dy) for dx in 0:radius for dy in (-radius+abs(dx)):(radius-abs(dx))]
+    ball_pattern = Tuple{Int,Int}[(dx, dy) for dx in 0:radius for dy in (-radius+abs(dx)):(radius-abs(dx))]
 
     # Count cheats by trying all points in the ball pattern from each point in the path
-    seen_cheats::Matrix{Bool} = fill(false, length(path), length(path))
-    total_cheats::Int = 0
+    seen_cheats = fill(false, length(path), length(path))
+    total_cheats = 0
     for (i, (x, y)) in enumerate(path)
         for (dx, dy) in ball_pattern
             x2::Int, y2::Int = x + dx, y + dy
@@ -149,12 +149,12 @@ end
 function pairwise_cheat_solver(s::AbstractString, radius::Int, time_diff_thresh::Int)
     grid::Matrix{Char} = stack(split(s, "\n"))
     m, n = size(grid)
-    st::Tuple{Int,Int} = Tuple(findfirst(==('S'), grid))
-    ta::Tuple{Int,Int} = Tuple(findfirst(==('E'), grid))
+    st = Tuple(findfirst(==('S'), grid))
+    ta = Tuple(findfirst(==('E'), grid))
     # Get maze path (there's only one)
     dist::Int, prev_map::Dict{Tuple{Int,Int},Tuple{Int,Int}} = maze_solver(grid, st, ta)
-    path::Vector{Tuple{Int,Int}} = []
-    current::Tuple{Int,Int} = ta
+    path = Tuple{Int,Int}[]
+    current = ta
     while current != st
         push!(path, current)
         current = prev_map[current]
@@ -162,12 +162,12 @@ function pairwise_cheat_solver(s::AbstractString, radius::Int, time_diff_thresh:
     push!(path, st)
     reverse!(path)
 
-    cheats::Int = 0
-    for j::Int in time_diff_thresh:length(path)
-        for i::Int in 1:j-time_diff_thresh
-            x1::Int, y1::Int = path[i]
-            x2::Int, y2::Int = path[j]
-            distance::Int = abs(x1 - x2) + abs(y1 - y2)
+    cheats = 0
+    for j in time_diff_thresh:length(path)
+        for i in 1:j-time_diff_thresh
+            x1, y1 = path[i]
+            x2, y2 = path[j]
+            distance = abs(x1 - x2) + abs(y1 - y2)
             if distance <= radius && j - i - distance >= time_diff_thresh
                 cheats += 1
             end

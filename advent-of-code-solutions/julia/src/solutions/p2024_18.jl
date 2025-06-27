@@ -24,7 +24,7 @@ function solve(input::Question{2024,18,'a'})
     return cost
 end
 
-function solve_maze(grid::Matrix{Char}, n::Int, m::Int)
+function solve_maze(grid::Matrix{Char}, n::Int, m::Int)::Tuple{Int,Vector{CartesianIndex{2}}}
     queue::PriorityQueue{CartesianIndex{2},Int} = PriorityQueue()
     enqueue!(queue, CartesianIndex(1, 1) => 0)
 
@@ -81,8 +81,8 @@ function solve(input::Question{2024,18,'b'})
         grid[x+1, y+1] = '#'
     end
 
-    i::Int = num_bytes
-    cost::Int, path::Vector{CartesianIndex{2}} = solve_maze(grid, n, m)
+    i = num_bytes
+    cost, path = solve_maze(grid, n, m)
     while cost != -1 && i < length(s)
         i += 1
         y, x = parse.(Int, split(s[i], ","))

@@ -38,7 +38,7 @@ end
 
 # My original solution using a vector, takes about 300 ms
 function is_valid0(target_value::Int, numbers::Vector{Int}, with_combination::Bool)::Bool
-    stack::Vector{Tuple{Int,Vector{Int}}} = [(target_value, numbers)]
+    stack = Tuple{Int,Vector{Int}}[(target_value, numbers)]
     while !isempty(stack)
         current_total, current_numbers = pop!(stack)
         if length(current_numbers) == 1
@@ -65,7 +65,7 @@ end
 
 # My vectorized solution, using a dynamically resized vector, takes about 200 ms
 function is_valid1(target_value::Int, numbers::Vector{Int}, with_combination::Bool)::Bool
-    vals::Vector{Int} = [numbers[1]]
+    vals = Int[numbers[1]]
     sizehint!(vals, 165000)
     for num in numbers[2:end]
         if isempty(vals)
