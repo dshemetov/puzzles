@@ -12,28 +12,29 @@ function solve(input::Question{2024,23,'a'})
     s = split(s, "\n")
 
     # Build the network
-    net = Dict{String,Vector{String}}()
+    net = Dict{Int,Set{Int}}()
     for line in s
         a, b = split(line, "-")
-        if !haskey(net, a)
-            net[a] = []
+        if !haskey(net, ix(a[1], a[2]))
+            net[ix(a[1], a[2])] = Set{Int}()
         end
-        push!(net[a], b)
-        if !haskey(net, b)
-            net[b] = []
+        push!(net[ix(a[1], a[2])], ix(b[1], b[2]))
+        if !haskey(net, ix(b[1], b[2]))
+            net[ix(b[1], b[2])] = Set{Int}()
         end
-        push!(net[b], a)
+        push!(net[ix(b[1], b[2])], ix(a[1], a[2]))
     end
 
     # Find groups of three mutually connected nodes
-    groups = Set{Tuple{String,String,String}}()
+    groups = Set{Tuple{Int,Int,Int}}()
     for n1 in keys(net)
         for n2 in keys(net)
+            # Filter out nodes that don't start with 't'
             if n1 == n2
                 continue
             end
-            n1_neighbors = Set(net[n1])
-            n2_neighbors = Set(net[n2])
+            n1_neighbors = net[n1]
+            n2_neighbors = net[n2]
             if !(n1 in n2_neighbors) || !(n2 in n1_neighbors)
                 continue
             end
@@ -48,10 +49,17 @@ function solve(input::Question{2024,23,'a'})
         end
     end
 
-    # Filter to only groups that have a node starting with 't'
-    groups = filter(g -> any(startswith.(g, "t")), groups)
+    groups = filter(g -> any(ix('t', 'a') .<= g .<= ix('t', 'z')), groups)
 
     return length(groups)
+end
+
+function ix(c1::Char, c2::Char)::Int
+    return (Int(c1) - Int('a') + 1) * 26 + (Int(c2) - Int('a') + 1)
+end
+
+function inv_ix(ix::Int)::Tuple{Char,Char}
+    return (Char(div(ix - 1, 26) + Int('a') - 1), Char((ix - 1) % 26 + Int('a')))
 end
 
 function solve(input::Question{2024,23,'b'})
@@ -63,59 +71,74 @@ function solve(input::Question{2024,23,'b'})
     s = split(s, "\n")
 
     # Build the network
-    net = Dict{String,Vector{String}}()
+    net = Dict{Int,BitSet}()
     for line in s
         a, b = split(line, "-")
-        if !haskey(net, a)
-            net[a] = []
+        ka, kb = ix(a[1], a[2]), ix(b[1], b[2])
+        if !haskey(net, ka)
+            net[ka] = BitSet()
         end
-        push!(net[a], b)
-        if !haskey(net, b)
-            net[b] = []
+        push!(net[ka], kb)
+        if !haskey(net, kb)
+            net[kb] = BitSet()
         end
-        push!(net[b], a)
+        push!(net[kb], ka)
     end
 
+    d = Dict{Int,BitSet}()
+    max_size = 0
+    max_size_key = 0
     # Recursively find the largest fully connected subgraph
-    memo = Dict{Tuple{Vector{String},Vector{String}},Vector{String}}()
-    function recurse(subgraph::Vector{String}, frontier::Vector{String})::Vector{String}
-        if haskey(memo, (subgraph, frontier))
-            return memo[(subgraph, frontier)]
+    memo = Dict{Tuple{BitSet,BitSet,BitSet},BitSet}()
+    function recurse(subgraph::BitSet, frontier::BitSet, excluded::BitSet)::BitSet
+        if haskey(memo, (subgraph, frontier, excluded))
+            return memo[(subgraph, frontier, excluded)]
+        end
+
+        # Early exit
+        if length(frontier) + length(subgraph) < max_size
+            return subgraph
         end
 
         # Base case: no more nodes to add.
         if length(frontier) == 0
-            return sort(subgraph)
+            return subgraph
         end
 
         # Store all the possible subgraphs that can be made by adding a node
         # from the frontier to the subgraph.
-        sg::Vector{Vector{String}} = []
+        sg = BitSet[]
+        frontier_copy = copy(frontier)
         # For every node in the frontier, add it to the subgraph and recurse.
-        for n in frontier
+        for n in frontier_copy
             # If the current subgraph is not contained in the neighbors of this
             # node, then adding it will break the fully connected condition.
             if !(subgraph ⊆ net[n])
+                # Move n from frontier to excluded
+                delete!(frontier, n)
+                push!(excluded, n)
                 continue
             end
             # Otherwise, add this node to the neighborhood, shrink the frontier,
             # and recurse.
-            new_subgraph = sort(subgraph ∪ [n])
-            new_frontier = sort(frontier ∩ net[n])
-            push!(sg, recurse(new_subgraph, new_frontier))
+            new_subgraph = subgraph ∪ BitSet([n])
+            new_frontier = frontier ∩ net[n]
+            new_excluded = excluded ∩ net[n]
+            push!(sg, recurse(new_subgraph, new_frontier, new_excluded))
+
+            # Move n from frontier to excluded
+            delete!(frontier, n)
+            push!(excluded, n)
         end
 
         # Return the largest subgraph.
-        largest_subgraph = sg[argmax(length.(sg))]
-        memo[(subgraph, frontier)] = largest_subgraph
+        largest_subgraph = length(sg) > 0 ? sg[argmax(length.(sg))] : subgraph
+        memo[(subgraph, frontier, excluded)] = largest_subgraph
         return largest_subgraph
     end
 
-    d = Dict{String,Vector{String}}()
-    max_size = 0
-    max_size_key = ""
     for x in keys(net)
-        d[x] = recurse([x], sort(net[x]))
+        d[x] = recurse(BitSet([x]), BitSet(net[x]), BitSet())
         subgraph_size = length(d[x])
         if subgraph_size > max_size
             max_size = subgraph_size
@@ -123,7 +146,8 @@ function solve(input::Question{2024,23,'b'})
         end
     end
 
-    return join(sort(d[max_size_key]), ",")
+    # Get characters back.
+    return join(sort([inv_ix(x) for x in d[max_size_key]]), "-")
 end
 
 test_string_2024_23 = """
