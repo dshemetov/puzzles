@@ -1,6 +1,7 @@
 import os
 import time
 import traceback
+from collections.abc import Callable
 from datetime import date
 from importlib import import_module
 from pathlib import Path
@@ -12,26 +13,50 @@ from joblib import Memory
 from rich import print
 from rich.table import Table
 
-from .tools import get_puzzle_input
-
 memory = Memory(".joblib_cache", verbose=0)
 app = typer.Typer(name="Advent of Code Solution Runner", chain=True)
-
 AnswerType = int | str | None
 YearOption = typer.Option(date.today().year, "--year", "-y", help="The year of the problem.")
 DayOption = typer.Option(None, "--day", "-d", help="The day of the problem.")
 PartOption = typer.Option(None, "--part", "-p", help="The part of the problem.")
+load_dotenv()
+
+
+@memory.cache
+def get_puzzle_input(year: int, day: int, token: str | None = os.getenv("AOC_TOKEN")) -> str:
+    if token is None:
+        raise RuntimeError("AOC_TOKEN not set; fetching problem inputs will not work.")
+
+    if year < 2015:
+        raise ValueError("Year outside valid range [2015, 2022].")
+    if day < 1 or day > 31:
+        raise ValueError("Day outside valid range [1, 31].")
+
+    auth = {"session": token}
+
+    print(f"Downloading puzzle input for day {day}, year {year}...")
+    request = requests.get(url=f"https://adventofcode.com/{year}/day/{day}/input", cookies=auth, timeout=10)
+    request.raise_for_status()
+
+    if "Please don't repeatedly request this endpoint" in request.text:
+        raise ValueError("Too many requests.")
+    if "You don't seem to be solving the right level" in request.text:
+        raise ValueError("You're not on that level yet.")
+    if "Please log in" in request.text:
+        raise ValueError("Invalid or unset session cookie.")
+
+    return request.text
 
 
 @memory.cache
 def get_answer(year: int, day: int, part: str) -> tuple[AnswerType, float]:
     try:
         solution_module = import_module(f"advent.advent{year}.p{day:02d}")
-        solution_method = getattr(solution_module, f"solve_{part}")
+        solution_method: Callable[[str], AnswerType] = getattr(solution_module, f"solve_{part}")
     except ModuleNotFoundError as e:
         raise ModuleNotFoundError("Problem not implemented yet.") from e
     t = time.perf_counter()
-    answer = solution_method(get_puzzle_input(year, day))
+    answer: AnswerType = solution_method(get_puzzle_input(year, day))
     time_taken = time.perf_counter() - t
     return answer, time_taken
 
@@ -70,19 +95,19 @@ def get_solutions(
     parts = ["a", "b"] if part is None else [part]
     total_time_taken = 0
     run_stats = {}
-    for day in days:
-        for part in parts:
+    for d in days:
+        for p in parts:
             try:
-                ans, time_taken, prev_time_taken = get_answer_cache(year, day, part, clear_cache)
+                ans, time_taken, prev_time_taken = get_answer_cache(year, d, p, clear_cache)
             except ModuleNotFoundError:
                 if not silent:
-                    print(f"Problem {year}.{day}.{part} not implemented yet.")
+                    print(f"Problem {year}.{d}.{p} not implemented yet.")
                 continue
             except Exception as e:
-                print(f"Unexpected error occurred for {year}.{day}.{part}: {e}")
+                print(f"Unexpected error occurred for {year}.{d}.{p}: {e}")
                 traceback.print_exception(type(e), e, e.__traceback__)
                 continue
-            run_stats[(day, part)] = [ans, time_taken, prev_time_taken]
+            run_stats[(d, p)] = [ans, time_taken, prev_time_taken]
             total_time_taken += time_taken
 
     table = Table(
@@ -95,8 +120,8 @@ def get_solutions(
     table.add_column("Time Taken", justify="right")
     table.add_column("Prev Time Taken", justify="right")
 
-    for (day, part), (ans, time_taken, prev_time_taken) in run_stats.items():
-        table.add_row(str(day), part, str(ans), f"{time_taken:>5.5f}", f"{prev_time_taken:>5.5f}")
+    for (d, p), (ans, time_taken, prev_time_taken) in run_stats.items():
+        table.add_row(str(d), p, str(ans), f"{time_taken:>5.5f}", f"{prev_time_taken:>5.5f}")
 
     print(table)
     return table
@@ -127,16 +152,16 @@ def clear_download_cache(
 ):
     """Clears the input download cache."""
     load_dotenv()
-    AOC_TOKEN = os.environ.get("AOC_TOKEN")
+    AOC_TOKEN = os.getenv("AOC_TOKEN")
 
     days = range(1, 26) if day is None else [day]
-    for day in days:
-        if get_puzzle_input.check_call_in_cache(year, day, AOC_TOKEN) is True:
-            result = get_puzzle_input.call_and_shelve(year, day, AOC_TOKEN)
+    for d in days:
+        if get_puzzle_input.check_call_in_cache(year, d, AOC_TOKEN) is True:
+            result = get_puzzle_input.call_and_shelve(year, d, AOC_TOKEN)
             result.clear()
-            print(f"Download cache cleared for {year}.{day}.")
+            print(f"Download cache cleared for {year}.{d}.")
         else:
-            print(f"No solution cache for {year}.{day}.")
+            print(f"No solution cache for {year}.{d}.")
 
 
 @app.command("clear-solution-cache")
@@ -148,14 +173,14 @@ def clear_solution_cache(
     """Clears the solution cache."""
     days = range(1, 26) if day is None else [day]
     parts = ["a", "b"] if part is None else [part]
-    for day in days:
-        for part in parts:
-            if get_answer.check_call_in_cache(year, day, part) is True:
-                result = get_answer.call_and_shelve(year, day, part)
+    for d in days:
+        for p in parts:
+            if get_answer.check_call_in_cache(year, d, p) is True:
+                result = get_answer.call_and_shelve(year, d, p)
                 result.clear()
-                print(f"Solution cache cleared for {year}.{day}.{part}.")
+                print(f"Solution cache cleared for {year}.{d}.{p}.")
             else:
-                print(f"No solution cache for {year}.{day}.{part}.")
+                print(f"No solution cache for {year}.{d}.{p}.")
 
 
 @app.command("make-table")
@@ -177,13 +202,13 @@ def generate_templates(year: int = YearOption, day: int = DayOption):
     Path(f"src/advent/advent{year}").mkdir(parents=True, exist_ok=True)
 
     # Generate templates
-    for day in days:
-        url = f"https://adventofcode.com/{year}/day/{day}"
+    for d in days:
+        url = f"https://adventofcode.com/{year}/day/{d}"
         # r = requests.get(url)
         # r.raise_for_status()
 
-        day_header = f'"""{day}. {url}"""\n\n'
-        day_file = f"src/advent/advent{year}/p{day:02d}.py"
+        day_header = f'"""{d}. {url}"""\n\n'
+        day_file = f"src/advent/advent{year}/p{d:02d}.py"
         if not Path(day_file).exists():
             Path(day_file).write_text(day_header + template_text)
             print(f"Generated {day_file}.")

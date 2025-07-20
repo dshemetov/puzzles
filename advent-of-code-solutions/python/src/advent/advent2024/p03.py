@@ -2,6 +2,8 @@
 
 import re
 
+import numpy as np
+
 
 def solve_a(s: str) -> int:
     """
@@ -10,9 +12,11 @@ def solve_a(s: str) -> int:
     161
     """
     s = s.strip("\n")
-    m = re.findall(r"mul\(\d+,\d+\)", s)
-    ints = [re.findall(r"\d+", x) for x in m]
-    return sum(int(x) * int(y) for x, y in ints)
+    matches = re.findall(r"mul\((\d+),(\d+)\)", s)
+    if not matches:
+        return 0
+    data = np.array([[int(x), int(y)] for x, y in matches])
+    return int(np.sum(data[:, 0] * data[:, 1]))
 
 
 def solve_b(s: str) -> int:
@@ -22,24 +26,38 @@ def solve_b(s: str) -> int:
     48
     """
     s = s.strip("\n")
-    doflags = [0] + [x.start() for x in re.finditer(r"do\(\)", s)]
-    dontflags = [x.start() for x in re.finditer(r"don't\(\)", s)]
+    # Find do() and don't() positions like Julia
+    doflags = [0] + [m.start() for m in re.finditer(r"do\(\)", s)]
+    dontflags = [m.start() for m in re.finditer(r"don't\(\)", s)]
+
     active_ranges = []
     hi = 0
+
     for start in doflags:
+        # Skip if already covered by previous range
         if active_ranges and active_ranges[-1][0] <= start <= active_ranges[-1][1]:
             continue
+
         while hi < len(dontflags) and dontflags[hi] < start:
             hi += 1
+
         if hi < len(dontflags):
             active_ranges.append((start, dontflags[hi]))
         else:
             active_ranges.append((start, len(s)))
             break
 
-    m = [z for i, j in active_ranges for z in re.findall(r"mul\(\d+,\d+\)", s[i:j])]
-    ints = [re.findall(r"\d+", x) for x in m]
-    return sum(int(x) * int(y) for x, y in ints)
+    # Extract valid substrings and find mul() expressions
+    all_matches = []
+    for start, end in active_ranges:
+        matches = re.findall(r"mul\((\d+),(\d+)\)", s[start:end])
+        all_matches.extend(matches)
+
+    if not all_matches:
+        return 0
+
+    data = np.array([[int(x), int(y)] for x, y in all_matches])
+    return int(np.sum(data[:, 0] * data[:, 1]))
 
 
 test_string = """

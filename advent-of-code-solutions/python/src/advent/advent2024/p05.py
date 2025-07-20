@@ -1,5 +1,7 @@
 """5. https://adventofcode.com/2024/day/5"""
 
+import numpy as np
+
 
 def solve_a(s: str) -> int:
     """
@@ -8,22 +10,32 @@ def solve_a(s: str) -> int:
     143
     """
     s = s.strip("\n")
-    rules, updates = s.split("\n\n")
-    rules = {tuple(x.split("|")) for x in rules.splitlines()}
-    updates = [x.split(",") for x in updates.splitlines()]
+    rules_str, updates_str = s.split("\n\n")
+
+    # Parse rules into matrix like Julia
+    rules_lines = [line.split("|") for line in rules_str.splitlines()]
+    rules_nums = np.array([[int(x) for x in line] for line in rules_lines])
+    max_val = np.max(rules_nums)
+
+    # Create BitMatrix for O(1) lookups
+    rules_matrix = np.zeros((max_val + 1, max_val + 1), dtype=bool)
+    rules_matrix[rules_nums[:, 0], rules_nums[:, 1]] = True
+
+    # Parse updates to integers
+    updates = [[int(x) for x in line.split(",")] for line in updates_str.splitlines()]
 
     total = 0
     for update in updates:
         valid = True
         for i in range(len(update)):
             for j in range(i + 1, len(update)):
-                if (update[j], update[i]) in rules:
+                if not rules_matrix[update[i], update[j]]:
                     valid = False
                     break
             if not valid:
                 break
         if valid:
-            total += int(update[len(update) // 2])
+            total += update[len(update) // 2]
 
     return total
 
@@ -35,16 +47,26 @@ def solve_b(s: str) -> int:
     123
     """
     s = s.strip("\n")
-    rules, updates = s.split("\n\n")
-    rules = {tuple(x.split("|")) for x in rules.splitlines()}
-    updates = [x.split(",") for x in updates.splitlines()]
+    rules_str, updates_str = s.split("\n\n")
 
+    rules_lines = [line.split("|") for line in rules_str.splitlines()]
+    rules_nums = np.array([[int(x) for x in line] for line in rules_lines])
+    max_val = np.max(rules_nums)
+
+    # Create BitMatrix for O(1) lookups
+    rules_matrix = np.zeros((max_val + 1, max_val + 1), dtype=bool)
+    rules_matrix[rules_nums[:, 0], rules_nums[:, 1]] = True
+
+    # Parse updates to integers
+    updates = [[int(x) for x in line.split(",")] for line in updates_str.splitlines()]
+
+    # Find invalid updates
     invalid = []
     for update in updates:
         valid = True
         for i in range(len(update)):
             for j in range(i + 1, len(update)):
-                if (update[j], update[i]) in rules:
+                if not rules_matrix[update[i], update[j]]:
                     valid = False
                     break
             if not valid:
@@ -52,13 +74,14 @@ def solve_b(s: str) -> int:
         if not valid:
             invalid.append(update)
 
+    # Fix invalid updates
     total = 0
     for update in invalid:
         for i in range(len(update)):
             for j in range(i + 1, len(update)):
-                if (update[j], update[i]) in rules:
+                if rules_matrix[update[j], update[i]]:
                     update[i], update[j] = update[j], update[i]
-        total += int(update[len(update) // 2])
+        total += update[len(update) // 2]
 
     return total
 

@@ -1,5 +1,7 @@
 """4. https://adventofcode.com/2024/day/4"""
 
+import numpy as np
+
 
 def solve_a(s: str) -> int:
     """
@@ -8,25 +10,31 @@ def solve_a(s: str) -> int:
     18
     """
     s = s.strip("\n")
-    grid = [list(row) for row in s.split("\n")]
-    m, n = len(grid), len(grid[0])
+    grid = np.array([list(row) for row in s.split("\n")])
+    m, n = grid.shape
     total = 0
-    word = "XMAS"
+
+    directions = [(0, 1), (1, 0), (1, 1), (-1, 1)]
+
     for i in range(m):
         for j in range(n):
-            for d in [(0, 1), (1, 0), (1, 1), (-1, 1)]:
+            for dx, dy in directions:
                 for sgn in [1, -1]:
-                    match = True
+                    valid = True
                     for k in range(4):
-                        x, y = i + sgn * k * d[0], j + sgn * k * d[1]
-                        if x < 0 or y < 0 or x >= m or y >= n:
-                            match = False
+                        x, y = i + sgn * k * dx, j + sgn * k * dy
+                        if not (0 <= x < m and 0 <= y < n):
+                            valid = False
                             break
-                        if grid[x][y] != word[k]:
-                            match = False
-                            break
-                    if match:
+                    if not valid:
+                        continue
+
+                    if (grid[i, j] == 'X' and
+                        grid[i + sgn * dx, j + sgn * dy] == 'M' and
+                        grid[i + sgn * 2 * dx, j + sgn * 2 * dy] == 'A' and
+                        grid[i + sgn * 3 * dx, j + sgn * 3 * dy] == 'S'):
                         total += 1
+
     return total
 
 
@@ -37,16 +45,30 @@ def solve_b(s: str) -> int:
     9
     """
     s = s.strip("\n")
-    grid = [list(row) for row in s.split("\n")]
-    m, n = len(grid), len(grid[0])
+    grid = np.array([list(row) for row in s.split("\n")])
+    m, n = grid.shape
     total = 0
-    word = list("MAS")
-    rword = list(reversed(word))
+
     for i in range(1, m - 1):
         for j in range(1, n - 1):
-            upright = [grid[i - k][j + k] for k in range(-1, 2) if 0 <= i - k < m and 0 <= j + k < n]
-            downright = [grid[i + k][j + k] for k in range(-1, 2) if 0 <= i + k < m and 0 <= j + k < n]
-            if upright in (word, rword) and downright in (word, rword):
+            valid = True
+            for k in [-1, 0, 1]:
+                if not (0 <= i - k < m and 0 <= j + k < n and
+                       0 <= i + k < m and 0 <= j + k < n):
+                    valid = False
+                    break
+            if not valid:
+                continue
+
+            # Up-right diagonal: (i-k, j+k)
+            upright_mas = (grid[i-1, j+1] == 'M' and grid[i, j] == 'A' and grid[i+1, j-1] == 'S')
+            upright_sam = (grid[i-1, j+1] == 'S' and grid[i, j] == 'A' and grid[i+1, j-1] == 'M')
+
+            # Down-right diagonal: (i+k, j+k)
+            downright_mas = (grid[i-1, j-1] == 'M' and grid[i, j] == 'A' and grid[i+1, j+1] == 'S')
+            downright_sam = (grid[i-1, j-1] == 'S' and grid[i, j] == 'A' and grid[i+1, j+1] == 'M')
+
+            if (upright_mas or upright_sam) and (downright_mas or downright_sam):
                 total += 1
 
     return total

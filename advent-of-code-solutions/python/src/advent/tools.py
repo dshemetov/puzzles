@@ -1,43 +1,7 @@
-import os
 from bisect import insort
-from collections.abc import Callable, Iterable
-from functools import partial, reduce
+from collections.abc import Iterable
+from functools import partial
 from itertools import accumulate
-from warnings import warn
-
-import requests
-from dotenv import load_dotenv
-from joblib import Memory
-
-memory = Memory(".joblib_cache", verbose=0)
-load_dotenv()
-AOC_TOKEN = os.environ.get("AOC_TOKEN")
-
-if AOC_TOKEN is None:
-    warn("AOC_TOKEN not set; fetching problem inputs will not work.")
-
-
-@memory.cache
-def get_puzzle_input(year: int, day: int, token: str = AOC_TOKEN) -> str:
-    if year < 2015:
-        raise ValueError("Year outside valid range [2015, 2022].")
-    if day < 1 or day > 31:
-        raise ValueError("Day outside valid range [1, 31].")
-
-    auth = {"session": token}
-
-    print(f"Downloading puzzle input for day {day}, year {year}...")
-    request = requests.get(url=f"https://adventofcode.com/{year}/day/{day}/input", cookies=auth)
-    request.raise_for_status()
-
-    if "Please don't repeatedly request this endpoint" in request.text:
-        raise ValueError("Too many requests.")
-    if "You don't seem to be solving the right level" in request.text:
-        raise ValueError("You're not on that level yet.")
-    if "Please log in" in request.text:
-        raise ValueError("Invalid or unset session cookie.")
-
-    return request.text
 
 
 def apply_until_fixed(func):
@@ -153,28 +117,6 @@ def get_bezout_coefficients(a: int, b: int) -> tuple[int, int]:
         s, s_ = s_, s - q * s_
         t, t_ = t_, t - q * t_
     return (t, s)
-
-
-def compose_multivar_2(f: Callable, g: Callable) -> Callable:
-    """
-    Examples:
-    >>> def f(x, y):
-    ...     return x + y, x - y
-    >>> compose_multivar_2(f, f)(1, 1)
-    (2, 2)
-    """
-    return lambda *a, **kw: f(*g(*a, **kw))
-
-
-def compose_multivar(*fs: list[Callable]) -> Callable:
-    """
-    Examples:
-    >>> def f(x, y):
-    ...     return x + y, x - y
-    >>> compose_multivar(*[f] * 3)(1, 1)
-    (4, 0)
-    """
-    return reduce(compose_multivar_2, fs)
 
 
 def nlargest(n: int, it: Iterable) -> list:

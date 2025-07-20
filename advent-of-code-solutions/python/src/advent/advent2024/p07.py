@@ -1,14 +1,10 @@
-"""7. https://adventofcode.com/2024/day/7
-
-Initial approach was using itertools.product, stopping early once I found one
-solution. Took 5s though. Got the recursive idea from julienc91 on Reddit, so I
-implemented it iteratively, which runs in 1s. Good enough!
-
-https://www.reddit.com/r/adventofcode/comments/1h8l3z5/2024_day_7_solutions/m0ubb4e/
-"""
+"""7. https://adventofcode.com/2024/day/7"""
 
 import re
-from collections import deque
+
+import numba as nb
+import numpy as np
+from numba import boolean, int64
 
 
 def solve_a(s: str) -> int:
@@ -22,7 +18,7 @@ def solve_a(s: str) -> int:
 
     total = 0
     for line in lines:
-        if is_valid_iterative((line[0], tuple(line[1:])), False):
+        if backtrack(line[0], len(line[1:]) - 1, line[1:], False):
             total += line[0]
 
     return total
@@ -39,34 +35,106 @@ def solve_b(s: str) -> int:
 
     total = 0
     for line in lines:
-        if is_valid_iterative((line[0], tuple(line[1:])), True):
+        if backtrack(line[0], len(line[1:]) - 1, line[1:], True):
             total += line[0]
 
     return total
 
 
-def is_valid_iterative(equation: tuple[int, tuple[int, ...]], with_combination: bool) -> bool:
-    stack = deque([equation])
-    while stack:
-        current_total, current_numbers = stack.pop()
+def backtrack(target: int, idx: int, numbers: list[int], with_combination: bool) -> bool:
+    if idx == 0:
+        return target == numbers[0]
 
-        if len(current_numbers) == 1:
-            if current_total == current_numbers[0]:
-                return True
-            continue
+    current_num = numbers[idx]
 
-        a, b, *r = current_numbers
+    # Try subtraction (reverse of addition)
+    if target > current_num and backtrack(target - current_num, idx - 1, numbers, with_combination):
+        return True
 
-        if current_total < a:
-            continue
+    # Try division (reverse of multiplication)
+    if target % current_num == 0 and backtrack(target // current_num, idx - 1, numbers, with_combination):
+        return True
 
-        stack.append((current_total, (a + b, *r)))
-        stack.append((current_total, (a * b, *r)))
-
-        if with_combination:
-            stack.append((current_total, (a * 10 ** len(str(b)) + b, *r)))
+    # Try de-concatenation (reverse of concatenation)
+    if with_combination:
+        num_str = str(current_num)
+        target_str = str(target)
+        if len(target_str) > len(num_str) and target_str.endswith(num_str):
+            new_target_str = target_str[: -len(num_str)]
+            if new_target_str:
+                new_target = int(new_target_str)
+                if backtrack(new_target, idx - 1, numbers, with_combination):
+                    return True
 
     return False
+
+
+# The numba version does not improve performance. The algorithm is fast enough.
+@nb.njit(boolean(int64, int64, int64[:], boolean), cache=True)
+def backtrack_numba(target, idx, numbers, with_combination):
+    if idx == 0:
+        return target == numbers[0]
+
+    current_num = numbers[idx]
+
+    # Try subtraction (reverse of addition)
+    if target > current_num and backtrack_numba(target - current_num, idx - 1, numbers, with_combination):
+        return True
+
+    # Try division (reverse of multiplication)
+    if target % current_num == 0 and backtrack_numba(target // current_num, idx - 1, numbers, with_combination):
+        return True
+
+    # Try de-concatenation (reverse of concatenation)
+    # Purely numeric approach because, while Numba supports string operations,
+    # it doesn't support casting to int from string.
+    if with_combination:
+        # Pure numeric approach: check if target ends with current_num
+        # We need to find the number of digits in current_num
+        temp = current_num
+        num_digits = 0
+        while temp > 0:
+            temp //= 10
+            num_digits += 1
+
+        if num_digits > 0:
+            # Calculate the divisor to get the prefix
+            divisor = 10**num_digits
+            # Check if target ends with current_num
+            if target % divisor == current_num:
+                # Get the prefix by integer division
+                prefix = target // divisor
+                if prefix > 0 and backtrack_numba(prefix, idx - 1, numbers, with_combination):
+                    return True
+
+    return False
+
+
+def solve_a_numba(s: str) -> int:
+    s = s.strip("\n")
+    lines = [[int(x) for x in re.findall(r"\d+", x)] for x in s.splitlines()]
+
+    total = 0
+    for line in lines:
+        # Convert to numpy array for Numba
+        numbers = np.array(line[1:], dtype=np.int64)
+        if backtrack_numba(line[0], len(numbers) - 1, numbers, False):
+            total += line[0]
+
+    return total
+
+
+def solve_b_numba(s: str) -> int:
+    s = s.strip("\n")
+    lines = [[int(x) for x in re.findall(r"\d+", x)] for x in s.splitlines()]
+
+    total = 0
+    for line in lines:
+        numbers = np.array(line[1:], dtype=np.int64)
+        if backtrack_numba(line[0], len(numbers) - 1, numbers, True):
+            total += line[0]
+
+    return total
 
 
 test_string = """
