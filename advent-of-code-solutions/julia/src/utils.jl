@@ -2,14 +2,11 @@ using DotEnv
 using DuckDB
 using HTTP
 
-function db_make_table()
-    con = DBInterface.connect(DuckDB.DB, "puzzles.db")
-    DBInterface.execute(con, "CREATE TABLE IF NOT EXISTS inputs (year INTEGER, day INTEGER, input VARCHAR)")
-    DBInterface.close(con)
-end
-
 function db_cache_write(year::Int, day::Int, input::AbstractString)
     con = DBInterface.connect(DuckDB.DB, "puzzles.db")
+    # Create table if it doesn't exist
+    DBInterface.execute(con, "CREATE TABLE IF NOT EXISTS inputs (year INTEGER, day INTEGER, input VARCHAR)")
+    # Insert input into table
     stmt = DBInterface.prepare(con, "INSERT INTO inputs VALUES(?, ?, ?)")
     DBInterface.execute(stmt, (year, day, input))
     DBInterface.close(con)
@@ -17,6 +14,9 @@ end
 
 function db_cache_read(year::Int, day::Int)
     con = DBInterface.connect(DuckDB.DB, "puzzles.db")
+    # Create table if it doesn't exist
+    DBInterface.execute(con, "CREATE TABLE IF NOT EXISTS inputs (year INTEGER, day INTEGER, input VARCHAR)")
+    # Select input from table
     results = DBInterface.execute(con, "SELECT input FROM inputs WHERE year = $year AND day = $day") |> collect
     if length(results) > 0
         return results[1][1]
