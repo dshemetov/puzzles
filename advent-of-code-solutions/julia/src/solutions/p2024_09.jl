@@ -191,7 +191,7 @@ function solve_fastest(input::Question{2024,9,'a'})
         end
 
         if i % 2 == 1  # File
-            file_id::Int16 = Int16((i - 1) ÷ 2)
+            file_id::Int16 = Int16(i ÷ 2)
             for j in 1:n
                 disk[pos] = file_id
                 pos += 1
