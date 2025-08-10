@@ -1,21 +1,17 @@
 """10. https://adventofcode.com/2024/day/10"""
 
-import numba as nb
 import numpy as np
-from numba import int8, int32, int64
+from numba import int32, int64, njit
 
 
-@nb.njit(int64(int8[:, :], int32, int32, int8[:, :], int32, int32), cache=True)
-def count_paths_to_nines_recursive(
-    grid: np.ndarray, curr_i: int, curr_j: int, visited: np.ndarray, m: int, n: int
-) -> int:
+@njit(int64(int32[:, :], int32, int32, int32[:, :], int32, int32))
+def count_paths_to_nines(grid: np.ndarray, curr_i: int, curr_j: int, visited: np.ndarray, m: int, n: int) -> int:
     # If we've reached a 9, count this path
     if grid[curr_i, curr_j] == 9:
         return 1
 
     # Mark current position as visited
     visited[curr_i, curr_j] = 1
-
     total_paths = 0
 
     # Try all 4 directions
@@ -32,7 +28,7 @@ def count_paths_to_nines_recursive(
 
         # Check if not already visited
         if visited[next_i, next_j] == 0:
-            total_paths += count_paths_to_nines_recursive(grid, next_i, next_j, visited, m, n)
+            total_paths += count_paths_to_nines(grid, next_i, next_j, visited, m, n)
 
     # Backtrack: remove current position from visited
     visited[curr_i, curr_j] = 0
@@ -40,7 +36,7 @@ def count_paths_to_nines_recursive(
     return total_paths
 
 
-def find_reachable_nines_recursive(
+def find_reachable_nines(
     grid: np.ndarray,
     start_i: int,
     start_j: int,
@@ -73,7 +69,7 @@ def find_reachable_nines_recursive(
 
         # Check if not already visited
         if visited[next_i, next_j] == 0:
-            find_reachable_nines_recursive(grid, start_i, start_j, next_i, next_j, reachable_pairs, visited, m, n)
+            find_reachable_nines(grid, start_i, start_j, next_i, next_j, reachable_pairs, visited, m, n)
 
     # Backtrack: remove current position from visited
     visited[curr_i, curr_j] = 0
@@ -88,17 +84,13 @@ def solve_a(s: str) -> int:
     s = s.strip("\n")
     lines = s.splitlines()
     grid = np.array([[int(c) for c in line] for line in lines], dtype=np.int8)
-
     m, n = grid.shape
     reachable_pairs = set()
-
-    # Find all starting positions (value 0)
     starts = [(i, j) for j in range(n) for i in range(m) if grid[i, j] == 0]
 
-    # For each starting position, find all reachable 9's
     for start_i, start_j in starts:
-        visited = np.zeros((m, n), dtype=np.bool)
-        find_reachable_nines_recursive(grid, start_i, start_j, start_i, start_j, reachable_pairs, visited, m, n)
+        visited = np.zeros((m, n), dtype=np.int32)
+        find_reachable_nines(grid, start_i, start_j, start_i, start_j, reachable_pairs, visited, m, n)
 
     return len(reachable_pairs)
 
@@ -111,23 +103,20 @@ def solve_b(s: str) -> int:
     """
     s = s.strip("\n")
     lines = s.splitlines()
-    grid = np.array([[int(c) for c in line] for line in lines], dtype=np.int8)
+    grid = np.array([[int(c) for c in line] for line in lines], dtype=np.int32)
 
     return solve_b_numba(grid)
 
 
-@nb.njit(int64(int8[:, :]), cache=True)
+@njit(int64(int32[:, :]))
 def solve_b_numba(grid: np.ndarray) -> int:
     m, n = grid.shape
-    total = 0
-
-    # Find all starting positions (value 0)
     starts = [(i, j) for j in range(n) for i in range(m) if grid[i, j] == 0]
 
-    # For each starting position, count all paths to 9's
+    total = 0
     for start_i, start_j in starts:
-        visited = np.zeros((m, n), dtype=np.int8)
-        total += count_paths_to_nines_recursive(grid, start_i, start_j, visited, m, n)
+        visited = np.zeros((m, n), dtype=np.int32)
+        total += count_paths_to_nines(grid, start_i, start_j, visited, m, n)
 
     return total
 
