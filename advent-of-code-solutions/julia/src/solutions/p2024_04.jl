@@ -37,32 +37,20 @@ function solve(input::Question{2024,4,'b'})
     end
     grid::Matrix{Char} = stack(split(s, "\n"))
 
+    d1 = CartesianIndex(-1, 1)
+    d2 = CartesianIndex(-1, -1)
     total::Int = 0
     for pos::CartesianIndex{2} in eachindex(IndexCartesian(), grid)
+        # Ignore positions on edges.
         if pos[1] == 1 || pos[1] == size(grid, 1) || pos[2] == 1 || pos[2] == size(grid, 2)
             continue
         end
-        valid::Bool = true
-        for k in -1:1
-            if !checkbounds(Bool, grid, pos + CartesianIndex(-k, k))
-                valid = false
-                break
-            end
-            if !checkbounds(Bool, grid, pos + CartesianIndex(k, k))
-                valid = false
-                break
-            end
-        end
-        if !valid
-            continue
-        end
-        d1 = CartesianIndex(-1, 1)
-        d2 = CartesianIndex(1, -1)
+        # Check for MAS and SAM patterns.
         one = grid[pos-d1] == 'M' && grid[pos] == 'A' && grid[pos+d1] == 'S'
         two = grid[pos-d1] == 'S' && grid[pos] == 'A' && grid[pos+d1] == 'M'
         three = grid[pos-d2] == 'M' && grid[pos] == 'A' && grid[pos+d2] == 'S'
         four = grid[pos-d2] == 'S' && grid[pos] == 'A' && grid[pos+d2] == 'M'
-        if valid && (one || two) && (three || four)
+        if (one || two) && (three || four)
             total += 1
         end
     end
