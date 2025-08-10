@@ -2,7 +2,7 @@
 
 import numba as nb
 import numpy as np
-from numba import int8, int32
+from numba import int64
 
 
 def solve_a(s: str) -> int:
@@ -14,16 +14,16 @@ def solve_a(s: str) -> int:
     s = s.strip("\n")
 
     # Parse input and calculate total size
-    nums = np.array([int(c) for c in s], dtype=np.int8)
+    nums = np.array([int(c) for c in s], dtype=np.int64)
     total_size = sum(nums)
 
     return solve_a_numba(nums, total_size)
 
 
-@nb.njit(int32(int8[:], int32), cache=True)
+@nb.njit(int64(int64[:], int64), cache=True)
 def solve_a_numba(nums: np.ndarray, total_size: int) -> int:
     # Create disk representation directly
-    disk = np.full(total_size, -1, dtype=np.int16)
+    disk = np.full(total_size, -1, dtype=np.int64)
     pos = 0
     # The input is a list of numbers that alternative between file size and free
     # space size.
@@ -34,7 +34,7 @@ def solve_a_numba(nums: np.ndarray, total_size: int) -> int:
 
         # Even index is file ID.
         if i % 2 == 0:
-            file_id = np.int16(i // 2)
+            file_id = np.int64(i // 2)
             disk[pos : pos + n] = file_id
         else:
             disk[pos : pos + n] = -1
@@ -81,13 +81,13 @@ def solve_b(s: str) -> int:
     s = s.strip("\n")
 
     # Parse input and calculate total size
-    nums = np.array([int(c) for c in s], dtype=np.int8)
+    nums = np.array([int(c) for c in s], dtype=np.int64)
     total_size = sum(nums)
 
     return solve_b_numba(nums, total_size)
 
 
-@nb.njit(int32(int8[:], int32), cache=True)
+@nb.njit(int64(int64[:], int64), cache=True)
 def solve_b_numba(nums: np.ndarray, total_size: int) -> int:
     # Pre-allocate arrays for file and free space tracking
     max_files = (total_size + 1) // 2
