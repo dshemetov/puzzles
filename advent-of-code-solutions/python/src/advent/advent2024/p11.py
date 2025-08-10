@@ -5,7 +5,7 @@ from numba import int64, njit
 from numba.typed import Dict
 
 
-@njit
+@njit(cache=True)
 def transform_int(n: int64):
     """Transform an integer based on its digit count."""
     if n == 0:
@@ -26,8 +26,8 @@ def transform_int(n: int64):
     return np.array([n * 2024], dtype=np.int64)
 
 
-@njit
-def main_loop(numbers: np.ndarray, iterations: int) -> dict[int, int]:
+@njit(int64(int64[:], int64), cache=True)
+def main_loop(numbers: np.ndarray, iterations: int) -> int64:
     counts = Dict.empty(
         key_type=int64,
         value_type=int64,
@@ -43,7 +43,10 @@ def main_loop(numbers: np.ndarray, iterations: int) -> dict[int, int]:
             for new_num in transform_int(num):
                 new_counts[new_num] = new_counts.get(new_num, 0) + count
         counts = new_counts
-    return new_counts
+    total = 0
+    for x in counts.values():
+        total += x
+    return total
 
 
 def solve_a(s: str) -> int:
@@ -53,8 +56,7 @@ def solve_a(s: str) -> int:
     55312
     """
     numbers = np.array(s.strip("\n").split(), dtype=np.int64)
-    counts = main_loop(numbers, 25)
-    return sum(counts.values())
+    return main_loop(numbers, 25)
 
 
 def solve_b(s: str) -> int:
@@ -64,8 +66,7 @@ def solve_b(s: str) -> int:
     65601038650482
     """
     numbers = np.array(s.strip("\n").split(), dtype=np.int64)
-    counts = main_loop(numbers, 75)
-    return sum(counts.values())
+    return main_loop(numbers, 75)
 
 
 test_string = """
