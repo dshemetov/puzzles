@@ -11,8 +11,6 @@ def solve_a(s: str) -> int:
     """
     s = s.strip("\n")
     rules_str, updates_str = s.split("\n\n")
-
-    # Parse rules into matrix like Julia
     rules_lines = [line.split("|") for line in rules_str.splitlines()]
     rules_nums = np.array([[int(x) for x in line] for line in rules_lines])
     max_val = np.max(rules_nums)
@@ -48,7 +46,6 @@ def solve_b(s: str) -> int:
     """
     s = s.strip("\n")
     rules_str, updates_str = s.split("\n\n")
-
     rules_lines = [line.split("|") for line in rules_str.splitlines()]
     rules_nums = np.array([[int(x) for x in line] for line in rules_lines])
     max_val = np.max(rules_nums)

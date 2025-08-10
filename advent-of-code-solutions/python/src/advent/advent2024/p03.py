@@ -26,13 +26,13 @@ def solve_b(s: str) -> int:
     48
     """
     s = s.strip("\n")
-    # Find do() and don't() positions like Julia
+    # Find do() and don't() positions
     doflags = [0] + [m.start() for m in re.finditer(r"do\(\)", s)]
     dontflags = [m.start() for m in re.finditer(r"don't\(\)", s)]
 
+    # Find active parts of the string between do() and don't()
     active_ranges = []
     hi = 0
-
     for start in doflags:
         # Skip if already covered by previous range
         if active_ranges and active_ranges[-1][0] <= start <= active_ranges[-1][1]:

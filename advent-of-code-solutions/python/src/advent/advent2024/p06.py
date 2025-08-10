@@ -11,7 +11,6 @@ TURN_RIGHT = (1, 2, 3, 0)  # Turn right: up->right, right->down, down->left, lef
 
 @nb.njit(int32(uint8[:, :], nb.typeof((2, 2)), int32, int32), fastmath=True, cache=True, boundscheck=False)
 def solve_a_numba(grid, start_pos, m, n):
-    """Numba-optimized version of solve_a with aggressive type annotations."""
     visited = np.zeros((m, n), dtype=boolean)
     pos_i, pos_j = start_pos
     dir_idx = int32(0)  # Start facing up
@@ -54,7 +53,6 @@ def solve_a(s: str) -> int:
 
 @nb.njit(uint8[:, :](uint8[:, :], nb.typeof((2, 2)), int32, int32), fastmath=True, cache=True)
 def get_path_numba(grid, start_pos, m, n):
-    """Numba-optimized version of get_path with aggressive type annotations."""
     visited = np.zeros((m, n), dtype=boolean)
     path = []
     pos_i, pos_j = start_pos
@@ -77,7 +75,6 @@ def get_path_numba(grid, start_pos, m, n):
 
 @nb.njit(boolean(uint8[:, :], nb.typeof((2, 2)), nb.typeof((2, 2)), int32, int32), fastmath=True, cache=True)
 def creates_loop_numba(grid, start_pos, obstacle_pos, m, n):
-    """Numba-optimized version of creates_loop with aggressive type annotations."""
     # Create visited states array
     visited_states = np.zeros((m, n, 4), dtype=boolean)
 
