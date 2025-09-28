@@ -19,7 +19,8 @@ AnswerType = int | str | None
 YearOption = typer.Option(date.today().year, "--year", "-y", help="The year of the problem.")
 DayOption = typer.Option(None, "--day", "-d", help="The day of the problem.")
 PartOption = typer.Option(None, "--part", "-p", help="The part of the problem.")
-load_dotenv()
+# In the root project directory
+load_dotenv("../.env")
 
 
 @memory.cache

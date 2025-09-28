@@ -12,3 +12,5 @@ venv
 build
 .coverage
 puzzles.db
+rust/target/
+rust/.cache

@@ -29,7 +29,7 @@ function get_input_string(year, day)::String
     if (input = db_cache_read(year, day)) !== nothing
         return input
     end
-    DotEnv.load!(".env")
+    DotEnv.load!("../.env")
     url = "https://adventofcode.com/$year/day/$day/input"
     headers = ["cookie" => """session=$(ENV["AOC_TOKEN"])"""]
     s = HTTP.request("GET", url, headers).body |> String

@@ -206,13 +206,7 @@ def p4(nums1: list[int], nums2: list[int]) -> float:
     """4. Median of Two Sorted Arrays https://leetcode.com/problems/median-of-two-sorted-arrays/
 
     Lessons learned:
-    - I spent weeks thinking about this problem before giving up and looking for
-    a solution.
-    - There are a few key insights to this problem. First, the median has the
-    property of being the partition point where half the elements are less and
-    half are greater. Second, a partition point in one array implies a partition
-    point in the other array, which means we can find the partition point via
-    binary search on one array.
+    - I spent a long time thinking about this problem before looking it up.
     - We use the following notation in the code:
 
         A refers to the shorter array,
@@ -224,31 +218,17 @@ def p4(nums1: list[int], nums2: list[int]) -> float:
         Bleft = B[midB - 1], refers to the largest element in the left partition of B
         Bright = B[midB], refers to the smallest element in the right partition of B
 
-    - To expand more on the second insight, consider the following example:
-
-        A = [1, 3, 5, 7, 9], B = [2, 4, 6, 8, 10, 12, 14, 16]
-
-    Suppose we choose midA = 4. Since the total number of elements is 13, half
-    of which is 6.5, then, breaking the tie arbitrarily, 7 elements must be in
-    the left partition and 6 elements must be in the right partition. Since 4
-    elements are already in the left partition, we need to add 3 more elements
-    to the left partition, which we can do choosing midB = 3. This corresponds
-    to the total left partition [1, 2, 3, 4, 5, 6, 7] and the total right
-    partition [8, 9, 10, 12, 14, 16].
-    - In general, we have
+    - The key insight is this:
 
         midA + midB = (len(A) + len(B) + 1) // 2,
 
-    which implies
+      which implies
 
         midB = (len(A) + len(B) + 1) // 2 - midA.
 
-    - Note that having the +1 inside the divfloor covers the cases correctly for
-    odd and even total number of elements. For example, if the total number of
-    elements is 13 and i = 4, then j = (13 + 1) // 2 - 4 = 3, which is correct.
-    If the total number of elements is 12 and i = 4, then j = (12 + 1) // 2 - 4
-    = 2, which is also correct. If the +1 was not inside the divfloor, then the
-    second case would be incorrect.
+      This means that we can find a even partition of the total set, by finding
+      the partition point in just one array via binary search.
+
     - So our problem is solved if we can find a partition (midA, midB) with:
 
         len(A[:midA]) + len(B[:midB]) == len(A[midA:]) + len(B[midB:]),
@@ -258,10 +238,10 @@ def p4(nums1: list[int], nums2: list[int]) -> float:
     - The median is then
 
         median = max(Aleft, Bleft)                                if len(A) + len(B) odd
-                = (max(Aleft, Bleft) + min(Aright, Bright)) / 2.  else
+               = (max(Aleft, Bleft) + min(Aright, Bright)) / 2   else
 
     - Swapping two variables in Python swaps pointers under the hood:
-    https://stackoverflow.com/a/62038590/4784655.
+      https://stackoverflow.com/a/62038590/4784655.
 
     Examples
     --------
