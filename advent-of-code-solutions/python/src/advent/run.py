@@ -8,7 +8,6 @@ from pathlib import Path
 
 import requests
 import typer
-from dotenv import load_dotenv, set_key
 from joblib import Memory
 from rich import print
 from rich.table import Table
@@ -19,8 +18,6 @@ AnswerType = int | str | None
 YearOption = typer.Option(date.today().year, "--year", "-y", help="The year of the problem.")
 DayOption = typer.Option(None, "--day", "-d", help="The day of the problem.")
 PartOption = typer.Option(None, "--part", "-p", help="The part of the problem.")
-# In the root project directory
-load_dotenv("../.env")
 
 
 @memory.cache
@@ -128,31 +125,12 @@ def get_solutions(
     return table
 
 
-@app.command("set-cookie")
-def set_cookie(
-    cookie: str = typer.Option(
-        "",
-        "--cookie",
-        "-c",
-        help="The cookie to set.",
-        prompt="Enter your cookie (input hidden)",
-        hide_input=True,
-    ),
-):
-    """Sets the cookie for the current user.
-
-    Go to https://adventofcode.com/, inspect the browser session, and find your cookie.
-    """
-    set_key(".env", "AOC_TOKEN", cookie)
-
-
 @app.command("clear-download-cache")
 def clear_download_cache(
     year: int = YearOption,
     day: int = DayOption,
 ):
     """Clears the input download cache."""
-    load_dotenv()
     AOC_TOKEN = os.getenv("AOC_TOKEN")
 
     days = range(1, 26) if day is None else [day]

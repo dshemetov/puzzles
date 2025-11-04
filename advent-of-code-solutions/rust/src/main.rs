@@ -1,21 +1,21 @@
-mod question;
+mod runner;
 mod solutions;
 mod utils;
 
 use anyhow::Result;
-use question::{Question, solve};
+use runner::{all_questions, solve};
 
 fn main() -> Result<()> {
-    print_solution(2023, 17, 'a')?;
-    Ok(())
-}
-
-fn print_solution(year: u16, day: u8, part: char) -> Result<()> {
-    println!(
-        "{} {}: {}",
-        year,
-        day,
-        solve(Question::new(year, day, part))?
-    );
+    for question in all_questions() {
+        let result = solve(question)?;
+        println!(
+            "{} {} {}: {} ({:.3}ms)",
+            result.question.year,
+            result.question.day,
+            result.question.part,
+            result.answer,
+            result.duration.as_secs_f64() * 1000.0
+        );
+    }
     Ok(())
 }

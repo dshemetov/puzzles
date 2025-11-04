@@ -10,7 +10,6 @@ dependencies = [
     "more-itertools>=10.4.0",
     "numba>=0.60.0",
     "numpy>=2.0.1",
-    "python-dotenv>=1.0.1",
     "requests>=2.32.3",
     "rich>=14.0.0",
     "scipy>=1.14.0",
@@ -43,18 +42,18 @@ lint.extend-select = [
     "PERF", # perflint
     "FURB", # refurbish
     "PL",   # pylint
-    "FLY", # flynt
-    "B",   # flakes-bugbear
-    "UP",  # pyupgrade
-    "C4",  # comprehensions
-    "A",   # builtins
-    "ISC", # implicit-str-concat
-    "LOG", # logging
-    "G",   # logging-format
-    "PT",  # pytest-style
-    "RET", # return
-    "SIM", # simplify
-    "PTH", # use-pathlib
+    "FLY",  # flynt
+    "B",    # flakes-bugbear
+    "UP",   # pyupgrade
+    "C4",   # comprehensions
+    "A",    # builtins
+    "ISC",  # implicit-str-concat
+    "LOG",  # logging
+    "G",    # logging-format
+    "PT",   # pytest-style
+    "RET",  # return
+    "SIM",  # simplify
+    "PTH",  # use-pathlib
 ]
 lint.ignore = ["SIM108", "B905", "PLR2004"]
 format.docstring-code-format = true

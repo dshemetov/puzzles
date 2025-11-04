@@ -16,9 +16,6 @@ uv sync
 # Alias the run command for convenience
 alias advent="uv run python -m advent"
 
-# Set AoC cookie in .env
-advent set-cookie
-
 # Print the answer to puzzle 2021 day 2 part b
 advent solve -y 2021 -d 2 -p b
 
@@ -48,6 +45,15 @@ Advent.solve(2024, 2, 'b')
 
 # Get the actual solutions for every 2024 problem
 Advent.solve(2024, false)
+```
+
+## Rust Usage
+
+In the `rust` directory, run the following commands.
+
+```sh
+# Compile and run all solutions.
+cargo run --release
 ```
 
 ## Stats
@@ -117,6 +123,8 @@ Total time: 0.63806 seconds
 
 ### 2024 Python Runtimes
 
+Sub 1s Python too! Numba!
+
 ```
                                               2024 Solutions
 ┏━━━━━┳━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
@@ -185,17 +193,13 @@ After a few days of only playing SSX Tricky and drinking peppermint schnapps, we
 Evin got functional with JavaScript and I was just getting started with Python.
 Doing puzzles while cozy with friends is one of my favorite things to do.
 
-- AoC 2024: 7/50 Python, 49/50 Julia.
-- AoC 2023: 7/50 Python.
-- AoC 2022: 12/50 Python (with Numba and Cython).
-- AoC 2021: 43/50 Python.
+- AoC 2024: 50/50 Python (Numba), 50/50 Julia.
+- AoC 2023: 32/50 Python.
+- AoC 2022: 24/50 Python.
+- AoC 2021: 47/50 Python.
 - AoC 2020: 32/50 Python.
-- AoC 2019: 4/50 Python, ??/50 Mathematica.
-- AoC 2018: 13/50 Mathematica. Lessons learned:
-  - Mathematica has a some really cool builtin functions (e.g. see the three-line solution to Day 6 with [DistanceMatrix](https://reference.wolfram.com/language/ref/DistanceMatrix.html) and [Nearest](https://reference.wolfram.com/language/ref/Nearest.html)).
-  - Even though Mathematica has fast built-ins, Python can be faster for simple for-loops (e.g. see Day 9 and the attached Python solution). I did not have the courage to try to implement a linked-list in Mathematica for Day 9.
-  - Mathematica notebooks don't look great on GitHub.
-  - Mathematica [doesn't support lazy iteration natively](https://mathematica.stackexchange.com/questions/226334/breaking-functional-loops-and-doing-lazy-evaluation-in-mathematica).
-  - Mathematica doesn't make it easy to make new data structures (though [these are nice to have](https://reference.wolfram.com/language/guide/DataStructures.html)).
-  - Mathematica debugging isn't easy (and it isn't easy to switch from developing code in a Notebook to Eclipse, where they maintain a debugger plugin).
-- AoC 2015: 6/50 Python.
+- AoC 2019: 16/50 Python, ??/50 Mathematica.
+- AoC 2018: 25/50 Mathematica. Lessons learned:
+  - Mathematica pros: great builtins, great documentation, great plotting, great mathematical notation support.
+  - Mathematica cons: [no lazy iteration](https://mathematica.stackexchange.com/questions/226334/breaking-functional-loops-and-doing-lazy-evaluation-in-mathematica), I don't enjoy debugging or building custom data structures in it, notebooks don't render well outside the closed ecosystem.
+- AoC 2015: 14/50 Python.
