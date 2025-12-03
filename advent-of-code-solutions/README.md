@@ -194,7 +194,7 @@ Evin got functional with JavaScript and I was just getting started with Python.
 Doing puzzles while cozy with friends is one of my favorite things to do.
 
 - AoC 2024: 50/50 Python (Numba), 50/50 Julia.
-- AoC 2023: 32/50 Python.
+- AoC 2023: 32/50 Python, 2/50 Rust.
 - AoC 2022: 24/50 Python.
 - AoC 2021: 47/50 Python.
 - AoC 2020: 32/50 Python.
