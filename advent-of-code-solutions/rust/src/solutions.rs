@@ -278,6 +278,7 @@ pub mod day_2025_01 {
 
     pub fn b(s: String) -> String {
         let mut val = 50;
+        let mut nval;
         let mut count = 0;
         for e in s.split("\n") {
             let ev = e
@@ -285,17 +286,13 @@ pub mod day_2025_01 {
                 .replace("L", "-")
                 .parse::<i32>()
                 .unwrap();
-            val = (val + ev);
-            if (val == 0) {
-                count += 1;
-            } else if val < 0 && val + ev > 0 {
-                count += 1 + (val.abs() / 100);
-            } else if val >= 0 && val - ev < 0 {
-                count += 1 + (val.abs() / 100);
+            nval = (val + ev);
+            if (val < 0 && nval >= 0) || (val > 0 && nval <= 0) {
+                count += 1 + (nval.abs() / 100);
             } else {
-                count += (val.abs() / 100);
+                count += (nval.abs() / 100);
             }
-            val = val % 100;
+            val = nval % 100;
         }
         return count.to_string();
     }
