@@ -2,8 +2,14 @@
 
 #[allow(unused_variables)]
 #[allow(dead_code)]
-pub fn template(s: String) -> String {
-    "0".to_string()
+pub mod template {
+    pub fn a(s: String) -> String {
+        "0".to_string()
+    }
+
+    pub fn b(s: String) -> String {
+        "0".to_string()
+    }
 }
 
 pub mod day_2023_17 {
@@ -249,5 +255,48 @@ pub mod day_2023_18 {
 
     pub fn b(_s: String) -> String {
         "0".to_string()
+    }
+}
+
+pub mod day_2025_01 {
+    pub fn a(s: String) -> String {
+        let mut val = 50;
+        let mut count = 0;
+        for e in s.split("\n") {
+            let ev = e
+                .replace("R", "+")
+                .replace("L", "-")
+                .parse::<i32>()
+                .unwrap();
+            val = (val + ev) % 100;
+            if val == 0 {
+                count += 1;
+            }
+        }
+        return count.to_string();
+    }
+
+    pub fn b(s: String) -> String {
+        let mut val = 50;
+        let mut count = 0;
+        for e in s.split("\n") {
+            let ev = e
+                .replace("R", "+")
+                .replace("L", "-")
+                .parse::<i32>()
+                .unwrap();
+            val = (val + ev);
+            if (val == 0) {
+                count += 1;
+            } else if val < 0 && val + ev > 0 {
+                count += 1 + (val.abs() / 100);
+            } else if val >= 0 && val - ev < 0 {
+                count += 1 + (val.abs() / 100);
+            } else {
+                count += (val.abs() / 100);
+            }
+            val = val % 100;
+        }
+        return count.to_string();
     }
 }

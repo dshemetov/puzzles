@@ -9,9 +9,9 @@ def solve_a(s: str) -> int:
     >>> solve_a(test_string)
     21
     """
-    rows = (
-        (x, tuple(int(c) for c in y.split(","))) for x, y in (line.split(" ") for line in s.strip("\n").splitlines())
-    )
+    s = s.strip("\n")
+    lines = [line.split(" ") for line in s.splitlines()]
+    rows = ((x, tuple(int(c) for c in y.split(","))) for x, y in lines)
     return sum(recurse(springs + ".", runs, 0) for springs, runs in rows)
 
 
@@ -42,12 +42,11 @@ def recurse(springs: str, runs: tuple[int], current_run: int) -> int:
     for c in options:
         if c == "#":
             total += recurse(springs[1:], runs, current_run + 1)
+        elif current_run:
+            if runs and runs[0] == current_run:
+                total += recurse(springs[1:], runs[1:], 0)
         else:
-            if current_run:
-                if runs and runs[0] == current_run:
-                    total += recurse(springs[1:], runs[1:], 0)
-            else:
-                total += recurse(springs[1:], runs, 0)
+            total += recurse(springs[1:], runs, 0)
     return total
 
 
