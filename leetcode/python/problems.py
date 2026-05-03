@@ -1744,7 +1744,7 @@ def p45b(nums: list[int]) -> int:
     return answer
 
 
-def p46(nums: list[int]) -> list[list[int]]:
+def p46(nums: list) -> list[list]:
     """46. Permutations https://leetcode.com/problems/permutations/
 
     First attempt is the Steinhaus-Johnson-Trotter algorithm. Slow, but simple.
@@ -2592,7 +2592,7 @@ def p222(root: TreeNode | None) -> int:
             node = node.left if c == "0" else node.right
         return bool(node)
 
-    lo, hi = 0, 2 ** (height) - 1
+    lo, hi = 0, int(2 ** (height) - 1)
     while lo <= hi:
         mid = (lo + hi) // 2
         node_in_tree = is_node_in_tree(root, mid)
@@ -2601,7 +2601,7 @@ def p222(root: TreeNode | None) -> int:
         else:
             hi = mid - 1
 
-    return 2 ** (height) + lo - 1
+    return int(2 ** (height)) + lo - 1
 
 
 def p223(ax1: int, ay1: int, ax2: int, ay2: int, bx1: int, by1: int, bx2: int, by2: int) -> int:
