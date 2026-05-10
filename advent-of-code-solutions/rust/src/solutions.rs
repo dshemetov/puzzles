@@ -1653,13 +1653,3 @@ pub mod day_2025_12 {
         }
     }
 }
-
-pub mod day_2025_02 {
-    pub fn a(s: String) -> String {
-        "0".to_string()
-    }
-
-    pub fn b(s: String) -> String {
-        "0".to_string()
-    }
-}

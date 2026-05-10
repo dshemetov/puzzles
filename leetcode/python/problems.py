@@ -9,6 +9,7 @@ from array import array
 from bisect import bisect_left, insort
 from collections import Counter, defaultdict, deque, namedtuple
 from collections.abc import Callable, Generator
+from dataclasses import dataclass
 from fractions import Fraction
 from heapq import heappop, heappush
 from itertools import cycle, product
@@ -18,30 +19,6 @@ from typing import Optional, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
-
-
-def p1(nums: list[int], target: int) -> list[int]:
-    """1. Two Sum https://leetcode.com/problems/two-sum/
-
-    Examples
-    --------
-    >>> p1([3, 3], 6)
-    [0, 1]
-    >>> p1([3, 2, 4], 7)
-    [0, 2]
-
-    """
-    ix_map = defaultdict(list)
-    for i, x in enumerate(nums):
-        ix_map[x].append(i)
-
-    for x in ix_map:
-        if ix_map.get(target - x):
-            if x == target - x and len(ix_map[x]) == 2:
-                return ix_map[target - x]
-            if x != target - x:
-                return [ix_map[x][0], ix_map[target - x][0]]
-    return []
 
 
 class ListNode:
@@ -103,6 +80,490 @@ def list_to_int(lst: ListNode | None) -> int:
         digit += 1
         lst = lst.next
     return num
+
+
+def get_median_sorted(nums: list[int]) -> float:
+    if len(nums) == 1:
+        return nums[0]
+
+    mid = len(nums) // 2
+
+    if len(nums) % 2 == 0:
+        return (nums[mid] + nums[mid - 1]) / 2
+
+    return nums[mid]
+
+
+def change_ringers():
+    """This is the scale (modulo microtonal tuning) in King Gizzard & The Lizard
+    Wizard's "Rattlesnake".
+    """
+    for i, x in enumerate(p46(["b", "c", "c#", "d#", "f", "g"])):
+        print(i, x)
+
+
+def lehmer_code_to_permutation(lst: list[int]) -> list[int]:
+    """Convert Lehmer code to permutation.
+
+    References
+    ----------
+    https://en.wikipedia.org/wiki/Lehmer_code
+
+    Examples
+    --------
+    >>> lehmer_code_to_permutation([0, 0, 0, 0, 0, 0])
+    [1, 2, 3, 4, 5, 6]
+    >>> lehmer_code_to_permutation([0, 0, 0, 0, 1, 0])
+    [1, 2, 3, 4, 6, 5]
+    >>> lehmer_code_to_permutation([0, 0, 0, 1, 0, 0])
+    [1, 2, 3, 5, 4, 6]
+    >>> lehmer_code_to_permutation([0, 0, 0, 1, 1, 0])
+    [1, 2, 3, 5, 6, 4]
+
+    """
+    n = len(lst)
+    perm = lst.copy()
+    for i in range(n, 0, -1):
+        for j in range(i, n):
+            if perm[i] <= perm[j]:
+                perm[j] += 1
+    return [x + 1 for x in perm]
+
+
+def permutation_to_lehmer_code(lst: list[int]) -> list[int]:
+    """Convert permutation to Lehmer code.
+
+    Examples
+    --------
+    >>> permutation_to_lehmer_code([1, 2, 3, 4, 5, 6])
+    [0, 0, 0, 0, 0, 0]
+    >>> permutation_to_lehmer_code([1, 2, 3, 4, 6, 5])
+    [0, 0, 0, 0, 1, 0]
+    >>> permutation_to_lehmer_code([1, 2, 3, 5, 4, 6])
+    [0, 0, 0, 1, 0, 0]
+    >>> permutation_to_lehmer_code([1, 2, 3, 5, 6, 4])
+    [0, 0, 0, 1, 1, 0]
+
+    """
+    n = len(lst)
+    lehmer = [lst[i] - 1 for i in range(n)]
+    for i in range(n):
+        for j in range(i, n):
+            if lehmer[i] < lehmer[j]:
+                lehmer[j] -= 1
+    return lehmer
+
+
+def get_fibonacci_number(n: int) -> int:
+    """Return the nth Fibonacci number, where F(0) = 0 and F(1) = 1.
+
+    Examples
+    --------
+    >>> [get_fibonacci_number(i) for i in range(10)]
+    [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+
+    """
+    phi = (1 + 5**0.5) / 2
+    return int(phi**n / 5**0.5 + 0.5)
+
+
+def get_binary_strings_no_consecutive_zeros(n: int) -> list[str]:
+    """Examples
+    >>> get_binary_strings_no_consecutive_zeros(1)
+    ['0', '1']
+    >>> get_binary_strings_no_consecutive_zeros(2)
+    ['01', '11', '10']
+    >>> get_binary_strings_no_consecutive_zeros(3)
+    ['011', '111', '101', '010', '110']
+    >>> [len(get_binary_strings_no_consecutive_zeros(i)) for i in range(1, 10)]
+    [2, 3, 5, 8, 13, 21, 34, 55, 89]
+
+    """
+    if n == 1:
+        return ["0", "1"]
+
+    prev = get_binary_strings_no_consecutive_zeros(n - 1)
+    return [x + "1" for x in prev] + [x + "0" for x in prev if not x.endswith("0")]
+
+
+class TreeNode:
+    def __init__(
+        self,
+        val: int = 0,
+        left: Optional["TreeNode"] = None,
+        right: Optional["TreeNode"] = None,
+    ):
+        self.val = val
+        self.left = left
+        self.right = right
+
+    @staticmethod
+    def from_list(lst: list, recursive: bool = False) -> "TreeNode":
+        """Build TreeNode from a top-to-bottom, left-to-right traversal of the nodes.
+
+        With a 0-indexed array, a node at index i has left and right children at
+        index 2i+1 and 2i+2.
+        """
+        if recursive:
+            # Must be length 2 ** i - 1.
+            assert math.log2(len(lst) + 1) == int(math.log2(len(lst) + 1))
+            tree_depth = math.floor(math.log2(len(lst)))
+
+            if len(lst) == 1:
+                return TreeNode(lst[0])
+
+            if len(lst) == 3:
+                return TreeNode(
+                    lst[0],
+                    TreeNode(lst[1]) if lst[1] is not None else None,
+                    TreeNode(lst[2]) if lst[2] is not None else None,
+                )
+
+            left_lst = []
+            right_lst = []
+
+            for i in range(1, tree_depth + 1):
+                left_lst.extend(lst[2**i - 1 : 2**i - 1 + 2 ** (i - 1)])
+                right_lst.extend(lst[2**i - 1 + 2 ** (i - 1) : 2 ** (i + 1) - 1])
+
+            return TreeNode(
+                lst[0],
+                TreeNode.from_list(left_lst, recursive=True),
+                TreeNode.from_list(right_lst, recursive=True),
+            )
+
+        root = TreeNode(lst[0])
+        queue = [root]
+        i = 1
+        while i < len(lst):
+            node = queue.pop(0)
+            if lst[i] is not None:
+                node.left = TreeNode(lst[i])
+                queue.append(node.left)
+            i += 1
+            if i < len(lst) and lst[i] is not None:
+                node.right = TreeNode(lst[i])
+                queue.append(node.right)
+            i += 1
+        return root
+
+
+class Node:
+    def __init__(self, val: int = 0, neighbors: list["Node"] | None = None):
+        self.val = val
+        self.neighbors = neighbors if neighbors is not None else []
+
+    @staticmethod
+    def from_adjacency_list(adjacency_list: list[list[int]]) -> "Node":
+        """Build a node-based graph from an adjacency list.
+
+        Examples
+        --------
+        >>> Node.from_adjacency_list([[1, 2], [1, 4], [2, 3], [3, 4]]).to_adjacency_list()
+        [[1, 2], [1, 4], [2, 3], [3, 4]]
+
+        """
+        if adjacency_list == [[]]:
+            return Node(1)
+
+        node_index = {}
+        for x, y in adjacency_list:
+            if (xnode := node_index.get(x)) is None:
+                xnode = Node(x)
+                node_index[x] = xnode
+            if (ynode := node_index.get(y)) is None:
+                ynode = Node(y)
+                node_index[y] = ynode
+
+            xnode.neighbors.append(ynode)
+            ynode.neighbors.append(xnode)
+
+        return node_index[1]
+
+    def to_adjacency_list(self) -> list[list[int]]:
+        """Traverse through a graph and build an adjacency list."""
+        adjacency_list = set()
+        visited = set()
+        node_queue: deque[Node] = deque([self])
+
+        while node_queue:
+            node = node_queue.popleft()
+            visited.add(node.val)
+
+            for neighbor in node.neighbors:
+                adjacency_list.add(tuple(sorted([node.val, neighbor.val])))
+
+                if neighbor.val not in visited:
+                    node_queue.append(neighbor)
+
+        return sorted([list(e) for e in adjacency_list], key=lambda x: (x[0], x[1]))
+
+
+def guess(num: int) -> int:
+    __pick__ = 6
+    if num == __pick__:
+        return 0
+    if num > __pick__:
+        return -1
+    return 1
+
+
+def ccw(p1: tuple[int, int], p2: tuple[int, int], p3: tuple[int, int]) -> float:
+    """Examples
+    >>> ccw((0, 0), (1, 0), (0, 1))
+    1.0
+    >>> ccw((0, 0), (1, 0), (1, 1))
+    1.0
+    >>> ccw((0, 0), (1, 0), (1, 0))
+    0.0
+    >>> ccw((0, 0), (1, 0), (0, -1))
+    -1.0
+
+    """
+    v1 = (p2[0] - p1[0], p2[1] - p1[1])
+    v2 = (p3[0] - p2[0], p3[1] - p2[1])
+    return float(v1[0] * v2[1] - v1[1] * v2[0])
+
+
+def polar_angle(p1: tuple[int, int], p2: tuple[int, int]) -> float:
+    """Get the polar angle of the vector from p1 to p2."""
+    v1 = (p2[0] - p1[0], p2[1] - p1[1])
+    return np.arctan2(v1[1], v1[0])
+
+
+def point_sorter(p1: tuple[int, int], p2: tuple[int, int]) -> tuple[float, float]:
+    """Sort by polar angle and break ties by distance."""
+    return (
+        polar_angle(p1, p2),
+        -math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2),
+    )
+
+
+def atan2notan(y: int, x: int) -> tuple[int, int | Fraction]:
+    """A polar angle substitute without trigonometry or floating points.
+
+    Imagine tracing out a circle counterclockwise and measuring the angle to the tracing vector
+    from the positive x axis. This is the sorted order we wish to achieve. This function will give
+    a lexically smaller tuple for smaller angles.
+    """
+    if x == 0 and y == 0:
+        return (0, 0)
+    if x > 0 and y >= 0:
+        return (0, Fraction(y, x))
+    if x == 0 and y > 0:
+        return (1, 0)
+    if x < 0:
+        return (2, Fraction(y, x))
+    if x == 0 and y < 0:
+        return (3, 0)
+    if y < 0 < x:
+        return (4, Fraction(y, x))
+    raise ValueError("How did you even get here?")
+
+
+def partition_by(lst: list, f: Callable) -> dict:
+    """Partition a list into lists based on a predicate."""
+    d = defaultdict(list)
+    for item in lst:
+        d[f(item)].append(item)
+    return d
+
+
+def plot_points(points: list[tuple[int, int]], hull: list[tuple[int, int]]):
+    x, y = zip(*points)
+    plt.scatter(x, y)
+    x, y = zip(*hull)
+    plt.plot(x, y, color="green")
+    plt.show()
+
+
+_empty = object()
+
+
+class MyCircularQueue:
+    def __init__(self, k: int):
+        self.lst = [_empty] * k
+        self.k = k
+        self.front_ix = 0
+        self.rear_ix = 0
+        self.len = 0
+
+    def enQueue(self, value: int) -> bool:
+        if self.isFull():
+            return False
+
+        if len(self) > 0:
+            self.rear_ix = (self.rear_ix + 1) % self.k
+        self.lst[self.rear_ix] = value
+        self.len += 1
+
+        return True
+
+    def deQueue(self) -> bool:
+        if self.isEmpty():
+            return False
+
+        self.lst[self.front_ix] = _empty
+        if len(self) > 1:
+            self.front_ix = (self.front_ix + 1) % self.k
+        self.len -= 1
+
+        return True
+
+    def Front(self) -> int:
+        if self.isEmpty():
+            return -1
+        return self.lst[self.front_ix]
+
+    def Rear(self) -> int:
+        if self.isEmpty():
+            return -1
+        return self.lst[self.rear_ix]
+
+    def isEmpty(self) -> bool:
+        return len(self) == 0
+
+    def isFull(self) -> bool:
+        return len(self) == self.k
+
+    def __len__(self) -> int:
+        return self.len
+
+
+def is_similar(s1: str, s2: str) -> bool:
+    """
+    Examples:
+    >>> is_similar("abc", "abc")
+    True
+    >>> is_similar("abc", "acb")
+    True
+    >>> is_similar("abc", "abcd")
+    False
+    >>> is_similar("abc", "abd")
+    False
+
+    """
+    if len(s1) != len(s2):
+        return False
+    diff_chars = sum(c1 != c2 for c1, c2 in zip(s1, s2))
+    return diff_chars in {0, 2}
+
+
+def get_moves_list(nums: list[int], k: int) -> tuple[list[int], list[int], list[int]]:
+    """Test three ways to calculate the absolute value distance.
+
+    For testing 1703.
+
+    Examples
+    --------
+    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 2)
+    >>> a == b == c
+    True
+    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 3)
+    >>> a == b == c
+    True
+    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 4)
+    >>> a == b == c
+    True
+    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 5)
+    >>> a == b == c
+    True
+    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 6)
+    >>> a == b == c
+    True
+    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 8)
+    >>> a == b == c
+    True
+
+    """
+
+    def calc1(stack: deque, k: int) -> int:
+        """Calculate using the absolute value formula with the indices."""
+        mid = k // 2
+        return sum(abs(stack[mid] - i) for i in stack)
+
+    def method1(nums: list[int], k: int) -> list[int]:
+        """Calculate using the absolute value formula with the indices."""
+        if len(nums) == k or k == 1:
+            return [0]
+
+        moves = []
+        stack = deque()
+        s = 0
+        for i, n in enumerate(nums):
+            if n == 1:
+                stack.append(i)
+                if stack and len(stack) > k:
+                    s = s - stack.popleft()
+                if len(stack) == k:
+                    moves.append(calc1(stack, k))
+
+        return moves
+
+    def calc2(gaps: list, k: int, j: int) -> int:
+        """Calculate using the absolute value formula with the differences between indices."""
+        return sum(min(i + 1, k - (i + 1)) * gaps[j + i] for i in range(k - 1))
+
+    def method2(nums: list[int], k: int) -> list[int]:
+        """Calculate using the absolute value formula with the differences between indices."""
+        gaps = get_gaps(nums)
+        return [calc2(gaps, k, j) for j in range(len(gaps) - k + 2)]
+
+    def method3(nums: list[int], k: int) -> list[int]:
+        """Calculate using a magic iterative approach."""
+        gaps = get_gaps(nums)
+
+        if len(gaps) == k - 1:
+            return [calc2(gaps, k, 0)]
+
+        moves = [calc2(gaps, k, 0), calc2(gaps, k, 1)]
+        delta1 = moves[-1] - moves[-2]
+        for j in range(0, len(gaps) - k):
+            if k % 2 == 1:
+                delta2 = gaps[j] - gaps[j + k // 2] - gaps[j + k // 2 + 1] + gaps[j + k]
+            else:
+                delta2 = gaps[j] - 2 * gaps[j + k // 2] + gaps[j + k]
+            delta1 = delta1 + delta2
+            moves.append(moves[-1] + delta1)
+        return moves
+
+    return method1(nums, k), method2(nums, k), method3(nums, k)
+
+
+def get_gaps(nums: list[int]) -> list[int]:
+    gaps = []
+    prev = -1
+    for i, x in enumerate(nums):
+        if prev == -1 and x == 1:
+            prev = i
+        elif prev != -1 and x == 1:
+            gaps.append(i - prev)
+            prev = i
+    return gaps
+
+
+def p1(nums: list[int], target: int) -> list[int]:
+    """1. Two Sum https://leetcode.com/problems/two-sum/
+
+    Examples
+    --------
+    >>> p1([3, 3], 6)
+    [0, 1]
+    >>> p1([3, 2, 4], 7)
+    [0, 2]
+
+    """
+    ix_map = defaultdict(list)
+    for i, x in enumerate(nums):
+        ix_map[x].append(i)
+
+    for x in ix_map:
+        if ix_map.get(target - x):
+            if x == target - x and len(ix_map[x]) == 2:
+                return ix_map[target - x]
+            if x != target - x:
+                return [ix_map[x][0], ix_map[target - x][0]]
+    return []
 
 
 def p2(l1: ListNode | None, l2: ListNode | None) -> ListNode | None:
@@ -188,18 +649,6 @@ def p3(s: str) -> int:
             lo += 1
 
     return longest
-
-
-def get_median_sorted(nums: list[int]) -> float:
-    if len(nums) == 1:
-        return nums[0]
-
-    mid = len(nums) // 2
-
-    if len(nums) % 2 == 0:
-        return (nums[mid] + nums[mid - 1]) / 2
-
-    return nums[mid]
 
 
 def p4(nums1: list[int], nums2: list[int]) -> float:
@@ -1354,6 +1803,52 @@ def p29(dividend: int, divisor: int) -> int:
     return min(2**31 - 1, max(-(2**31), sign * quotient))
 
 
+def p30(s: str, words: list[str]) -> list[int]:
+    """30. Substring with Concatenation of All Words https://leetcode.com/problems/substring-with-concatenation-of-all-words/
+
+    Example:
+    >>> p30("barfoothefoobarman", ["foo", "bar"])
+    [0, 9]
+    >>> p30("wordgoodgoodgoodbestword", ["word", "good", "best", "word"])
+    []
+    >>> p30("barfoofoobarthefoobarman", ["bar", "foo", "the"])
+    [6, 9, 12]
+    >>> p30("afoobar", ["foo", "bar"])
+    [1]
+    """
+    n = len(s)
+    n_words = len(words)
+    word_length = len(words[0])
+
+    if word_length * n_words > n:
+        return []
+
+    target_counter = Counter(words)
+    answer = []
+    for i in range(word_length):
+        lo = i
+        cur_len = 0
+        cur_counter = Counter({})
+        for j in range(i, len(s), word_length):
+            # print(cur_counter)
+            entering_word = s[j : j + word_length]
+            if entering_word not in words:
+                cur_counter = Counter({})
+                lo = j + word_length
+                cur_len = 0
+                continue
+            cur_counter[entering_word] += 1
+            cur_len += 1
+            if cur_len > n_words:
+                exiting_word = s[lo : lo + word_length]
+                cur_counter[exiting_word] -= 1
+                lo += word_length
+            if cur_counter == target_counter:
+                answer.append(lo)
+
+    return sorted(answer)
+
+
 def p31(nums: list[int]) -> None:
     """31. Next Permutation https://leetcode.com/problems/next-permutation
 
@@ -1465,6 +1960,50 @@ def p31(nums: list[int]) -> None:
         nums[lo], nums[hi] = nums[hi], nums[lo]
         lo += 1
         hi -= 1
+
+
+def p32(s: str) -> int:
+    """32. Longest Valid Parentheses https://leetcode.com/problems/longest-valid-parentheses/
+
+    Example:
+    >>> p32("(()")
+    2
+    >>> p32(")()())")
+    4
+    >>> p32("")
+    0
+    >>> p32("()")
+    2
+    """
+    if not s:
+        return 0
+
+    nums = [int(c.replace("(", "1").replace(")", "-1")) for c in s]
+    n = len(nums)
+    prefix = [0] * (n + 1)
+    for i in range(1, n + 1):
+        prefix[i] = prefix[i - 1] + nums[i - 1]
+
+    # print(prefix)
+    result = 0
+    ms = [(0, 0)]
+    for i in range(1, n + 1):
+        # print(ms)
+        if not ms:
+            ms.append((i, prefix[i]))
+            continue
+
+        if prefix[i] < ms[-1][1]:
+            ms.pop()
+            if ms and prefix[i] == ms[-1][1]:
+                result = max(result, i - ms[-1][0])
+            else:
+                ms.append((i, prefix[i]))
+
+        elif prefix[i] > ms[-1][1]:
+            ms.append((i, prefix[i]))
+
+    return result
 
 
 def p33(nums: list[int], target: int) -> int:
@@ -1694,6 +2233,146 @@ def p36(board: list[list[str]]) -> bool:
     return True
 
 
+def p37(board: list[list[str]]) -> None:
+    """37. Sudoku Solver https://leetcode.com/problems/sudoku-solver/
+
+    Modifies board in-place.
+
+    Example:
+    >>> board = [
+    ...     ["5", "3", ".", ".", "7", ".", ".", ".", "."],
+    ...     ["6", ".", ".", "1", "9", "5", ".", ".", "."],
+    ...     [".", "9", "8", ".", ".", ".", ".", "6", "."],
+    ...     ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
+    ...     ["4", ".", ".", "8", ".", "3", ".", ".", "1"],
+    ...     ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+    ...     [".", "6", ".", ".", ".", ".", "2", "8", "."],
+    ...     [".", ".", ".", "4", "1", "9", ".", ".", "5"],
+    ...     [".", ".", ".", ".", "8", ".", ".", "7", "9"],
+    ... ]
+    >>> p37(board)
+    >>> board
+    [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
+    """
+    from copy import deepcopy
+    from dataclasses import field
+
+    all_digits = {str(x) for x in range(1, 10)}
+
+    @dataclass
+    class Cell:
+        i: int
+        j: int
+        val: str = "."
+        options: set = field(default_factory=set)
+
+    @dataclass
+    class Board:
+        cells: list[Cell]
+
+    # TODO: Need to make that allowed choices for filled-in cells is empty.
+
+    _board = Board([Cell(i, j, ".", deepcopy(all_digits)) for i in range(9) for j in range(9)])
+    for i, j in product(range(9), range(9)):
+        cell = _board.cells[i * 9 + j]
+        if board[i][j] == ".":
+            cell.options -= {board[i][k] for k in range(9)}
+            cell.options -= {board[k][j] for k in range(9)}
+            cell.options -= {board[3 * (i // 3) + di][3 * (j // 3) + dj] for di in range(3) for dj in range(3)}
+        else:
+            cell.val = board[i][j]
+            cell.options = set()
+
+    def push_allowed_map(i: int, j: int, val: str) -> None:
+        ix = i * 9 + j
+        _board.cells[ix] = Cell(i, j, val, set())
+        for k in range(9):
+            if i * 9 + k != ix:
+                _board.cells[i * 9 + k].options.discard(val)
+            if k * 9 + j != ix:
+                _board.cells[k * 9 + j].options.discard(val)
+            if (3 * (i // 3) + k // 3) * 9 + (3 * (j // 3) + k % 3) != ix:
+                _board.cells[(3 * (i // 3) + k // 3) * 9 + (3 * (j // 3) + k % 3)].options.discard(val)
+
+    def pop_allowed_map(i: int, j: int, val: str) -> None:
+        ix = i * 9 + j
+        _board.cells[ix] = Cell(i, j, ".", deepcopy(all_digits))
+        _board.cells[ix].options -= {
+            _board.cells[i * 9 + k].val for k in range(9) if _board.cells[i * 9 + k].val != "."
+        }
+        _board.cells[ix].options -= {
+            _board.cells[k * 9 + j].val for k in range(9) if _board.cells[k * 9 + j].val != "."
+        }
+        _board.cells[ix].options -= {
+            _board.cells[(3 * (i // 3) + di) * 9 + (3 * (j // 3) + dj)].val
+            for di in range(3)
+            for dj in range(3)
+            if _board.cells[(3 * (i // 3) + di) * 9 + (3 * (j // 3) + dj)].val != "."
+        }
+        for k in range(9):
+            if i * 9 + k != ix:
+                _board.cells[i * 9 + k].options.add(val)
+            if k * 9 + j != ix:
+                _board.cells[k * 9 + j].options.add(val)
+            if (3 * (i // 3) + k // 3) * 9 + (3 * (j // 3) + k % 3) != ix:
+                _board.cells[(3 * (i // 3) + k // 3) * 9 + (3 * (j // 3) + k % 3)].options.add(val)
+
+    def print_board() -> None:
+        for i in range(9):
+            print(" ".join(c.val for c in _board.cells[i * 9 : (i + 1) * 9]))
+        print()
+
+    q = 0
+
+    def recurse(choices: list[Cell]) -> tuple[bool, list]:
+        nonlocal q
+        q += 1
+        print("Recursion depth:", q)
+        print("Last choice:", choices[-1] if choices else None)
+        print_board()
+        if q == 10:
+            return False, choices
+
+        if any(
+            _board.cells[i * 9 + j].val == "." and not _board.cells[i * 9 + j].options
+            for i, j in product(range(9), range(9))
+        ):
+            print("No options for some cell, backing out.")
+            return False, choices
+
+        open_cells = sorted([c for c in _board.cells if c.val == "."], key=lambda x: len(x.options))
+
+        if not open_cells:
+            print("No open cells, found solution.")
+            return True, choices
+
+        for cell in open_cells:
+            results = []
+            for c in cell.options:
+                push_allowed_map(cell.i, cell.j, c)
+                choices = choices + [Cell(cell.i, cell.j, c)]
+                results.append(recurse(choices)[0])
+                if results[-1]:
+                    return (True, choices)
+                pop_allowed_map(cell.i, cell.j, c)
+                choices.pop()
+            if not any(results):
+                print("None of the options for cell", cell, "worked:", results)
+                return (False, choices)
+
+        return (False, choices)
+
+    # print("hello")
+    # print(_board)
+    possible, choices = recurse([])
+    if possible:
+        for cell in choices:
+            board[cell.i][cell.j] = cell.val
+        return
+
+    raise ValueError("No solution exists")
+
+
 def p45(nums: list[int]) -> int:
     """45. Jump Game II https://leetcode.com/problems/jump-game-ii/
 
@@ -1767,66 +2446,6 @@ def p46(nums: list) -> list[list]:
             permutations = temp
 
     return permutations
-
-
-def change_ringers():
-    """This is the scale (modulo microtonal tuning) in King Gizzard & The Lizard
-    Wizard's "Rattlesnake".
-    """
-    for i, x in enumerate(p46(["b", "c", "c#", "d#", "f", "g"])):
-        print(i, x)
-
-
-def lehmer_code_to_permutation(lst: list[int]) -> list[int]:
-    """Convert Lehmer code to permutation.
-
-    References
-    ----------
-    https://en.wikipedia.org/wiki/Lehmer_code
-
-    Examples
-    --------
-    >>> lehmer_code_to_permutation([0, 0, 0, 0, 0, 0])
-    [1, 2, 3, 4, 5, 6]
-    >>> lehmer_code_to_permutation([0, 0, 0, 0, 1, 0])
-    [1, 2, 3, 4, 6, 5]
-    >>> lehmer_code_to_permutation([0, 0, 0, 1, 0, 0])
-    [1, 2, 3, 5, 4, 6]
-    >>> lehmer_code_to_permutation([0, 0, 0, 1, 1, 0])
-    [1, 2, 3, 5, 6, 4]
-
-    """
-    n = len(lst)
-    perm = lst.copy()
-    for i in range(n, 0, -1):
-        for j in range(i, n):
-            if perm[i] <= perm[j]:
-                perm[j] += 1
-    return [x + 1 for x in perm]
-
-
-def permutation_to_lehmer_code(lst: list[int]) -> list[int]:
-    """Convert permutation to Lehmer code.
-
-    Examples
-    --------
-    >>> permutation_to_lehmer_code([1, 2, 3, 4, 5, 6])
-    [0, 0, 0, 0, 0, 0]
-    >>> permutation_to_lehmer_code([1, 2, 3, 4, 6, 5])
-    [0, 0, 0, 0, 1, 0]
-    >>> permutation_to_lehmer_code([1, 2, 3, 5, 4, 6])
-    [0, 0, 0, 1, 0, 0]
-    >>> permutation_to_lehmer_code([1, 2, 3, 5, 6, 4])
-    [0, 0, 0, 1, 1, 0]
-
-    """
-    n = len(lst)
-    lehmer = [lst[i] - 1 for i in range(n)]
-    for i in range(n):
-        for j in range(i, n):
-            if lehmer[i] < lehmer[j]:
-                lehmer[j] -= 1
-    return lehmer
 
 
 def p47(nums: list[int]) -> list[list[int]]:
@@ -1945,38 +2564,6 @@ def p55b(nums: list[int]) -> bool:
             current = i
 
     return current == 0
-
-
-def get_fibonacci_number(n: int) -> int:
-    """Return the nth Fibonacci number, where F(0) = 0 and F(1) = 1.
-
-    Examples
-    --------
-    >>> [get_fibonacci_number(i) for i in range(10)]
-    [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
-
-    """
-    phi = (1 + 5**0.5) / 2
-    return int(phi**n / 5**0.5 + 0.5)
-
-
-def get_binary_strings_no_consecutive_zeros(n: int) -> list[str]:
-    """Examples
-    >>> get_binary_strings_no_consecutive_zeros(1)
-    ['0', '1']
-    >>> get_binary_strings_no_consecutive_zeros(2)
-    ['01', '11', '10']
-    >>> get_binary_strings_no_consecutive_zeros(3)
-    ['011', '111', '101', '010', '110']
-    >>> [len(get_binary_strings_no_consecutive_zeros(i)) for i in range(1, 10)]
-    [2, 3, 5, 8, 13, 21, 34, 55, 89]
-
-    """
-    if n == 1:
-        return ["0", "1"]
-
-    prev = get_binary_strings_no_consecutive_zeros(n - 1)
-    return [x + "1" for x in prev] + [x + "0" for x in prev if not x.endswith("0")]
 
 
 def p91(s: str) -> int:
@@ -2113,68 +2700,6 @@ def p91b(s: str) -> int:
     return dp[-1]
 
 
-class TreeNode:
-    def __init__(
-        self,
-        val: int = 0,
-        left: Optional["TreeNode"] = None,
-        right: Optional["TreeNode"] = None,
-    ):
-        self.val = val
-        self.left = left
-        self.right = right
-
-    @staticmethod
-    def from_list(lst: list, recursive: bool = False) -> "TreeNode":
-        """Build TreeNode from a top-to-bottom, left-to-right traversal of the nodes.
-
-        With a 0-indexed array, a node at index i has left and right children at
-        index 2i+1 and 2i+2.
-        """
-        if recursive:
-            # Must be length 2 ** i - 1.
-            assert math.log2(len(lst) + 1) == int(math.log2(len(lst) + 1))
-            tree_depth = math.floor(math.log2(len(lst)))
-
-            if len(lst) == 1:
-                return TreeNode(lst[0])
-
-            if len(lst) == 3:
-                return TreeNode(
-                    lst[0],
-                    TreeNode(lst[1]) if lst[1] is not None else None,
-                    TreeNode(lst[2]) if lst[2] is not None else None,
-                )
-
-            left_lst = []
-            right_lst = []
-
-            for i in range(1, tree_depth + 1):
-                left_lst.extend(lst[2**i - 1 : 2**i - 1 + 2 ** (i - 1)])
-                right_lst.extend(lst[2**i - 1 + 2 ** (i - 1) : 2 ** (i + 1) - 1])
-
-            return TreeNode(
-                lst[0],
-                TreeNode.from_list(left_lst, recursive=True),
-                TreeNode.from_list(right_lst, recursive=True),
-            )
-
-        root = TreeNode(lst[0])
-        queue = [root]
-        i = 1
-        while i < len(lst):
-            node = queue.pop(0)
-            if lst[i] is not None:
-                node.left = TreeNode(lst[i])
-                queue.append(node.left)
-            i += 1
-            if i < len(lst) and lst[i] is not None:
-                node.right = TreeNode(lst[i])
-                queue.append(node.right)
-            i += 1
-        return root
-
-
 def p102(root: TreeNode | None) -> list[list[int]]:
     """102. Binary Tree Level Order Traversal https://leetcode.com/problems/binary-tree-level-order-traversal/
 
@@ -2205,57 +2730,6 @@ def p102(root: TreeNode | None) -> list[list[int]]:
         result.append(level)
         queue = new_queue
     return result
-
-
-class Node:
-    def __init__(self, val: int = 0, neighbors: list["Node"] | None = None):
-        self.val = val
-        self.neighbors = neighbors if neighbors is not None else []
-
-    @staticmethod
-    def from_adjacency_list(adjacency_list: list[list[int]]) -> "Node":
-        """Build a node-based graph from an adjacency list.
-
-        Examples
-        --------
-        >>> Node.from_adjacency_list([[1, 2], [1, 4], [2, 3], [3, 4]]).to_adjacency_list()
-        [[1, 2], [1, 4], [2, 3], [3, 4]]
-
-        """
-        if adjacency_list == [[]]:
-            return Node(1)
-
-        node_index = {}
-        for x, y in adjacency_list:
-            if (xnode := node_index.get(x)) is None:
-                xnode = Node(x)
-                node_index[x] = xnode
-            if (ynode := node_index.get(y)) is None:
-                ynode = Node(y)
-                node_index[y] = ynode
-
-            xnode.neighbors.append(ynode)
-            ynode.neighbors.append(xnode)
-
-        return node_index[1]
-
-    def to_adjacency_list(self) -> list[list[int]]:
-        """Traverse through a graph and build an adjacency list."""
-        adjacency_list = set()
-        visited = set()
-        node_queue: deque[Node] = deque([self])
-
-        while node_queue:
-            node = node_queue.popleft()
-            visited.add(node.val)
-
-            for neighbor in node.neighbors:
-                adjacency_list.add(tuple(sorted([node.val, neighbor.val])))
-
-                if neighbor.val not in visited:
-                    node_queue.append(neighbor)
-
-        return sorted([list(e) for e in adjacency_list], key=lambda x: (x[0], x[1]))
 
 
 def p133(node: "Node") -> "Node":
@@ -2894,15 +3368,6 @@ def p373(nums1: list[int], nums2: list[int], k: int) -> list[list[int]]:
     return pairs
 
 
-def guess(num: int) -> int:
-    __pick__ = 6
-    if num == __pick__:
-        return 0
-    if num > __pick__:
-        return -1
-    return 1
-
-
 def p374(n: int) -> int:
     """374. Guess Number Higher or Lower https://leetcode.com/problems/guess-number-higher-or-lower/
 
@@ -3120,75 +3585,6 @@ def p495(timeSeries: list[int], duration: int) -> int:
     return total_duration + duration
 
 
-def ccw(p1: tuple[int, int], p2: tuple[int, int], p3: tuple[int, int]) -> float:
-    """Examples
-    >>> ccw((0, 0), (1, 0), (0, 1))
-    1.0
-    >>> ccw((0, 0), (1, 0), (1, 1))
-    1.0
-    >>> ccw((0, 0), (1, 0), (1, 0))
-    0.0
-    >>> ccw((0, 0), (1, 0), (0, -1))
-    -1.0
-
-    """
-    v1 = (p2[0] - p1[0], p2[1] - p1[1])
-    v2 = (p3[0] - p2[0], p3[1] - p2[1])
-    return float(v1[0] * v2[1] - v1[1] * v2[0])
-
-
-def polar_angle(p1: tuple[int, int], p2: tuple[int, int]) -> float:
-    """Get the polar angle of the vector from p1 to p2."""
-    v1 = (p2[0] - p1[0], p2[1] - p1[1])
-    return np.arctan2(v1[1], v1[0])
-
-
-def point_sorter(p1: tuple[int, int], p2: tuple[int, int]) -> tuple[float, float]:
-    """Sort by polar angle and break ties by distance."""
-    return (
-        polar_angle(p1, p2),
-        -math.sqrt((p2[0] - p1[0]) ** 2 + (p2[1] - p1[1]) ** 2),
-    )
-
-
-def atan2notan(y: int, x: int) -> tuple[int, int | Fraction]:
-    """A polar angle substitute without trigonometry or floating points.
-
-    Imagine tracing out a circle counterclockwise and measuring the angle to the tracing vector
-    from the positive x axis. This is the sorted order we wish to achieve. This function will give
-    a lexically smaller tuple for smaller angles.
-    """
-    if x == 0 and y == 0:
-        return (0, 0)
-    if x > 0 and y >= 0:
-        return (0, Fraction(y, x))
-    if x == 0 and y > 0:
-        return (1, 0)
-    if x < 0:
-        return (2, Fraction(y, x))
-    if x == 0 and y < 0:
-        return (3, 0)
-    if y < 0 < x:
-        return (4, Fraction(y, x))
-    raise ValueError("How did you even get here?")
-
-
-def partition_by(lst: list, f: Callable) -> dict:
-    """Partition a list into lists based on a predicate."""
-    d = defaultdict(list)
-    for item in lst:
-        d[f(item)].append(item)
-    return d
-
-
-def plot_points(points: list[tuple[int, int]], hull: list[tuple[int, int]]):
-    x, y = zip(*points)
-    plt.scatter(x, y)
-    x, y = zip(*hull)
-    plt.plot(x, y, color="green")
-    plt.show()
-
-
 def p560(nums: list[int], k: int) -> int:
     """560. Subarray Sum Equals K https://leetcode.com/problems/subarray-sum-equals-k/
 
@@ -3395,59 +3791,6 @@ def p621(tasks: list[str], n: int) -> int:
         len(tasks),
         (max_count - 1) * (n + 1) + max_count_tasks,
     )
-
-
-_empty = object()
-
-
-class MyCircularQueue:
-    def __init__(self, k: int):
-        self.lst = [_empty] * k
-        self.k = k
-        self.front_ix = 0
-        self.rear_ix = 0
-        self.len = 0
-
-    def enQueue(self, value: int) -> bool:
-        if self.isFull():
-            return False
-
-        if len(self) > 0:
-            self.rear_ix = (self.rear_ix + 1) % self.k
-        self.lst[self.rear_ix] = value
-        self.len += 1
-
-        return True
-
-    def deQueue(self) -> bool:
-        if self.isEmpty():
-            return False
-
-        self.lst[self.front_ix] = _empty
-        if len(self) > 1:
-            self.front_ix = (self.front_ix + 1) % self.k
-        self.len -= 1
-
-        return True
-
-    def Front(self) -> int:
-        if self.isEmpty():
-            return -1
-        return self.lst[self.front_ix]
-
-    def Rear(self) -> int:
-        if self.isEmpty():
-            return -1
-        return self.lst[self.rear_ix]
-
-    def isEmpty(self) -> bool:
-        return len(self) == 0
-
-    def isFull(self) -> bool:
-        return len(self) == self.k
-
-    def __len__(self) -> int:
-        return self.len
 
 
 def p622(cmds, inputs):
@@ -3730,25 +4073,6 @@ def p791(order: str, s: str) -> str:
             return 30
 
     return "".join(sorted(s, key=key_fn))
-
-
-def is_similar(s1: str, s2: str) -> bool:
-    """
-    Examples:
-    >>> is_similar("abc", "abc")
-    True
-    >>> is_similar("abc", "acb")
-    True
-    >>> is_similar("abc", "abcd")
-    False
-    >>> is_similar("abc", "abd")
-    False
-
-    """
-    if len(s1) != len(s2):
-        return False
-    diff_chars = sum(c1 != c2 for c1, c2 in zip(s1, s2))
-    return diff_chars in {0, 2}
 
 
 def p826(difficulty: list[int], profit: list[int], worker: list[int]) -> int:
@@ -5002,6 +5326,89 @@ def p1608(nums: list[int]) -> int:
     return -1
 
 
+def p1665(tasks: list[list[int]]) -> int:
+    """1665. Minimum Initial Energy to Finish Tasks https://leetcode.com/problems/minimum-initial-energy-to-finish-tasks/
+
+    You can prove that we should first tackle the tasks with the largest gap
+    between min - actual energy. Intuitively, this is because you should tackle
+    the high activation energy tasks when you have the most energy. For
+    instance, if [[1, 100], [1, 2]], the first task forces at least 100 in the
+    bank. A derivable formula is max_k(prefix_actual_k + min_k) where
+    prefix_actual_k is the sum of actual energy of the first k - 1 tasks. The
+    problem has a fixed total cost, so we need to minimize the peak/max energy.
+    With an exchange argument, we can prove the sort order.
+
+    Examples
+    --------
+    >>> p1665([[1, 2], [2, 4], [4, 8]])
+    8
+    >>> p1665([[1, 3], [2, 4], [10, 11], [10, 12], [8, 9]])
+    32
+    >>> p1665([[1, 7], [2, 8], [3, 9], [4, 10], [5, 11], [6, 12]])
+    27
+
+    """
+    tasks = sorted(tasks, key=lambda x: x[1] - x[0], reverse=True)
+    prefix = 0
+    energy = tasks[0][1]
+    for i in range(len(tasks) - 1):
+        prefix += tasks[i][0]
+        energy = max(energy, tasks[i + 1][1] + prefix)
+    return energy
+
+
+def p1674(nums: list[int], limit: int) -> int:
+    """1674. Minimum Moves to Make Array Complementary https://leetcode.com/problems/minimum-moves-to-make-array-complementary/
+
+    You can reason out that for all T on the number line, the cost to convert
+    all pairs to the number T is:
+
+    cost(T) = sum(
+        0 if T = x + y
+        1 if min(x, y) <= T <= max(x, y) + limit
+        2 otherwise
+        for x, y in pairs)
+
+    So we need to scan through all 1 <= T <= 2 * limit + 2 to find the minimum
+    cost. We can do this in O(n) by using a difference array. In this problem,
+    the size of the array isn't very large, so not using a sparse representation
+    is fine.
+
+    Examples
+    --------
+    >>> p1674([1, 2, 4, 3], 4)
+    1
+    >>> p1674([1, 2, 2, 1], 2)
+    2
+    >>> p1674([1, 2, 1, 2], 2)
+    0
+
+    """
+    n = len(nums)
+    n_pairs = n // 2
+    pairs = [(nums[i], nums[n - i - 1]) for i in range(n_pairs)]
+    intervals = [(min(x, y) + 1, max(x, y) + limit) for x, y in pairs]
+    # print(pairs)
+    # print(intervals)
+    count_map = [0] * (2 * limit + 2)
+    for i in range(n_pairs):
+        a, b = pairs[i]
+        L, R = intervals[i]
+        count_map[L] += 1
+        count_map[R + 1] -= 1
+        count_map[a + b] += 1
+        count_map[a + b + 1] -= 1
+
+    # print(count_map)
+
+    result = 0
+    for j in range(1, len(count_map)):
+        count_map[j] += count_map[j - 1]
+        result = max(result, count_map[j])
+
+    return n - result
+
+
 def p1680(n: int) -> int:
     """1680. Concatenation of Consecutive Binary Numbers https://leetcode.com/problems/concatenation-of-consecutive-binary-numbers/
 
@@ -5067,99 +5474,6 @@ def p1697(n: int, edgeList: list[list[int]], queries: list[list[int]]) -> list[b
         result[j] = find(q0) == find(q1)
 
     return result
-
-
-def get_moves_list(nums: list[int], k: int) -> tuple[list[int], list[int], list[int]]:
-    """Test three ways to calculate the absolute value distance.
-
-    For testing 1703.
-
-    Examples
-    --------
-    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 2)
-    >>> a == b == c
-    True
-    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 3)
-    >>> a == b == c
-    True
-    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 4)
-    >>> a == b == c
-    True
-    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 5)
-    >>> a == b == c
-    True
-    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 6)
-    >>> a == b == c
-    True
-    >>> a, b, c = get_moves_list([0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1], 8)
-    >>> a == b == c
-    True
-
-    """
-
-    def calc1(stack: deque, k: int) -> int:
-        """Calculate using the absolute value formula with the indices."""
-        mid = k // 2
-        return sum(abs(stack[mid] - i) for i in stack)
-
-    def method1(nums: list[int], k: int) -> list[int]:
-        """Calculate using the absolute value formula with the indices."""
-        if len(nums) == k or k == 1:
-            return [0]
-
-        moves = []
-        stack = deque()
-        s = 0
-        for i, n in enumerate(nums):
-            if n == 1:
-                stack.append(i)
-                if stack and len(stack) > k:
-                    s = s - stack.popleft()
-                if len(stack) == k:
-                    moves.append(calc1(stack, k))
-
-        return moves
-
-    def calc2(gaps: list, k: int, j: int) -> int:
-        """Calculate using the absolute value formula with the differences between indices."""
-        return sum(min(i + 1, k - (i + 1)) * gaps[j + i] for i in range(k - 1))
-
-    def method2(nums: list[int], k: int) -> list[int]:
-        """Calculate using the absolute value formula with the differences between indices."""
-        gaps = get_gaps(nums)
-        return [calc2(gaps, k, j) for j in range(len(gaps) - k + 2)]
-
-    def method3(nums: list[int], k: int) -> list[int]:
-        """Calculate using a magic iterative approach."""
-        gaps = get_gaps(nums)
-
-        if len(gaps) == k - 1:
-            return [calc2(gaps, k, 0)]
-
-        moves = [calc2(gaps, k, 0), calc2(gaps, k, 1)]
-        delta1 = moves[-1] - moves[-2]
-        for j in range(0, len(gaps) - k):
-            if k % 2 == 1:
-                delta2 = gaps[j] - gaps[j + k // 2] - gaps[j + k // 2 + 1] + gaps[j + k]
-            else:
-                delta2 = gaps[j] - 2 * gaps[j + k // 2] + gaps[j + k]
-            delta1 = delta1 + delta2
-            moves.append(moves[-1] + delta1)
-        return moves
-
-    return method1(nums, k), method2(nums, k), method3(nums, k)
-
-
-def get_gaps(nums: list[int]) -> list[int]:
-    gaps = []
-    prev = -1
-    for i, x in enumerate(nums):
-        if prev == -1 and x == 1:
-            prev = i
-        elif prev != -1 and x == 1:
-            gaps.append(i - prev)
-            prev = i
-    return gaps
 
 
 def p1703(nums: list[int], k: int) -> int:
@@ -5674,6 +5988,20 @@ def p2540(nums1: list[int], nums2: list[int]) -> int:
             j += 1
 
     return -1
+
+
+def p2553(nums: list[int]) -> list[int]:
+    """2553. Separate the Digits in an Array https://leetcode.com/problems/separate-the-digits-in-an-array
+
+    Examples
+    --------
+    >>> p2553([13, 25, 83, 77])
+    [1, 3, 2, 5, 8, 3, 7, 7]
+    >>> p2553([7, 1, 3, 9])
+    [7, 1, 3, 9]
+
+    """
+    return [int(y) for x in nums for y in str(x)]
 
 
 def p2608(n: int, edges: list[list[int]]) -> int:

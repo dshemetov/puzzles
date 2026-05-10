@@ -43,3 +43,6 @@ lint.extend-select = [
 ]
 lint.ignore = ["SIM108", "B905"]
 format.docstring-code-format = true
+
+[tool.uv]
+exclude-newer = "7 days"
