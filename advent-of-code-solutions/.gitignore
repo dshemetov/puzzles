@@ -14,3 +14,4 @@ build
 puzzles.db
 rust/target/
 rust/.cache
+zig/test
