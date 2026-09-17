@@ -2,7 +2,7 @@
 name = "advent"
 version = "0.1.0"
 description = "Advent of Code solutions."
-requires-python = ">=3.14"
+requires-python = ">=3.14.10"
 dependencies = [
   "cython>=3.0.11",
   "matplotlib>=3.9.2",

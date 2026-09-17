@@ -1,0 +1,152 @@
+# Picks up AOC_TOKEN from a .env here or in a parent directory, if there is one.
+set dotenv-load
+set quiet
+
+year := `date +%Y`
+# Which language to run when a day has several: `just lang=go run 1`. Empty means the first file found.
+lang := env("AOC_LANG", "")
+
+# List available recipes.
+default:
+    just --list
+
+# Download a day's input into inputs/ (skipped if already there). Needs AOC_TOKEN.
+fetch day year=year:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    f="inputs/{{year}}/$(printf '%02d' {{day}}).txt"
+    [ -s "$f" ] && exit 0
+    : "${AOC_TOKEN:?set AOC_TOKEN to your adventofcode.com session cookie}"
+    mkdir -p "$(dirname "$f")"
+    curl -fsS --cookie "session=$AOC_TOKEN" "https://adventofcode.com/{{year}}/day/{{day}}/input" -o "$f"
+    echo "saved $f"
+
+# Create solutions/<year>/dNN.<ext> from the template for that language.
+new day ext="py" year=year:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    f="solutions/{{year}}/d$(printf '%02d' {{day}}).{{ext}}"
+    [ -e "$f" ] && { echo "$f already exists"; exit 1; }
+    mkdir -p "$(dirname "$f")"
+    sed 's/@URL@/https:\/\/adventofcode.com\/{{year}}\/day\/{{day}}/' "templates/template.{{ext}}" > "$f"
+    echo "created $f"
+
+# Run a day on the real input (fetching it if needed), or on a file you pass.
+# Each answer is also labelled on stderr against what answers/<year>.txt knows.
+run day input="" year=year:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    d=$(printf '%02d' {{day}})
+    in="{{input}}"
+    if [ -z "$in" ]; then just fetch {{day}} {{year}}; in="inputs/{{year}}/$d.txt"; fi
+    cmd=$(just _cmd "$(just _file {{day}} {{year}} "{{lang}}")" "$in")
+    mapfile -t out <<< "$($cmd)"
+    for i in 0 1; do
+      echo "${out[$i]:-}"
+      just _status {{year}} {{day}} "$(echo ab | cut -c$((i+1)))" "${out[$i]:-}" >&2
+    done
+
+# Print the path of a day's solution file, honouring `lang`.
+_file day year lang:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    base="solutions/{{year}}/d$(printf '%02d' {{day}})"
+    if [ -n "{{lang}}" ]; then echo "$base.{{lang}}"; else ls "$base".* | head -1; fi
+
+# Print the shell command that runs a solution file on an input file. The one place to add languages.
+# Compiled languages build into .cache/bin first (only when the source is newer), so timing excludes the build.
+_cmd file input:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    f="{{file}}"
+    bin=".cache/bin/$(basename "$(dirname "$f")")_$(basename "${f%.*}")"
+    build() { mkdir -p .cache/bin; [ -x "$bin" ] && [ "$bin" -nt "$f" ] || "$@" >&2; echo "$bin {{input}}"; }
+    case "$f" in
+      *.py)   echo "uv run $f {{input}}" ;;
+      *.jl)   echo "julia --startup-file=no $f {{input}}" ;;
+      *.lisp) echo "sbcl --script $f {{input}}" ;;
+      *.nu)   echo "nu $f {{input}}" ;;
+      *.go)   build go build -o "$bin" "$f" ;;
+      *.rs)   build rustc -O --edition 2024 -o "$bin" "$f" ;;
+      *) echo "no runner for $f" >&2; exit 1 ;;
+    esac
+
+# Julia REPL with a day loaded: `input` is the raw text, `lines` the parsed data. Re-`include` after edits.
+jl-repl day year=year:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just fetch {{day}} {{year}}
+    f="solutions/{{year}}/d$(printf '%02d' {{day}}).jl"
+    in="inputs/{{year}}/$(printf '%02d' {{day}}).txt"
+    exec julia --startup-file=no -i -e "include(\"$f\"); input = read(\"$in\", String); lines = parse_input(input); println(\"loaded $f: input, lines, part_a, part_b\")"
+
+# Time one day with hyperfine (whole process, including interpreter startup).
+time day year=year:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    just fetch {{day}} {{year}}
+    in="inputs/{{year}}/$(printf '%02d' {{day}}).txt"
+    hyperfine -N --warmup 1 "$(just _cmd "$(just _file {{day}} {{year}} "{{lang}}")" "$in")"
+
+# Time every day in a year in one hyperfine table.
+time-year year=year:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    args=()
+    for f in solutions/{{year}}/d*.*; do
+      d=$((10#$(basename "$f" | sed -E 's/^d([0-9]+)\..*/\1/')))
+      just fetch "$d" {{year}}
+      in="inputs/{{year}}/$(printf '%02d' "$d").txt"
+      args+=(-n "$(basename "$f")" "$(just _cmd "$f" "$in")")
+    done
+    hyperfine -N --warmup 1 "${args[@]}"
+
+# Label one answer: ok / WRONG (differs from known right) / known wrong / unchecked.
+_status year day part value:
+    #!/usr/bin/env bash
+    f="answers/{{year}}.txt"
+    d=$(printf '%02d' {{day}})
+    [ -f "$f" ] || { echo "  {{part}}: unchecked"; exit 0; }
+    right=$(awk -v d="$d" -v p={{part}} '$1==d && $2==p && $3=="right" {print $4}' "$f")
+    if [ -n "$right" ]; then
+      [ "$right" = "{{value}}" ] && echo "  {{part}}: ok" || echo "  {{part}}: DIFFERS from known right answer $right"
+    elif awk -v d="$d" -v p={{part}} -v v="{{value}}" '$1==d && $2==p && $3=="wrong" && $4==v {f=1} END {exit !f}' "$f"; then
+      echo "  {{part}}: KNOWN WRONG, do not resubmit"
+    else
+      echo "  {{part}}: unchecked"
+    fi
+
+# Run every solution file in a year (every language) and label each answer.
+check year=year timeout="60":
+    #!/usr/bin/env bash
+    set -uo pipefail
+    for f in solutions/{{year}}/d*.*; do
+      base=$(basename "$f")
+      d=$((10#$(echo "$base" | sed -E 's/^d([0-9]+)\..*/\1/')))
+      echo "$base"
+      timeout {{timeout}} just lang="${base##*.}" run "$d" "" {{year}} 2>&1 >/dev/null | rg '^  [ab]:' || echo "  run failed or timed out"
+    done
+
+# Record the current answer for a day's part as correct (replaces any earlier right answer).
+right day part year=year: (_record day part "right" year)
+
+# Record the current answer for a day's part as rejected by the site.
+wrong day part year=year: (_record day part "wrong" year)
+
+_record day part kind year:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    d=$(printf '%02d' {{day}})
+    f="answers/{{year}}.txt"
+    mkdir -p answers; touch "$f"
+    case "{{part}}" in a) n=1 ;; b) n=2 ;; *) echo "part must be a or b"; exit 1 ;; esac
+    val=$(just run {{day}} "" {{year}} 2>/dev/null | sed -n "${n}p")
+    [ -n "$val" ] || { echo "no answer produced"; exit 1; }
+    if [ "{{kind}}" = right ]; then
+      grep -v "^$d {{part}} right " "$f" > "$f.new" || true
+    else
+      grep -vxF "$d {{part}} wrong $val" "$f" > "$f.new" || true
+    fi
+    echo "$d {{part}} {{kind}} $val" >> "$f.new"
+    sort "$f.new" > "$f"; rm "$f.new"
+    echo "recorded: $d {{part}} {{kind}} $val"

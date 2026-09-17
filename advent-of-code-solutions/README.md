@@ -2,6 +2,33 @@
 
 [Advent of Code](https://adventofcode.com/) is a great set of Christmas-themed coding challenges.
 
+## Per-day scripts
+
+Each day is one self-contained file in `solutions/<year>/dNN.<ext>` that takes an input path
+and prints the two answers, one per line, with per-part timings on stderr. Python, Go, Common Lisp
+and Nushell are supported; a day can exist in several languages at once. Inputs (`inputs/`) and
+known answers (`answers/`) are git-ignored; the puzzle authors ask that they stay out of public repos.
+
+```sh
+export AOC_TOKEN=...        # or put it in a .env; session cookie from adventofcode.com
+just new 1 go               # solutions/<this year>/d01.go from templates/template.go
+just run 1                  # fetches the input if missing, runs the day
+just lang=lisp run 1        # pick a language when a day has several (or AOC_LANG=lisp)
+just year=2024 run 3        # pick a year (this goes before the recipe name)
+just right 1 a              # record the current part a answer as correct
+just wrong 1 b              # record the current part b answer as rejected (can repeat)
+just check                  # run every file this year, labelling each answer
+just jl-repl 1              # Julia REPL with day 1 loaded (`input`, `lines`); re-include after edits
+just time 1                 # hyperfine one day; `just time-year` for the whole year
+```
+
+`just check` runs every language's file for every day against the same `answers/<year>.txt`,
+so a second language is also a cross-check. Adding a language means one `case` branch in the
+`_cmd` recipe and one `templates/template.<ext>`. The first version of the Lisp and Nushell
+days were transliterations of the Python; `notes/` has what the comparison showed.
+
+Python 2015-2024 uses the older runner below.
+
 ## Python Usage
 
 Commands expected to be run in the `python` directory.
@@ -74,7 +101,7 @@ Managed to get Julia to run in under 1 second for all 2024 problems.
    5 │  2024      3  a     159892596                          0.0003821   81038.7        0.157507
    6 │  2024      3  b     92626942                           0.0011151   67194.9        0.0155559
    7 │  2024      4  a     2336                               0.0014092   18111.9        0.0
-   8 │  2024      4  b     2630                               0.0003395    4033.6        0.0
+   8 │  2024      4  b     1831                               0.0003395    4033.6        0.0
    9 │  2024      5  a     6505                               0.0006594   10845.9        0.0
   10 │  2024      5  b     6897                               0.0005755   15675.4        0.0
   11 │  2024      6  a     4789                               0.001057    30397.9        0.0127697
