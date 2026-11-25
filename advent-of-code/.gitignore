@@ -15,6 +15,3 @@ lisp/.cache
 inputs/
 answers/
 .cache/
-
-# Cython-generated C
-solutions/**/extras/*_cython.c

@@ -5,28 +5,26 @@
 """Monkey in the Middle
 https://adventofcode.com/2022/day/11
 
+Part b follows each item on its own through all 10000 rounds. Items never affect
+each other, and only the number of inspections per monkey matters, not the order
+of the throws.
+
 Lessons learned:
-- The pure Python solution took 300ms, Numba took 50ms, Cython took 20ms.
+- Part b in pure Python is slow; a plain scalar loop under Numba takes about 4ms.
+- The first Numba version used array operations (np.where, a vectorized op) on
+  tiny rows. The allocations made it about 7x slower than the scalar loop. See
+  d11-old-numba.py.
 - Use default values in lambda functions to avoid late binding errors.
 - Lambda functions are a performance hit.
-
-Resources:
-- Compiling during development can be done with either:
-    - `cythonize -i -a p11_cython.pyx`
-    - https://docs.cython.org/en/latest/src/userguide/source_files_and_compilation.html#pyximport
-- Distributing requires some setup.py configuration:
-    - https://setuptools.pypa.io/en/latest/userguide/ext_modules.html
 """
 
+import re
 import sys
 import time
-import re
 from heapq import nlargest
 
 import numba as nb
 import numpy as np
-
-# from advent.advent2022.p11_cython import solve_b_cy
 
 r = re.compile(
     r"""Monkey (\d+):
@@ -36,6 +34,33 @@ r = re.compile(
 .*If true: throw to monkey (\d+)
 .*If false: throw to monkey (\d+)"""
 )
+
+
+@nb.njit(cache=True)
+def count_inspections(items, start, ops, vals, tests, true_to, false_to, mod, rounds):
+    """Return how many times each monkey inspected an item.
+
+    items[i] is an item's worry level and start[i] the monkey holding it. ops[m] is 0
+    for "+" and 1 for "*", and vals[m] is the operand (-1 means "old").
+    """
+    counts = np.zeros(len(ops), dtype=np.int64)
+    for i in range(len(items)):
+        x = items[i]
+        m = start[i]
+        rnd = 0
+        while rnd < rounds:
+            counts[m] += 1
+
+            v = x if vals[m] < 0 else vals[m]
+            x = (x + v if ops[m] == 0 else x * v) % mod
+
+            nxt = true_to[m] if x % tests[m] == 0 else false_to[m]
+            # A throw to a lower-numbered monkey is only handled next round.
+            if nxt < m:
+                rnd += 1
+            m = nxt
+    return counts
+
 
 
 def part_a(s: str) -> int:
@@ -89,96 +114,35 @@ def part_a(s: str) -> int:
     return lo * hi
 
 
-@nb.vectorize(["int64(int64, int64, int64, int64)"], nopython=True, fastmath=True, cache=True)
-def monkey_op(x: int, op: int, val: int, mod: int) -> int:
-    if x == 0:
-        return 0
-
-    if op == 0:
-        if val == -1:
-            out = x + x
-        else:
-            out = x + val
-    elif op == 1:
-        if val == -1:
-            out = x * x
-        else:
-            out = x * val
-
-    return out % mod
-
-
-@nb.jit(nopython=True, fastmath=True, cache=True)
-def do_monkey_throws(items_matrix: np.ndarray, monkey_datas: np.ndarray, mod: int) -> np.ndarray:
-    for _ in range(10000):
-        for i in range(len(monkey_datas)):
-            # Get monkey data
-            op, val, test, true_monkey, false_monkey, inspects = monkey_datas[i, :]
-            # Update stress levels
-            items_matrix[i, :] = monkey_op(items_matrix[i, :], op, val, mod)
-            # Find item destinations
-            out = np.where(items_matrix[i, :] % test == 0, true_monkey, false_monkey)
-            # Move items
-            for j in range(out.shape[0]):
-                # No more items to throw
-                if items_matrix[i, j] == 0:
-                    # Update throw count
-                    break
-
-                # Throw item
-                for k in range(items_matrix.shape[1]):
-                    # First empty spot found
-                    if items_matrix[out[j], k] == 0:
-                        items_matrix[out[j], k] = items_matrix[i, j]
-                        items_matrix[i, j] = 0
-                        monkey_datas[i, 5] += 1
-                        break
-
-
-def solve_b_numba(s: str) -> int:
+def part_b(s: str) -> int:
     """
     Examples:
     >>> part_b(test_string)
     2713310158
     """
-    s = s.strip("\n")
-    monkey_items = []
-    monkey_datas = []
-    for monkey in s.split("\n\n"):
-        num, items, op, val, test, true_monkey, false_monkey = r.match(monkey).groups()
+    monkeys = [r.match(block).groups() for block in s.strip("\n").split("\n\n")]
 
-        monkey_items.append([int(x) for x in items.split(",")])
+    items, start = [], []
+    for m, g in enumerate(monkeys):
+        for x in g[1].split(","):
+            items.append(int(x))
+            start.append(m)
 
-        monkey_data = []
-        monkey_data.append(0 if op == "+" else 1)
-        monkey_data.append(int(val) if val != "old" else -1)
-        monkey_data.append(int(test))
-        monkey_data.append(int(true_monkey))
-        monkey_data.append(int(false_monkey))
-        monkey_data.append(0)
-        monkey_datas.append(monkey_data)
+    ops = np.array([0 if g[2] == "+" else 1 for g in monkeys], dtype=np.int64)
+    vals = np.array([-1 if g[3] == "old" else int(g[3]) for g in monkeys], dtype=np.int64)
+    tests = np.array([int(g[4]) for g in monkeys], dtype=np.int64)
+    true_to = np.array([int(g[5]) for g in monkeys], dtype=np.int64)
+    false_to = np.array([int(g[6]) for g in monkeys], dtype=np.int64)
 
-    monkey_datas = np.array(monkey_datas, dtype=np.int64)
-    mod = monkey_datas[:, 2].prod()
+    # Worry levels only matter modulo the product of the tests.
+    mod = int(tests.prod())
 
-    # Make a monkey x item matrix, where each item is either the value of the item or 0 if it has been thrown
-    total_items = sum(len(e) for e in monkey_items)
-    items_matrix = np.zeros((len(monkey_datas), total_items), dtype=np.int64)
-
-    # The left-most entries contain the items
-    for i, items in enumerate(monkey_items):
-        items_matrix[i, : len(items)] = items
-
-    do_monkey_throws(items_matrix, monkey_datas, mod)
-
-    lo, hi = nlargest(2, monkey_datas[:, 5])
+    counts = count_inspections(
+        np.array(items, dtype=np.int64), np.array(start, dtype=np.int64),
+        ops, vals, tests, true_to, false_to, mod, 10000,
+    )
+    lo, hi = sorted(counts)[-2:]
     return int(lo * hi)
-
-
-def part_b(s: str) -> int:
-    return solve_b_numba(s)
-    # s = s.strip("\n")
-    # return solve_b_cy(s)
 
 
 test_string = """
