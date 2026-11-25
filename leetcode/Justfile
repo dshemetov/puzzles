@@ -1,0 +1,37 @@
+set quiet
+# Nushell recipes load tools/leet.nu with `use leet.nu`.
+export NU_LIB_DIRS := justfile_directory() / "tools"
+
+# List available recipes.
+default:
+    just --list
+
+# Print a problem statement (the smallest unsolved one if no number is given).
+get number="":
+    #!/usr/bin/env -S nu --no-config-file
+    use leet.nu
+    if "{{number}}" == "" { leet problem } else { leet problem {{number}} }
+
+# Print today's daily challenge.
+daily:
+    #!/usr/bin/env -S nu --no-config-file
+    use leet.nu
+    leet daily
+
+# Create solutions/pNNNN.py from the template.
+new number:
+    #!/usr/bin/env -S nu --no-config-file
+    use leet.nu
+    leet new {{number}}
+
+# Run the doctests of one problem, or of every solution if no number is given.
+# Files with a `# /// script` header (they need packages) run themselves under uv.
+check number="":
+    #!/usr/bin/env bash
+    if [ -n "{{number}}" ]; then files=$(printf 'solutions/p%04d*.py' {{number}}); else files="solutions/*.py"; fi
+    fail=0
+    for f in $files; do
+        if grep -q '^# /// script' "$f"; then cmd="uv run --script $f"; else cmd="uv run python -m doctest $f"; fi
+        if out=$($cmd 2>&1); then :; else echo "FAIL $f"; echo "$out" | head -${LINES_SHOWN:-15}; fail=1; fi
+    done
+    exit $fail
