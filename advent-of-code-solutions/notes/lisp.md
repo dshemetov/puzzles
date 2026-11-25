@@ -7,7 +7,7 @@
 > `run.lisp` and `just test` commands mentioned below no longer exist (`just check 2024` replaces them).
 
 The solutions in `solutions/2024/d*.lisp` transliterate the Python in
-`python/src/advent/advent2024/`, the same way `solutions/2024/d*.nu` does. Running
+`solutions/2024/d*.py`, the same way `solutions/2024/d*.nu` does. Running
 identical algorithms in all three places gives a clean read on where each
 language lands.
 

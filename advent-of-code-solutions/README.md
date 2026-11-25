@@ -31,7 +31,7 @@ days were transliterations of the Python; `notes/` has what the comparison showe
 
 Alternative approaches to a day live beside it as `dNN-name.<ext>` (for example `d09-blocks.jl`). They run
 and get timed in batches like any other file and are checked against the same answers. A file whose first
-five lines contain `aoc: skip <reason>` (in the language's own comment syntax) is left out of `check` and
+eight lines contain `aoc: skip <reason>` (in the language's own comment syntax) is left out of `check` and
 `time-year` unless `all=1` is set, so a deliberately slow solution doesn't slow down every batch.
 
 The Mathematica solutions (2018 notebook, 2019 day 4, 2020 day 3) live under `solutions/`. The notebook is kept
@@ -39,34 +39,7 @@ as it was, and the two `.wl` scripts were ported without being run (no Wolfram e
 them as untested.
 
 `tools/viz_d24.py` draws the 2024 day 24 circuit (`uv run tools/viz_d24.py inputs/2024/24.txt`).
-All 25 Julia days of 2024 live in `solutions/2024/d*.jl`, and the Rust days (2023 days 17-18, 2025 days 1-12) in `solutions/<year>/d*.rs`. Python 2015-2024 uses the older runner below.
-
-## Python Usage
-
-Commands expected to be run in the `python` directory.
-
-```sh
-# Install uv (Linux/MacOS)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Install Python, venv, and dependencies
-uv sync
-
-# Alias the run command for convenience
-alias advent="uv run python -m advent"
-
-# Print the answer to puzzle 2021 day 2 part b
-advent solve -y 2021 -d 2 -p b
-
-# Print the answer to current year's day 2 (both parts)
-advent solve -d 21
-
-# Clear cached answer and solve again
-advent solve -y 2021 -d 2 -c
-
-# See help for more
-advent solve --help
-```
+All 25 Julia days of 2024 live in `solutions/2024/d*.jl`, and the Rust days (2023 days 17-18, 2025 days 1-12) in `solutions/<year>/d*.rs`.
 
 ## Stats
 

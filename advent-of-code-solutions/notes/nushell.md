@@ -7,7 +7,7 @@
 > `run.lisp` and `just test` commands mentioned below no longer exist (`just check 2024` replaces them).
 
 The nushell solutions in `solutions/2024/d*.nu` transliterate the Python in
-`python/src/advent/advent2024/`. The point was to run identical algorithms in
+`solutions/2024/d*.py`. The point was to run identical algorithms in
 both languages and see where nushell lands.
 
 ## Method
