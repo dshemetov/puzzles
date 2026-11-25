@@ -25,8 +25,8 @@ just time 1                 # hyperfine one day; `just time-year` for the whole 
 ```
 
 `just check` runs every language's file for every day against the same `answers/<year>.txt`,
-so a second language is also a cross-check. Adding a language means one `case` branch in the
-`_cmd` recipe and one `templates/template.<ext>`. The first version of the Lisp and Nushell
+so a second language is also a cross-check. Adding a language means one `match` branch in
+`runner` in `tools/aoc.nu` (where the recipes' Nushell logic lives) and one `templates/template.<ext>`. The first version of the Lisp and Nushell
 days were transliterations of the Python; `notes/` has what the comparison showed.
 
 Alternative approaches to a day live beside it as `dNN-name.<ext>` (for example `d09-blocks.jl`). They run
