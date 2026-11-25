@@ -1,4 +1,5 @@
 # 6. https://adventofcode.com/2024/day/6
+# aoc: skip part b does not finish within 60s in Nushell
 
 const DIRECTIONS = [[-1 0] [0 1] [1 0] [0 -1]]
 const TURN_RIGHT = [1 2 3 0]

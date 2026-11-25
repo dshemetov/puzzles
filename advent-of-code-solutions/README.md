@@ -5,8 +5,8 @@
 ## Per-day scripts
 
 Each day is one self-contained file in `solutions/<year>/dNN.<ext>` that takes an input path
-and prints the two answers, one per line, with per-part timings on stderr. Python, Go, Common Lisp
-and Nushell are supported; a day can exist in several languages at once. Inputs (`inputs/`) and
+and prints the two answers, one per line, with per-part timings on stderr. Python, Go, Common Lisp,
+Nushell, Julia and Rust are supported; a day can exist in several languages at once. Inputs (`inputs/`) and
 known answers (`answers/`) are git-ignored; the puzzle authors ask that they stay out of public repos.
 
 ```sh
@@ -17,7 +17,9 @@ just lang=lisp run 1        # pick a language when a day has several (or AOC_LAN
 just year=2024 run 3        # pick a year (this goes before the recipe name)
 just right 1 a              # record the current part a answer as correct
 just wrong 1 b              # record the current part b answer as rejected (can repeat)
-just check                  # run every file this year, labelling each answer
+just check                  # run every file this year, labelling each answer (just all=1 check includes skipped)
+just variant=blocks run 9   # run solutions/<year>/d09-blocks.<ext>, an alternative approach to the same day
+just setup-julia           # one time: the shared Julia environment (@aoc) that days with packages use
 just jl-repl 1              # Julia REPL with day 1 loaded (`input`, `lines`); re-include after edits
 just time 1                 # hyperfine one day; `just time-year` for the whole year
 ```
@@ -27,7 +29,14 @@ so a second language is also a cross-check. Adding a language means one `case` b
 `_cmd` recipe and one `templates/template.<ext>`. The first version of the Lisp and Nushell
 days were transliterations of the Python; `notes/` has what the comparison showed.
 
-Python 2015-2024 uses the older runner below.
+Alternative approaches to a day live beside it as `dNN-name.<ext>` (for example `d09-blocks.jl`). They run
+and get timed in batches like any other file and are checked against the same answers. A file whose first
+five lines contain `aoc: skip <reason>` (in the language's own comment syntax) is left out of `check` and
+`time-year` unless `all=1` is set, so a deliberately slow solution doesn't slow down every batch.
+
+`tools/viz_d24.py` draws the 2024 day 24 circuit (`uv run tools/viz_d24.py inputs/2024/24.txt`).
+All 25 Julia days of 2024 live in `solutions/2024/d*.jl`. Python 2015-2024 and the Rust 2023/2025 days
+use the older runners below.
 
 ## Python Usage
 
@@ -54,24 +63,6 @@ advent solve -y 2021 -d 2 -c
 
 # See help for more
 advent solve --help
-```
-
-## Julia Usage
-
-Open the Julia REPL in the `julia` directory and run the following commands.
-
-```julia
-# Install dependencies
-using Pkg
-Pkg.activate(".")
-Pkg.instantiate()
-
-# Run the test case for 2024 day 2 part b
-using Advent
-Advent.solve(2024, 2, 'b')
-
-# Get the actual solutions for every 2024 problem
-Advent.solve(2024, false)
 ```
 
 ## Rust Usage

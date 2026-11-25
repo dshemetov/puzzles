@@ -119,5 +119,5 @@ costs about 26 ms to spawn, which only amortises in a long-lived session.
 
 ## Known slow case
 
-`solutions/2024/d06.nu` part b does not finish in any reasonable time, so `just check` reports it as
-timed out. Every other Nushell day matches the Python answers.
+`solutions/2024/d06.nu` part b does not finish in 60 seconds, so the file carries an `aoc: skip` marker and
+`just check` leaves it out unless you set `all=1`. Every other Nushell day matches the Python answers.
