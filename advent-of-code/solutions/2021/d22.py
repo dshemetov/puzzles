@@ -35,7 +35,6 @@ def apply_until_fixed(func):
     return new_func
 
 
-
 def part_a(s: str) -> int:
     """
     Examples:
@@ -211,7 +210,7 @@ class NooiceSlice:
         return self.stop - self.start
 
     def __repr__(self) -> str:
-        return f"[{self.start} to {self.stop-1}]"
+        return f"[{self.start} to {self.stop - 1}]"
 
 
 class CubeSlice:

@@ -62,7 +62,6 @@ def count_inspections(items, start, ops, vals, tests, true_to, false_to, mod, ro
     return counts
 
 
-
 def part_a(s: str) -> int:
     """
     Examples:
@@ -138,8 +137,15 @@ def part_b(s: str) -> int:
     mod = int(tests.prod())
 
     counts = count_inspections(
-        np.array(items, dtype=np.int64), np.array(start, dtype=np.int64),
-        ops, vals, tests, true_to, false_to, mod, 10000,
+        np.array(items, dtype=np.int64),
+        np.array(start, dtype=np.int64),
+        ops,
+        vals,
+        tests,
+        true_to,
+        false_to,
+        mod,
+        10000,
     )
     lo, hi = sorted(counts)[-2:]
     return int(lo * hi)

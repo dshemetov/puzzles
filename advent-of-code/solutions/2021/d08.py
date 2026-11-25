@@ -22,7 +22,6 @@ def reverse_dict(d: dict) -> dict:
     return {value: key for key, value in d.items()}
 
 
-
 def part_a(s: str) -> int:
     """
     Examples:

@@ -26,7 +26,6 @@ def nlargest(n: int, it: Iterable) -> list:
     return top_n
 
 
-
 def part_a(s: str) -> int:
     """
     Examples:

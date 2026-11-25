@@ -188,9 +188,7 @@ class Reversi:
 
 
 def main(
-    turn: int = typer.Option(
-        1, help="1 if red (Reversi black) goes first, -1 if purple goes first."
-    ),
+    turn: int = typer.Option(1, help="1 if red (Reversi black) goes first, -1 if purple goes first."),
 ):
     r = Reversi()
     g = r.get_random_draw_game_full_board(turn)

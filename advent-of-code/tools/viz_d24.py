@@ -88,14 +88,23 @@ def main(path: str, out: str = "dag_visualization.png") -> None:
     for marker in ("o", "^", "s"):
         nodes = [n for n in g if style(g, n)[1] == marker]
         nx.draw_networkx_nodes(
-            g, pos, nodelist=nodes, node_shape=marker, node_size=700, ax=ax,
-            node_color=[style(g, n)[0] for n in nodes], edgecolors="black", linewidths=1.5,
+            g,
+            pos,
+            nodelist=nodes,
+            node_shape=marker,
+            node_size=700,
+            ax=ax,
+            node_color=[style(g, n)[0] for n in nodes],
+            edgecolors="black",
+            linewidths=1.5,
         )
     labels = {n: f"{n}\n({values[n]})" if n in values else f"{n}\n{g.nodes[n]['op']}" for n in g}
     nx.draw_networkx_labels(g, pos, labels=labels, font_size=7, ax=ax)
 
-    handles = [plt.Line2D([], [], marker="o", color="tab:green", linestyle="", label="Input (x/y)"),
-               plt.Line2D([], [], marker="o", color="tab:red", linestyle="", label="Output (z)")]
+    handles = [
+        plt.Line2D([], [], marker="o", color="tab:green", linestyle="", label="Input (x/y)"),
+        plt.Line2D([], [], marker="o", color="tab:red", linestyle="", label="Output (z)"),
+    ]
     handles += [plt.Line2D([], [], marker=m, color=c, linestyle="", label=text) for c, m, text in GATES.values()]
     ax.legend(handles=handles, title="Node types", loc="upper right")
     ax.set_title("Logic gate DAG, one column per bit")

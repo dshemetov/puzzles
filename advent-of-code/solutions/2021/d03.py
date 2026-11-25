@@ -23,7 +23,6 @@ def binary_to_int(ls: list[int]) -> int:
     return int("".join(str(i) for i in ls), 2)
 
 
-
 def part_a(s: str) -> int:
     """
     Examples:

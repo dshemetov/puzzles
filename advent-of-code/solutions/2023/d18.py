@@ -7,6 +7,7 @@
 import sys
 import time
 
+
 def part_a(s: str) -> int:
     """
     Examples:

@@ -123,8 +123,7 @@ def a_star(
             distance = (
                 1
                 + len(current_moves)
-                + heuristic_weight
-                * heuristic_distance(make_moves(move, current_state), end_state)
+                + heuristic_weight * heuristic_distance(make_moves(move, current_state), end_state)
             )
             if distance < best_dict.get(tuple(current_state.flatten()), float("inf")):
                 best_dict[tuple(current_state.flatten())] = distance
@@ -190,9 +189,7 @@ class TestSolver:
 
     @skip("This test is too slow.")
     def test_hard_case(self):
-        start_state = array(
-            [[1, 8, 16, 7], [2, 3, 4, 13], [14, 9, 15, 6], [11, 10, 12, 5]]
-        )
+        start_state = array([[1, 8, 16, 7], [2, 3, 4, 13], [14, 9, 15, 6], [11, 10, 12, 5]])
         solution = a_star(start_state, END_STATE)
         assert allclose(make_moves(solution, start_state), END_STATE)
 
@@ -200,9 +197,7 @@ class TestSolver:
     def test_extremely_hard_case(self):
         # The hardest test, requires 80 moves
         # https://puzzling.stackexchange.com/questions/24265/what-is-the-superflip-on-15-puzzle
-        start_state = array(
-            [[15, 14, 8, 12], [10, 11, 9, 13], [2, 6, 5, 1], [3, 4, 7, EMPTY_SPACE]]
-        )
+        start_state = array([[15, 14, 8, 12], [10, 11, 9, 13], [2, 6, 5, 1], [3, 4, 7, EMPTY_SPACE]])
         solution = a_star(start_state, END_STATE)
         assert len(solution) == 80
 

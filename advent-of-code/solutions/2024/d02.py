@@ -54,7 +54,7 @@ def part_b(s: str) -> int:
 
         # Try removing one element at a time
         for j in range(len(nums)):
-            new_nums = np.concatenate([nums[:j], nums[j+1:]])
+            new_nums = np.concatenate([nums[:j], nums[j + 1 :]])
 
             if len(new_nums) < 2:
                 continue
