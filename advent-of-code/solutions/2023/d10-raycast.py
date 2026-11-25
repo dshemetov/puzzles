@@ -5,9 +5,9 @@
 """10. Pipe Maze https://adventofcode.com/2023/day/10"""
 # Variant of d10.py: part b counts inner points by ray casting instead of the shoelace formula and Pick's theorem
 
-from collections import defaultdict
 import sys
 import time
+from collections import defaultdict
 
 
 def part_a(s: str) -> int:

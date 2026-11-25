@@ -4,19 +4,20 @@
 # ///
 """1. Sonar Sweep https://adventofcode.com/2021/day/1"""
 
+import itertools
 import sys
 import time
 
 
 def part_a(s: str) -> int:
     nums = [int(x) for x in s.split("\n")]
-    return sum(1 if y > x else 0 for x, y in zip(nums[:-1], nums[1:]))
+    return sum(1 if y > x else 0 for x, y in itertools.pairwise(nums))
 
 
 def part_b(s: str) -> int:
     nums = [int(x) for x in s.split("\n")]
     windowed_sums = [sum(triple) for triple in zip(nums[:-2], nums[1:-1], nums[2:])]
-    return sum(1 if y > x else 0 for x, y in zip(windowed_sums[:-1], windowed_sums[1:]))
+    return sum(1 if y > x else 0 for x, y in itertools.pairwise(windowed_sums))
 
 
 if __name__ == "__main__":

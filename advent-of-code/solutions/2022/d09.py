@@ -8,6 +8,7 @@ https://adventofcode.com/2022/day/9
 
 import sys
 import time
+
 import numpy as np
 
 

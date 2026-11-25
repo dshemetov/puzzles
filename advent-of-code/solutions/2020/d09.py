@@ -22,7 +22,7 @@ def part_a(s: str) -> int:
 def make_pairs(nums):
     from itertools import product
 
-    return set([x + y for x, y in product(nums, repeat=2) if x != y])
+    return {x + y for x, y in product(nums, repeat=2) if x != y}
 
 
 def part_b(s: str) -> int:

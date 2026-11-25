@@ -19,7 +19,7 @@ def part_a(s: str) -> int:
         if "ab" in lin or "cd" in lin or "pq" in lin or "xy" in lin:
             continue
 
-        if not any([ii in lin for ii in alphabet2]):
+        if not any(ii in lin for ii in alphabet2):
             print(lin)
             continue
 
@@ -43,10 +43,10 @@ def part_b(s: str) -> int:
 
     nice = 0
     for lin in a:
-        if not any([lin[i : i + 2] in lin[i + 2 :] for i in range(len(lin) - 2)]):
+        if not any(lin[i : i + 2] in lin[i + 2 :] for i in range(len(lin) - 2)):
             continue
 
-        if not any([lin[i] == lin[i + 2] for i in range(len(lin) - 2)]):
+        if not any(lin[i] == lin[i + 2] for i in range(len(lin) - 2)):
             continue
 
         nice += 1

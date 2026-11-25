@@ -34,9 +34,8 @@ def part_a(s: str) -> int:
     for i in range(n):
         for j in range(m):
             for i_, j_ in [(i + i__, j + j__) for i__, j__ in directions]:
-                if 0 <= i_ < len(mat) and 0 <= j_ < len(mat[0]):
-                    if mat[i_][j_] <= mat[i][j]:
-                        break
+                if 0 <= i_ < len(mat) and 0 <= j_ < len(mat[0]) and mat[i_][j_] <= mat[i][j]:
+                    break
             else:
                 total += int(mat[i][j]) + 1
     return total

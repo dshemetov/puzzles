@@ -27,7 +27,7 @@ def run_octopus_step(mat: np.ndarray) -> tuple[np.ndarray, int]:
     mat += 1
     n, m = mat.shape
     already_flashed = set()
-    ixs_to_check = set((i, j) for i, j in product(range(n), range(m)) if mat[i, j] > 9)
+    ixs_to_check = {(i, j) for i, j in product(range(n), range(m)) if mat[i, j] > 9}
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (-1, 1), (1, -1)]
 
     while len(ixs_to_check) > 0:

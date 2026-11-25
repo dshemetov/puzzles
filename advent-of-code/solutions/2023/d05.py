@@ -17,9 +17,9 @@ def part_a(s: str) -> int:
     nums = []
     for seed in seeds:
         for m in maps:
-            for d, s, r in m:
-                if seed in range(s, s + r):
-                    seed = d + seed - s
+            for d, src, r in m:
+                if seed in range(src, src + r):
+                    seed = d + seed - src
                     break
         nums += [seed]
     return min(nums)

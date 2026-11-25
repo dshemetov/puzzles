@@ -6,9 +6,9 @@
 https://adventofcode.com/2021/day/17
 """
 
+import re
 import sys
 import time
-import re
 
 
 def part_a(s: str) -> int:
@@ -20,8 +20,7 @@ def part_a(s: str) -> int:
         for vx in range(min_vx, max_vx):
             valid, potent_max_y = ends_in_target(vx, vy, xmin, xmax, ymin, ymax)
             if valid:
-                if potent_max_y > max_y:
-                    max_y = potent_max_y
+                max_y = max(max_y, potent_max_y)
 
     return max_y
 

@@ -6,9 +6,9 @@
 https://adventofcode.com/2022/day/4
 """
 
+import re
 import sys
 import time
-import re
 
 
 def part_a(s: str) -> int:

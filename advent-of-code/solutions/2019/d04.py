@@ -6,6 +6,7 @@
 https://adventofcode.com/2019/day/4
 """
 
+import itertools
 import sys
 import time
 
@@ -15,10 +16,10 @@ def part_a(s: str) -> int:
     total = 0
     for i in range(a, b + 1):
         t = str(i)
-        if not all(x <= y for x, y in zip(t, t[1:])):
+        if not all(x <= y for x, y in itertools.pairwise(t)):
             continue
 
-        if not any(x == y for x, y in zip(t, t[1:])):
+        if not any(x == y for x, y in itertools.pairwise(t)):
             continue
 
         total += 1
@@ -30,11 +31,11 @@ def part_b(s: str) -> int:
     total = 0
     for i in range(a, b + 1):
         t = str(i)
-        if not all(x <= y for x, y in zip(t, t[1:])):
+        if not all(x <= y for x, y in itertools.pairwise(t)):
             continue
 
         count = 0
-        for j in range(0, 5):
+        for j in range(5):
             if t[j] == t[j + 1]:
                 count += 1
             else:

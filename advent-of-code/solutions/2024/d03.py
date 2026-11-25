@@ -4,9 +4,9 @@
 # ///
 """3. https://adventofcode.com/2024/day/3"""
 
+import re
 import sys
 import time
-import re
 
 import numpy as np
 

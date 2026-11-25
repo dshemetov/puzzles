@@ -56,7 +56,7 @@ def part_b(s: str) -> int:
         for i in range(n_boards):
             board_masks[i][np.where(boards[i] == num)] = 1
             if did_board_win(board_masks[i]):
-                winner_boards |= set([i])
+                winner_boards |= {i}
                 if len(winner_boards) == n_boards:
                     break
         if len(winner_boards) == n_boards:

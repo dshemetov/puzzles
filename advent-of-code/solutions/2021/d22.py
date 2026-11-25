@@ -8,13 +8,13 @@ The problem involves boolean operations on rectangular regions of 2D space
 https://en.wikipedia.org/wiki/Boolean_operations_on_polygons
 """
 
+import re
 import sys
 import time
-import re
+from collections.abc import Generator
 from copy import deepcopy
-from itertools import combinations, product
+from itertools import combinations, pairwise, product
 from math import inf
-from typing import Generator
 
 import numpy as np
 from more_itertools import flatten
@@ -135,9 +135,7 @@ class NooiceSlice:
         return NooiceSlice(self.__start + offset, self.__stop + offset)
 
     def disjoint(self, other: "NooiceSlice") -> bool:
-        if self.stop <= other.start or other.stop <= self.start:
-            return True
-        return False
+        return bool(self.stop <= other.start or other.stop <= self.start)
 
     def adjacent(self, other: "NooiceSlice") -> bool:
         return self.stop == other.start or self.start == other.stop
@@ -262,12 +260,11 @@ class CubeSlice:
         return self.intersect(other) is None
 
     def points_iter(self) -> Generator:
-        for x, y, z in product(
+        yield from product(
             range(self.x.start, self.x.stop),
             range(self.y.start, self.y.stop),
             range(self.z.start, self.z.stop),
-        ):
-            yield (x, y, z)
+        )
 
     def __contains__(self, pt: tuple[int, int, int]) -> bool:
         x, y, z = pt
@@ -372,8 +369,7 @@ class Cube:
 
     def points_iter(self) -> Generator:
         for cube_slice in self.get_slices():
-            for pt in cube_slice.points_iter():
-                yield pt
+            yield from cube_slice.points_iter()
 
     def intersections_size(self):
         inters = []
@@ -526,25 +522,23 @@ def generate_all_products(cube1: CubeSlice, cube2: CubeSlice) -> Generator:
     >>> assert len(cube_products) == 26
     """
     # If we order the 4 points involved in each axis, we can get three regions in the space between the 4 points
-    xs = sorted(list(set([cube1.x.start, cube1.x.stop, cube2.x.start, cube2.x.stop])))
-    ys = sorted(list(set([cube1.y.start, cube1.y.stop, cube2.y.start, cube2.y.stop])))
-    zs = sorted(list(set([cube1.z.start, cube1.z.stop, cube2.z.start, cube2.z.stop])))
+    xs = sorted({cube1.x.start, cube1.x.stop, cube2.x.start, cube2.x.stop})
+    ys = sorted({cube1.y.start, cube1.y.stop, cube2.y.start, cube2.y.stop})
+    zs = sorted({cube1.z.start, cube1.z.stop, cube2.z.start, cube2.z.stop})
     # These produce the starts and ends for the three regions
-    xs_pairs = zip(xs[:-1], xs[1:])
-    ys_pairs = zip(ys[:-1], ys[1:])
-    zs_pairs = zip(zs[:-1], zs[1:])
+    xs_pairs = pairwise(xs)
+    ys_pairs = pairwise(ys)
+    zs_pairs = pairwise(zs)
     # By taking a product of each of these regions, we produce up to 27 possible cube regions
     for (xs_new, xe_new), (ys_new, ye_new), (zs_new, ze_new) in product(xs_pairs, ys_pairs, zs_pairs):
         # Some of the cubes are extra and need to be filtered out
         # The extra cubes can be detected by taking a corner point and testing if it belongs to one of the previous cubes
-        if (xs_new, ys_new, zs_new) in cube1 and not (cube2.off and (xs_new, ys_new, zs_new) in cube2):
-            yield CubeSlice(
-                True,
-                NooiceSlice(xs_new, xe_new),
-                NooiceSlice(ys_new, ye_new),
-                NooiceSlice(zs_new, ze_new),
-            )
-        elif cube2.on and (xs_new, ys_new, zs_new) in cube2:
+        if (
+            (xs_new, ys_new, zs_new) in cube1
+            and not (cube2.off and (xs_new, ys_new, zs_new) in cube2)
+            or cube2.on
+            and (xs_new, ys_new, zs_new) in cube2
+        ):
             yield CubeSlice(
                 True,
                 NooiceSlice(xs_new, xe_new),
@@ -734,7 +728,7 @@ expected_points_strs = [
 
 def read_points_str(s: str):
     lines = [line.split(",") for line in s.split("\n")]
-    return set([(int(x), int(y), int(z)) for x, y, z in lines])
+    return {(int(x), int(y), int(z)) for x, y, z in lines}
 
 
 if __name__ == "__main__":

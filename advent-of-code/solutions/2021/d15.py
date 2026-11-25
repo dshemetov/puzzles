@@ -22,7 +22,7 @@ def get_minimum_path(mat: np.ndarray, start_ix: tuple[int, int], end_ix: tuple[i
     ix = start_ix
     cost = 0
     priority_queue = []
-    best_cost = dict()
+    best_cost = {}
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
     while end_ix != ix:

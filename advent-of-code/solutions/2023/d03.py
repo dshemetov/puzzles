@@ -7,10 +7,10 @@
 Minor flex: ran correctly first try.
 """
 
-from itertools import product
-from math import prod
 import sys
 import time
+from itertools import product
+from math import prod
 
 
 def part_a(s: str) -> int:

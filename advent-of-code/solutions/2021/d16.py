@@ -10,11 +10,11 @@ Lessons learned:
   (don't remember who).
 """
 
-import sys
-import time
 import collections
 import math
 import operator
+import sys
+import time
 
 Operator = collections.namedtuple("Operator", ["data", "len_type", "len", "op"])
 

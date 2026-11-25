@@ -4,9 +4,9 @@
 # ///
 """17. https://adventofcode.com/2024/day/17"""
 
+import re
 import sys
 import time
-import re
 
 
 def parse_combo_operand(k: int, registers: dict[str, int]) -> int:

@@ -13,9 +13,9 @@ Lessons learned:
 - Lambda functions are a performance hit.
 """
 
+import re
 import sys
 import time
-import re
 from heapq import nlargest
 
 import numba as nb
@@ -101,7 +101,7 @@ def do_monkey_throws(items_matrix: np.ndarray, monkey_datas: np.ndarray, mod: in
     for _ in range(10000):
         for i in range(len(monkey_datas)):
             # Get monkey data
-            op, val, test, true_monkey, false_monkey, inspects = monkey_datas[i, :]
+            op, val, test, true_monkey, false_monkey, _inspects = monkey_datas[i, :]
             # Update stress levels
             items_matrix[i, :] = monkey_op(items_matrix[i, :], op, val, mod)
             # Find item destinations
@@ -128,7 +128,7 @@ def solve_b_numba(s: str) -> int:
     monkey_items = []
     monkey_datas = []
     for monkey in s.split("\n\n"):
-        num, items, op, val, test, true_monkey, false_monkey = r.match(monkey).groups()
+        _num, items, op, val, test, true_monkey, false_monkey = r.match(monkey).groups()
 
         monkey_items.append([int(x) for x in items.split(",")])
 

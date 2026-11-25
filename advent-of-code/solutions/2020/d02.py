@@ -4,9 +4,9 @@
 # ///
 """https://adventofcode.com/2020/day/2"""
 
+import re
 import sys
 import time
-import re
 
 
 def part_a(s: str) -> int:

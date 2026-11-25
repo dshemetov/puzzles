@@ -57,10 +57,10 @@ def parse_input(s: str):
 
     for image_line in image_lines:
         if algo_mode:
-            algorithm = [True if x == "#" else False for x in image_line.strip()]
+            algorithm = [x == "#" for x in image_line.strip()]
             algo_mode = False
         elif len(image_line.strip()) > 0 and not algo_mode:
-            image_list.append([True if x == "#" else False for x in image_line.strip()])
+            image_list.append([x == "#" for x in image_line.strip()])
 
     return np.array(image_list, dtype=bool), algorithm
 

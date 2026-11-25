@@ -4,9 +4,9 @@
 # ///
 """15. https://adventofcode.com/2023/day/15"""
 
-from collections import defaultdict
 import sys
 import time
+from collections import defaultdict
 
 
 def part_a(s: str) -> int:
@@ -33,7 +33,7 @@ def part_b(s: str) -> int:
     d = defaultdict(list)
     for word in words:
         if "=" in word:
-            chars, num = word.split("=")
+            chars, _num = word.split("=")
             # Look for word in the list and replace it with the new word
             found = False
             for i, x in enumerate(d[get_hash(chars)]):

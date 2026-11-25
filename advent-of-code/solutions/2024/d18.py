@@ -5,10 +5,10 @@
 """18. https://adventofcode.com/2024/day/18"""
 
 import ast
+import heapq
 import inspect
 import sys
 import time
-import heapq
 
 
 def solve_maze(grid: list[list[str]], n: int, m: int) -> tuple[int, list[tuple[int, int]]]:
@@ -82,14 +82,13 @@ def part_a(s: str, n: int = 71, m: int = 71, num_bytes: int = 1024) -> int:
         grid[x + 1][y + 1] = "#"
 
     # Find shortest path with Dijkstra
-    cost, path = solve_maze(grid, n, m)
+    cost, _path = solve_maze(grid, n, m)
     return cost
 
 
 def part_b(s: str, n: int = 71, m: int = 71, num_bytes: int = 1024) -> str:
     s = s.strip("\n")
     lines = s.split("\n")
-
 
     grid = [["." for _ in range(m + 1)] for _ in range(n + 1)]
 

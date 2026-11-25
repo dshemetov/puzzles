@@ -6,9 +6,9 @@
 
 import ast
 import inspect
-from itertools import combinations
 import sys
 import time
+from itertools import combinations
 
 
 def part_a(s: str) -> int:

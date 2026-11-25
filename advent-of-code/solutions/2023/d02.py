@@ -5,9 +5,9 @@
 """2. Cube Conundrum https://adventofcode.com/2023/day/2"""
 
 import re
-from math import prod
 import sys
 import time
+from math import prod
 
 
 def part_a(s: str) -> int:

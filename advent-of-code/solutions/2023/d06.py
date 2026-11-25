@@ -11,9 +11,10 @@ Notes:
 - Numpy doesn't make much of a difference speed-wise.
 """
 
-import numpy as np
 import sys
 import time
+
+import numpy as np
 
 
 def part_a(s: str) -> int:

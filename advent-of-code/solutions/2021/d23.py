@@ -47,10 +47,10 @@ cost += 8D + 3B + 6B + 9D + 3A + 3A
 import sys
 import time
 from collections import defaultdict, namedtuple
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from functools import lru_cache
+from functools import cache
 from heapq import heappop, heappush
-from typing import Callable
 
 EXAMPLE2 = """
 #############
@@ -191,7 +191,7 @@ def get_valid_moves(b: BoardState) -> list[tuple[int, tuple[int, int]]]:
         if not room_pods:
             continue
         if not all(pod.type == type for _, pod in room_pods):
-            i, pod = sorted(room_pods, key=lambda x: x[1].y)[0]
+            i, pod = min(room_pods, key=lambda x: x[1].y)
             maybe_moves += [(i, (i_, 0)) for i_ in [0, 1, 3, 5, 7, 9, 10]]
 
     valid_moves += [(i, move) for i, move in maybe_moves if check_valid_move(b, b.amphipods[i][0:2], move)]
@@ -236,7 +236,7 @@ def make_move(b: BoardState, i: int, t: tuple[int, int]) -> BoardState:
     return b_
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_move_cost(s: tuple[int, int], t: tuple[int, int]) -> int:
     """
     Examples:
@@ -257,7 +257,7 @@ def get_move_cost(s: tuple[int, int], t: tuple[int, int]) -> int:
         return abs(s[0] - t[0]) + s[1] + t[1]
 
 
-@lru_cache(maxsize=None)
+@cache
 def get_path(s: tuple[int, int], t: tuple[int, int], include_from: bool = False) -> list[tuple[int, int]]:
     if s == t:
         return []
@@ -278,7 +278,7 @@ def get_path(s: tuple[int, int], t: tuple[int, int], include_from: bool = False)
             path += [(i, 0) for i in range(s[0], t[0] + 1)]
 
         if t[1] > 0:
-            path += [(t[0], j) for j in range(0, t[1] + 1)]
+            path += [(t[0], j) for j in range(t[1] + 1)]
 
     return path if include_from else path[1:]
 

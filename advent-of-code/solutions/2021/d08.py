@@ -6,9 +6,9 @@
 https://adventofcode.com/2021/day/8
 """
 
+import re
 import sys
 import time
-import re
 from itertools import permutations
 
 
@@ -73,8 +73,7 @@ def get_digits_from_segments(ls: list[str]) -> list[int]:
     return [segments_to_digit["".join(sorted(s))] for s in ls]
 
 
-digit_to_segments = dict(
-    {
+digit_to_segments = {
         0: "abcefg",
         1: "cf",
         2: "acdeg",
@@ -86,7 +85,6 @@ digit_to_segments = dict(
         8: "abcdefg",
         9: "abcdfg",
     }
-)
 
 segments_to_digit = reverse_dict(digit_to_segments)
 

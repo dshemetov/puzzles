@@ -17,7 +17,6 @@ def bounce(grid: list[list[str]], i: int, j: int, d: str) -> int:
     beams = [(i, j, d)]
 
     seen = set()
-    k = 0
     while beams:
         i, j, d = beams.pop()
         c = grid[i][j]

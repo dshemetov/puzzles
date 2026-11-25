@@ -14,10 +14,10 @@ Diophantine equation and would have required the Chinese Remainder Theorem.
 """
 
 import re
-from itertools import cycle
-from math import lcm
 import sys
 import time
+from itertools import cycle
+from math import lcm
 
 
 def part_a(s: str) -> int:

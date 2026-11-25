@@ -39,7 +39,7 @@ class GameState:
 
 
 def convert_list_to_last_turn_dict(lst: list[int]) -> dict[int, int]:
-    return dict({v: i + 1 for i, v in enumerate(lst)})
+    return {v: i + 1 for i, v in enumerate(lst)}
 
 
 def part_a(s: str) -> int:

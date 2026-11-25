@@ -6,9 +6,9 @@
 
 import sys
 import time
+from collections.abc import Iterable
 from functools import reduce
 from itertools import chain, pairwise
-from typing import Iterable
 
 from sympy import Poly, symbols
 
@@ -16,7 +16,7 @@ from sympy import Poly, symbols
 def part_a(s: str) -> int:
     nums = [int(line) for line in s.split("\n")]
     nums = [0] + sorted(nums) + [max(nums) + 3]
-    diffs = [y - x for x, y in zip(nums[:-1], nums[1:])]
+    diffs = [y - x for x, y in pairwise(nums)]
     return diffs.count(1) * diffs.count(3)
 
 

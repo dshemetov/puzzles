@@ -6,9 +6,9 @@
 https://adventofcode.com/2021/day/5
 """
 
+import re
 import sys
 import time
-import re
 
 import numpy as np
 
@@ -36,7 +36,7 @@ def make_line(pt1: np.ndarray, pt2: np.ndarray) -> np.ndarray:
 def get_intersection(line1: np.ndarray, line2: np.ndarray) -> np.ndarray:
     (x1, y1), (x2, y2) = line1
     (v1, w1), (v2, w2) = line2
-    t, s = np.linalg.inv(np.array([[x2 - x1, v1 - v2], [y2 - y1, w1 - w2]])) @ np.array([v1 - x1, w1 - y1])
+    t, _s = np.linalg.inv(np.array([[x2 - x1, v1 - v2], [y2 - y1, w1 - w2]])) @ np.array([v1 - x1, w1 - y1])
     return (1 - t) * line1[0] + t * line1[1]
 
 

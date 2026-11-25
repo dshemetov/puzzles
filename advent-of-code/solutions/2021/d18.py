@@ -9,10 +9,10 @@ This is mostly an elegant solution found on Reddit. It was so much cleaner than
 what we had come up with, that I decided to keep it.
 """
 
-import sys
-import time
 import functools
 import re
+import sys
+import time
 
 
 def part_a(s: str):

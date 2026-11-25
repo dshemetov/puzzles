@@ -21,7 +21,7 @@ def reverse_dict(d: dict) -> dict:
     return {value: key for key, value in d.items()}
 
 
-close_to_open = dict({")": "(", "]": "[", "}": "{", ">": "<"})
+close_to_open = {")": "(", "]": "[", "}": "{", ">": "<"}
 open_to_close = reverse_dict(close_to_open)
 
 
@@ -53,12 +53,12 @@ def parse_line(s: str) -> tuple[LineType, int | None]:
 
 
 def get_corrupted_line_score(x: str) -> str:
-    char_scores = dict({")": 3, "]": 57, "}": 1197, ">": 25137})
+    char_scores = {")": 3, "]": 57, "}": 1197, ">": 25137}
     return char_scores[x]
 
 
 def get_completion_string_score(s: str) -> int:
-    char_scores = dict({")": 1, "]": 2, "}": 3, ">": 4})
+    char_scores = {")": 1, "]": 2, "}": 3, ">": 4}
     score = 0
     for x in s:
         score *= 5

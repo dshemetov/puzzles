@@ -5,9 +5,9 @@
 """10. Pipe Maze https://adventofcode.com/2023/day/10"""
 # Alternative approach: d10-raycast.py
 
-from collections import defaultdict
 import sys
 import time
+from collections import defaultdict
 
 
 def part_a(s: str) -> int:
@@ -150,7 +150,6 @@ def part_b(s: str) -> int:
         graphs.append(graph)
 
     cur_path = []
-    ix = 0
     for i, graph in enumerate(graphs):
         path = []
         visited = set()
@@ -169,7 +168,6 @@ def part_b(s: str) -> int:
             continue
         if len(path) > len(cur_path):
             cur_path = path
-            ix = i
 
     return int(get_inner_points(path))
 

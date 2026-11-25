@@ -67,7 +67,7 @@ def part_a(s: str, time_diff_thresh: int = 100) -> int:
     ta = (int(np.where(grid == "E")[0][0] + 1), int(np.where(grid == "E")[1][0] + 1))
 
     # Get maze path (there's only one)
-    dist, prev_map = maze_solver(grid, st, ta)
+    _dist, prev_map = maze_solver(grid, st, ta)
     path = []
     current = ta
     while current != st:
@@ -92,7 +92,7 @@ def part_b(s: str, time_diff_thresh: int = 100) -> int:
     ta = (int(np.where(grid == "E")[0][0] + 1), int(np.where(grid == "E")[1][0] + 1))
 
     # Get maze path (there's only one)
-    dist, prev_map = maze_solver(grid, st, ta)
+    _dist, prev_map = maze_solver(grid, st, ta)
     path = []
     current = ta
     while current != st:

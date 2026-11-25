@@ -4,9 +4,9 @@
 # ///
 """16. https://adventofcode.com/2024/day/16"""
 
+import heapq
 import sys
 import time
-import heapq
 
 # Direction vectors: east, south, west, north
 DIRS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
@@ -101,7 +101,7 @@ def part_b(s: str) -> int:
     queue = [(0, start_pos[0], start_pos[1], 1)]
 
     while queue:
-        current_cost, i, j, dir = heapq.heappop(queue)
+        _current_cost, i, j, dir = heapq.heappop(queue)
 
         # Try all 4 directions
         for new_dir in range(4):

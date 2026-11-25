@@ -6,9 +6,9 @@
 https://adventofcode.com/2022/day/7
 """
 
+import re
 import sys
 import time
-import re
 
 
 def print_dirs(dirs: dict, dir: str, indent: int = 0):

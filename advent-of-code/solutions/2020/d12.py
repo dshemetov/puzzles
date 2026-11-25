@@ -4,9 +4,9 @@
 # ///
 """https://adventofcode.com/2020/day/12"""
 
+import re
 import sys
 import time
-import re
 from dataclasses import dataclass
 
 import numpy as np

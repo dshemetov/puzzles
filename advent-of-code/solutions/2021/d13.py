@@ -4,9 +4,9 @@
 # ///
 """Transparent Origami https://adventofcode.com/2021/day/13"""
 
+import re
 import sys
 import time
-import re
 
 import numpy as np
 

@@ -4,9 +4,9 @@
 # ///
 """12. Hot Springs https://adventofcode.com/2023/day/12"""
 
-from functools import cache
 import sys
 import time
+from functools import cache
 
 
 def part_a(s: str) -> int:

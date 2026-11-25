@@ -9,7 +9,6 @@ https://adventofcode.com/2021/day/24
 import sys
 from abc import ABC, abstractmethod
 from re import findall
-from typing import List
 
 
 class AdventProblem(ABC):
@@ -38,11 +37,11 @@ class AdventProblem(ABC):
 
 
 class ALU:
-    def __init__(self, instructions: List):
+    def __init__(self, instructions: list):
         from string import ascii_lowercase
 
         self.instructions = instructions
-        self.variables = dict()
+        self.variables = {}
         self.back_vars = {"w": "w", "x": "x", "y": "y", "z": "z"}
         self.human_legible = list(ascii_lowercase)
         self.dict_of_functions = {
@@ -105,7 +104,7 @@ class ALU:
         if op == "mod":
             return cur_str.replace(register, f"({register} % {val})")
 
-    def execute_instructions(self, inputs: List[int]):
+    def execute_instructions(self, inputs: list[int]):
         try:
             for op, *inp in self.instructions:
                 fn = self.dict_of_functions[op]

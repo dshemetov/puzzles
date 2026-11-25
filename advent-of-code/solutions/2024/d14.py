@@ -6,9 +6,9 @@
 
 import ast
 import inspect
+import re
 import sys
 import time
-import re
 
 import numpy as np
 from numba import int64, njit

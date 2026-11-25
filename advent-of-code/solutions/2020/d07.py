@@ -6,15 +6,15 @@
 https://adventofcode.com/2020/day/7
 """
 
+import re
 import sys
 import time
-import re
 
 
 def part_a(s: str) -> int:
     d = dict([parse_line(line) for line in s.split("\n")])
     traversed = set()
-    to_traverse = set(["shiny gold"])
+    to_traverse = {"shiny gold"}
     while len(to_traverse) > 0:
         entry = to_traverse.pop()
         traversed.add(entry)

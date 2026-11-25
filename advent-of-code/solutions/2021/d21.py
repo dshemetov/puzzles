@@ -6,10 +6,10 @@
 https://adventofcode.com/2021/day/21
 """
 
-import sys
-import time
 import random as rng
 import re
+import sys
+import time
 from collections import Counter, namedtuple
 from itertools import cycle, product
 
@@ -91,7 +91,7 @@ def prune_winners(state_dict: Counter[WorldState, int], winning_count: tuple[int
     return state_dict_copy
 
 
-def transition_state(state: WorldState, state_dict: Counter[WorldState, int], pnum: int):
+def transition_state(state_dict: Counter[WorldState, int], pnum: int):
     state_dict_new = Counter()
     for state in state_dict:
         sent = state_dict[state]
@@ -142,7 +142,7 @@ def part_b(s: str) -> int:
 
     for turn in range(14):
         for player_turn in range(2):
-            state_dict = transition_state(state, state_dict, player_turn)
+            state_dict = transition_state(state_dict, player_turn)
             state_dict = prune_winners(state_dict, winning_count)
 
     return max(winning_count)

@@ -25,7 +25,7 @@ def get_col(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    ids = set([get_seatid(line) for line in s.split("\n")])
+    ids = {get_seatid(line) for line in s.split("\n")}
     for x in ids:
         if x + 1 not in ids and x + 2 in ids:
             break

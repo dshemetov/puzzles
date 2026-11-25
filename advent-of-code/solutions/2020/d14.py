@@ -4,16 +4,16 @@
 # ///
 """https://adventofcode.com/2020/day/14"""
 
+import re
 import sys
 import time
-import re
 
 
 def part_a(s: str) -> int:
-    memory = dict()
+    memory = {}
     for line in s.split("\n"):
         if "mask" in line:
-            mask = list(line.strip("mask = "))
+            mask = list(line.removeprefix("mask = "))
         else:
             key, value = [int(x) for x in re.match(r"mem\[(\d+)\] = (\d+)", line).groups()]
             memory[key] = apply_mask(value, mask)
@@ -43,10 +43,10 @@ def int_to_bits(n: int) -> list[int]:
 
 
 def part_b(s: str) -> int:
-    memory = dict()
+    memory = {}
     for line in s.split("\n"):
         if "mask" in line:
-            mask = list(line.strip("mask = "))
+            mask = list(line.removeprefix("mask = "))
         else:
             key, value = [int(x) for x in re.match(r"mem\[(\d+)\] = (\d+)", line).groups()]
             for address in get_memory_addresses(key, mask):

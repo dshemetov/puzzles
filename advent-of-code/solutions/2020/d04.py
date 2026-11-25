@@ -46,10 +46,7 @@ def validate(d: dict) -> bool:
     if d["ecl"] not in {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"}:
         return False
 
-    if not (d["pid"].isdigit() and len(d["pid"]) == 9):
-        return False
-
-    return True
+    return d["pid"].isdigit() and len(d["pid"]) == 9
 
 
 if __name__ == "__main__":

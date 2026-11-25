@@ -8,6 +8,7 @@ https://adventofcode.com/2022/day/8
 
 import sys
 import time
+
 import numba as nb
 import numpy as np
 
@@ -47,10 +48,7 @@ def is_visible(m: np.ndarray, i: int, j: int) -> bool:
             all_smaller = False
             break
 
-    if all_smaller:
-        return True
-
-    return False
+    return bool(all_smaller)
 
 
 def part_a(s: str) -> int:

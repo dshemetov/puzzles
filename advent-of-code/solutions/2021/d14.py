@@ -6,6 +6,7 @@
 https://adventofcode.com/2021/day/14
 """
 
+import itertools
 import sys
 import time
 from collections import Counter
@@ -40,7 +41,7 @@ def rules_to_matrix(s: str) -> dok_matrix:
 
 def template_to_vector(s: str) -> dok_matrix:
     v = dok_matrix((26**2, 1), dtype=int)
-    for a, b in zip(s[:-1], s[1:]):
+    for a, b in itertools.pairwise(s):
         v[char_pair_to_num(a + b)] += 1
     return v
 

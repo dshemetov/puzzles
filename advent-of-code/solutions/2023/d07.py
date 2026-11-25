@@ -4,9 +4,9 @@
 # ///
 """7. Camel Cards https://adventofcode.com/2023/day/7"""
 
-from collections import Counter
 import sys
 import time
+from collections import Counter
 
 
 def part_a(s: str) -> int:

@@ -75,9 +75,9 @@ def get_minutes_until_next_bus(time: int, period: int) -> int:
 
 def part_b(s: str) -> int:
     _, bus_schedule = s.split("\n")
-    bus_schedule: list[tuple[int, int]] = list(
+    bus_schedule: list[tuple[int, int]] = [
         (-offset, int(bus_id)) for offset, bus_id in enumerate(bus_schedule.split(",")) if bus_id != "x"
-    )
+    ]
     return solve_modular_congruence_equations(bus_schedule)
 
 

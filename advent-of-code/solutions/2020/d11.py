@@ -6,9 +6,9 @@
 
 import sys
 import time
+from collections.abc import Iterable
 from copy import deepcopy
 from itertools import product
-from typing import Iterable
 
 
 def part_a(s: str) -> int:

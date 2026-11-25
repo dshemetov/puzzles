@@ -4,9 +4,9 @@
 # ///
 """https://adventofcode.com/2020/day/18"""
 
+import re
 import sys
 import time
-import re
 from functools import reduce
 from operator import mul
 

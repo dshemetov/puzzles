@@ -4,9 +4,10 @@
 # ///
 """14. https://adventofcode.com/2023/day/14"""
 
-import numpy as np
 import sys
 import time
+
+import numpy as np
 
 
 def part_a(s: str) -> int:

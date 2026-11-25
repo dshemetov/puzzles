@@ -1,1 +1,10 @@
 line-length = 120
+
+[lint]
+# SIM115: reading a whole file in one expression is fine in a script's main block.
+# PLC0206: looping over `net` and indexing it is clearer than `.items()` in 2024 d23.
+ignore = ["SIM115", "PLC0206"]
+
+[lint.per-file-ignores]
+# Someone else's solutions; left as written.
+"**/extras/**" = ["TRY002"]

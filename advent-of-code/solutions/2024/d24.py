@@ -4,9 +4,9 @@
 # ///
 """24. https://adventofcode.com/2024/day/24"""
 
+import re
 import sys
 import time
-import re
 
 
 def build_op_dag(init: str, ops: str) -> dict[str, bool | tuple[str, str, str]]:
@@ -55,7 +55,7 @@ def evaluate(op_dag: dict[str, bool | tuple[str, str, str]]) -> str:
         return out
 
     # Get all z-keys in reverse order (most significant bit first)
-    zkeys = sorted([k for k in op_dag.keys() if k.startswith("z")], reverse=True)
+    zkeys = sorted([k for k in op_dag if k.startswith("z")], reverse=True)
     zval = "".join(str(int(recurse(k))) for k in zkeys)
     return zval
 

@@ -8,11 +8,11 @@ https://adventofcode.com/2021/day/19
 I was in flight to Tampa for this one, so this is mostly Jeff and David's code.
 """
 
+import copy
 import sys
 import time
-import copy
+from collections import Counter
 from itertools import permutations, product
-from typing import Counter
 
 import numpy as np
 from scipy.spatial.distance import cdist

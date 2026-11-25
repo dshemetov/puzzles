@@ -6,19 +6,20 @@
 
 import sys
 import time
+
 import numpy as np
 
 
 def part_a(s: str) -> int:
     mat = np.array([list(line) for line in s.split("\n")])
-    n, m = mat.shape
+    n, _m = mat.shape
     mat = np.pad(mat, pad_width=[(0, 0), (0, 3 * n)], mode="wrap")
     return sum(1 if mat[i, 3 * i] == "#" else 0 for i in range(n))
 
 
 def part_b(s: str) -> int:
     mat = np.array([list(line) for line in s.split("\n")])
-    n, m = mat.shape
+    n, _m = mat.shape
     mat = np.pad(mat, pad_width=[(0, 0), (0, 7 * n)], mode="wrap")
     trees_slope_11 = sum(1 if mat[i, i] == "#" else 0 for i in range(n))
     trees_slope_31 = sum(1 if mat[i, 3 * i] == "#" else 0 for i in range(n))
