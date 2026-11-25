@@ -71,6 +71,7 @@ _cmd file input:
       *.jl)   echo "julia --startup-file=no --project=@aoc $f {{input}}" ;;
       *.lisp) echo "sbcl --script $f {{input}}" ;;
       *.nu)   echo "nu $f {{input}}" ;;
+      *.wl)   echo "wolframscript -file $f {{input}}" ;;
       *.go)   build go build -o "$bin" "$f" ;;
       *.rs)   build rustc -O --edition 2024 -o "$bin" "$f" ;;
       *) echo "no runner for $f" >&2; exit 1 ;;

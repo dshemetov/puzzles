@@ -6,7 +6,7 @@
 
 Each day is one self-contained file in `solutions/<year>/dNN.<ext>` that takes an input path
 and prints the two answers, one per line, with per-part timings on stderr. Python, Go, Common Lisp,
-Nushell, Julia and Rust are supported; a day can exist in several languages at once. Inputs (`inputs/`) and
+Nushell, Julia, Rust and Mathematica (`.wl`) are supported; a day can exist in several languages at once. Inputs (`inputs/`) and
 known answers (`answers/`) are git-ignored; the puzzle authors ask that they stay out of public repos.
 
 ```sh
@@ -33,6 +33,10 @@ Alternative approaches to a day live beside it as `dNN-name.<ext>` (for example 
 and get timed in batches like any other file and are checked against the same answers. A file whose first
 five lines contain `aoc: skip <reason>` (in the language's own comment syntax) is left out of `check` and
 `time-year` unless `all=1` is set, so a deliberately slow solution doesn't slow down every batch.
+
+The Mathematica solutions (2018 notebook, 2019 day 4, 2020 day 3) live under `solutions/`. The notebook is kept
+as it was, and the two `.wl` scripts were ported without being run (no Wolfram engine here), so treat
+them as untested.
 
 `tools/viz_d24.py` draws the 2024 day 24 circuit (`uv run tools/viz_d24.py inputs/2024/24.txt`).
 All 25 Julia days of 2024 live in `solutions/2024/d*.jl`, and the Rust days (2023 days 17-18, 2025 days 1-12) in `solutions/<year>/d*.rs`. Python 2015-2024 uses the older runner below.
