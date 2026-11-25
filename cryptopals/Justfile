@@ -1,0 +1,34 @@
+set quiet
+
+# List available recipes.
+default:
+    just --list
+
+# Create solutions/set<S>/cNN.py from the template.
+new set challenge:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    n=$(printf '%02d' {{challenge}})
+    f=solutions/set{{set}}/c$n.py
+    [ -e "$f" ] && { echo "$f exists" >&2; exit 1; }
+    mkdir -p "$(dirname "$f")"
+    sed "s|@URL@|https://cryptopals.com/sets/{{set}}/challenges/{{challenge}}|" templates/template.py > "$f"
+    echo "$f"
+
+# Run one challenge; each script asserts the published answer.
+run set challenge:
+    uv run solutions/set{{set}}/c$(printf '%02d' {{challenge}}).py
+
+# Run every challenge (or one set) and report failures.
+check set="*":
+    #!/usr/bin/env bash
+    fail=0
+    for f in solutions/set{{set}}/c*.py; do
+        if uv run "$f" >/dev/null 2>&1; then echo "ok    $f"; else echo "FAIL  $f"; fail=1; fi
+    done
+    exit $fail
+
+# Download a challenge's data file into data/ (only some challenges have one).
+fetch challenge:
+    mkdir -p data
+    curl -fsSL https://cryptopals.com/static/challenge-data/{{challenge}}.txt -o data/c$(printf '%02d' {{challenge}}).txt
