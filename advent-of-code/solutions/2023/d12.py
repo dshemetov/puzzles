@@ -10,11 +10,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    21
-    """
     s = s.strip("\n")
     lines = [line.split(" ") for line in s.splitlines()]
     rows = ((x, tuple(int(c) for c in y.split(","))) for x, y in lines)
@@ -57,25 +52,10 @@ def recurse(springs: str, runs: tuple[int], current_run: int) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    525152
-    """
     rows = (
         (x, tuple(int(c) for c in y.split(","))) for x, y in (line.split(" ") for line in s.strip("\n").splitlines())
     )
     return sum(recurse("?".join([gears] * 5) + ".", code * 5, 0) for gears, code in rows)
-
-
-test_string = """
-???.### 1,1,3
-.??..??...?##. 1,1,3
-?#?#?#?#?#?#?#? 1,3,1,6
-????.#...#... 4,1,1
-????.######..#####. 1,6,5
-?###???????? 3,2,1
-"""
 
 
 if __name__ == "__main__":

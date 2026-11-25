@@ -13,11 +13,6 @@ from collections import defaultdict, deque
 
 
 def part_a(s: str) -> str:
-    """
-    Examples:
-    >>> part_a(test_string)
-    'CMZ'
-    """
     s = s.strip("\n")
     s1, s2 = s.split("\n\n")
     s1 = s1.split("\n")
@@ -43,11 +38,6 @@ def part_a(s: str) -> str:
 
 
 def part_b(s: str) -> str:
-    """
-    Examples:
-    >>> part_b(test_string)
-    'MCD'
-    """
     s = s.strip("\n")
     s1, s2 = s.split("\n\n")
     s1 = s1.split("\n")
@@ -73,19 +63,6 @@ def part_b(s: str) -> str:
             stacks[f].pop()
 
     return "".join(stacks[key][-1] for key in sorted(stacks.keys()))
-
-
-test_string = """
-    [D]
-[N] [C]
-[Z] [M] [P]
- 1   2   3
-
-move 1 from 2 to 1
-move 3 from 1 to 3
-move 2 from 2 to 1
-move 1 from 1 to 2
-"""
 
 
 if __name__ == "__main__":

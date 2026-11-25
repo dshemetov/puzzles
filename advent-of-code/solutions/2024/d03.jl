@@ -35,12 +35,6 @@ function part_b(input::AbstractString)
     return sum(m[:, 1] .* m[:, 2])
 end
 
-test_string_2024_03a = """
-xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))
-"""
-test_string_2024_03b = """
-xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
-"""
 
 function main(path)
     input = read(path, String)

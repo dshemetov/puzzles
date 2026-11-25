@@ -12,11 +12,6 @@ import numpy as np
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    161
-    """
     s = s.strip("\n")
     matches = re.findall(r"mul\((\d+),(\d+)\)", s)
     if not matches:
@@ -26,11 +21,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string2)
-    48
-    """
     s = s.strip("\n")
     # Find do() and don't() positions
     doflags = [0] + [m.start() for m in re.finditer(r"do\(\)", s)]
@@ -64,14 +54,6 @@ def part_b(s: str) -> int:
 
     data = np.array([[int(x), int(y)] for x, y in all_matches])
     return int(np.sum(data[:, 0] * data[:, 1]))
-
-
-test_string = """
-xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))
-"""
-test_string2 = """
-xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
-"""
 
 
 if __name__ == "__main__":

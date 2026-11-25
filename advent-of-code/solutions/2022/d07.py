@@ -74,53 +74,16 @@ def get_dir_sizes(s: str) -> dict:
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    95437
-    """
     s = s.strip("\n")
     dir_sizes = get_dir_sizes(s)
     return sum(size for key, size in dir_sizes.items() if key.endswith("/") and size <= 100000)
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    24933642
-    """
     s = s.strip("\n")
     dir_sizes = get_dir_sizes(s)
     space_needed = 30_000_000 - (70_000_000 - dir_sizes["/"])
     return min(size for key, size in dir_sizes.items() if key.endswith("/") and size >= space_needed)
-
-
-test_string = """
-$ cd /
-$ ls
-dir a
-14848514 b.txt
-8504156 c.dat
-dir d
-$ cd a
-$ ls
-dir e
-29116 f
-2557 g
-62596 h.lst
-$ cd e
-$ ls
-584 i
-$ cd ..
-$ cd ..
-$ cd d
-$ ls
-4060174 j
-8033020 d.log
-5626152 d.ext
-7214296 k
-"""
 
 
 if __name__ == "__main__":

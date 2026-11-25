@@ -83,11 +83,6 @@ def find_reachable_nines(
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    36
-    """
     s = s.strip("\n")
     lines = s.splitlines()
     grid = np.array([[int(c) for c in line] for line in lines], dtype=np.int8)
@@ -103,11 +98,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    81
-    """
     s = s.strip("\n")
     lines = s.splitlines()
     grid = np.array([[int(c) for c in line] for line in lines], dtype=np.int32)
@@ -126,18 +116,6 @@ def solve_b_numba(grid: np.ndarray) -> int:
         total += count_paths_to_nines(grid, start_i, start_j, visited, m, n)
 
     return total
-
-
-test_string = """
-89010123
-78121874
-87430965
-96549874
-45678903
-32019012
-01329801
-10456732
-"""
 
 
 if __name__ == "__main__":

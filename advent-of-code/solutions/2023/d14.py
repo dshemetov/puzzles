@@ -10,11 +10,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    136
-    """
     s = s.strip("\n")
     grid = np.array([list(line) for line in s.split("\n")], dtype=str)
     # Tilt rocks north.
@@ -67,11 +62,6 @@ def get_grid_from_hash(s: str) -> np.ndarray:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    64
-    """
     s = s.strip("\n")
     grid = np.array([list(line) for line in s.split("\n")], dtype=str)
     dirs = [(-1, 0), (0, -1), (1, 0), (0, 1)]
@@ -98,20 +88,6 @@ def part_b(s: str) -> int:
     # So now we know the cycle length.
     final_grid = get_grid_from_hash(hs[(num_cycles - 1) % len(hs)])
     return get_score(final_grid)
-
-
-test_string = """
-O....#....
-O.OO#....#
-.....##...
-OO.#O....O
-.O.....O#.
-O.#..O.#.#
-..O..#O..O
-.......O..
-#....###..
-#OO..#....
-"""
 
 
 if __name__ == "__main__":

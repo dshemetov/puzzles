@@ -143,41 +143,6 @@ function part_b(input::AbstractString)
     return join(sort([inv_ix(x) for x in d[max_size_key]]), "-")
 end
 
-test_string_2024_23 = """
-kh-tc
-qp-kh
-de-cg
-ka-co
-yn-aq
-qp-ub
-cg-tb
-vc-aq
-tb-ka
-wh-tc
-yn-cg
-kh-ub
-ta-co
-de-co
-tc-td
-tb-wq
-wh-td
-ta-ka
-td-qp
-aq-cg
-wq-ub
-ub-vc
-de-ta
-wq-aq
-wq-vc
-wh-yn
-ka-de
-kh-ta
-co-tc
-wh-qp
-tb-vc
-td-yn
-"""
-
 function main(path)
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))

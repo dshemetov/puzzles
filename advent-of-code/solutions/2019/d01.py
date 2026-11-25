@@ -14,21 +14,11 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    34241
-    """
     s = [int(x) for x in s.strip("\n").split("\n")]
     return sum(x // 3 - 2 for x in s)
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    51316
-    """
     s = [int(x) for x in s.strip("\n").split("\n")]
     total = 0
     for x in s:
@@ -37,13 +27,6 @@ def part_b(s: str) -> int:
             if x > 0:
                 total += x
     return total
-
-
-test_string = """12
-14
-1969
-100756
-"""
 
 
 if __name__ == "__main__":

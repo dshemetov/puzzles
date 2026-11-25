@@ -117,24 +117,6 @@ function ball_cheat_solver(s::AbstractString, radius::Int, time_diff_thresh::Int
     return total_cheats
 end
 
-test_string_2024_20 = """
-###############
-#...#...#.....#
-#.#.#.#.#.###.#
-#S#...#.#.#...#
-#######.#.#.###
-#######.#.#...#
-#######.#.###.#
-###..E#...#...#
-###.#######.###
-#...###...#...#
-#.#####.#.###.#
-#.#...#.#.#...#
-#.#.#.#.#.#.###
-#...#...#...###
-###############
-"""
-
 function main(path)
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))

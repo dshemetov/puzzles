@@ -163,13 +163,7 @@ end
 
 # Direct array representation. With SIMD and cache-friendly access, this is the
 # fastest solution.
-test_string_2024_9 = """
-2333133121414131402
-"""
 
-test_string_2024_9b = """
-9239692674378649238
-"""
 
 function main(path)
     input = read(path, String)

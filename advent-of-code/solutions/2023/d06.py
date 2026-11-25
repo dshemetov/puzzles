@@ -17,11 +17,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    288
-    """
     ts, ds = ([int(e) for e in x.split()[1:]] for x in s.strip("\n").split("\n"))
     win_counts = 1
     for t, d in zip(ts, ds):
@@ -31,21 +26,10 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    71503
-    """
     t, d = (int("".join(x.split()[1:])) for x in s.strip("\n").split("\n"))
     roots = np.roots([-1, t, -d])
     win_counts = np.ceil(max(roots) - 1) - np.floor(min(roots) + 1) + 1
     return int(win_counts)
-
-
-test_string = """
-Time:      7  15   30
-Distance:  9  40  200
-"""
 
 
 if __name__ == "__main__":

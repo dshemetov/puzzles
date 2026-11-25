@@ -13,11 +13,6 @@ DIRS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    7036
-    """
     s = s.strip("\n")
     lines = s.split("\n")
     m, n = len(lines), len(lines[0])
@@ -77,11 +72,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    45
-    """
     s = s.strip("\n")
     lines = s.split("\n")
     m, n = len(lines), len(lines[0])
@@ -168,23 +158,6 @@ def part_b(s: str) -> int:
                     queue_back.append(pred_state)
 
     return sum(sum(row) for row in on_optimal_path)
-
-
-test_string = """###############
-#.......#....E#
-#.#.###.#.###.#
-#.....#.#...#.#
-#.###.#####.#.#
-#.#.#.......#.#
-#.#.#####.###.#
-#...........#.#
-###.#.#####.#.#
-#...#.....#.#.#
-#.#.#.###.#.#.#
-#.....#...#.#.#
-#.###.#.#.#.#.#
-#S..#.....#...#
-###############"""
 
 
 if __name__ == "__main__":

@@ -4,17 +4,14 @@
 # ///
 """11. Cosmic Expansion https://adventofcode.com/2023/day/11"""
 
+import ast
+import inspect
 from itertools import combinations
 import sys
 import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    374
-    """
     grid = [list(line) for line in s.strip("\n").splitlines()]
     m, n = len(grid), len(grid[0])
 
@@ -49,14 +46,7 @@ def part_a(s: str) -> int:
     return total
 
 
-def part_b(s: str, f: int = 10**6) -> int:
-    """
-    Examples:
-    >>> part_b(test_string, 10)
-    1030
-    >>> part_b(test_string, 100)
-    8410
-    """
+def part_b(s: str, factor: int = 10**6) -> int:
     s = s.strip("\n")
     grid = [list(line) for line in s.strip("\n").splitlines()]
     m, n = len(grid), len(grid[0])
@@ -78,27 +68,20 @@ def part_b(s: str, f: int = 10**6) -> int:
         r2 = sum(1 for x in rows if minx <= x <= maxx)
         c1 = abs(ix[1] - ix2[1])
         c2 = sum(1 for y in cols if miny <= y <= maxy)
-        total += (r1 - r2) + (c1 - c2) + f * (r2 + c2)
+        total += (r1 - r2) + (c1 - c2) + factor * (r2 + c2)
     return total
 
 
-test_string = """
-...#......
-.......#..
-#.........
-..........
-......#...
-.#........
-.........#
-..........
-.......#..
-#...#.....
-"""
+def params_for(part, extra: list[str]) -> dict:
+    """The key=value arguments after the input file that this part declares as keyword parameters."""
+    pairs = [arg.split("=", 1) for arg in extra]
+    wanted = inspect.signature(part).parameters
+    return {k: ast.literal_eval(v) for k, v in pairs if k in wanted}
 
 
 if __name__ == "__main__":
     s = open(sys.argv[1]).read()
     for part in (part_a, part_b):
         t = time.perf_counter()
-        print(part(s))
+        print(part(s, **params_for(part, sys.argv[2:])))
         print(f"{part.__name__}: {time.perf_counter() - t:.4f}s", file=sys.stderr)

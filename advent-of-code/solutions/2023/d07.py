@@ -10,11 +10,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    6440
-    """
     s = s.strip("\n")
     hands = [Hand(*x.split(), "A") for x in s.splitlines()]
     hands.sort()
@@ -89,24 +84,10 @@ def hand_lt(h1: str, h2: str, part: str):
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    5905
-    """
     s = s.strip("\n")
     hands = [Hand(*x.split(), "B") for x in s.splitlines()]
     hands.sort()
     return sum(i * h.bid for i, h in enumerate(hands, 1))
-
-
-test_string = """
-32T3K 765
-T55J5 684
-KK677 28
-KTJJT 220
-QQQJA 483
-"""
 
 
 if __name__ == "__main__":

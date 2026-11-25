@@ -1,7 +1,6 @@
 # 4. https://adventofcode.com/2024/day/4
 
 
-
 function part_a(input::AbstractString)
     s = strip(input, '\n')
     grid::Matrix{Char} = stack(split(s, "\n"))
@@ -49,19 +48,6 @@ function part_b(input::AbstractString)
     end
     return total
 end
-
-test_string_2024_04 = """
-MMMSXXMASM
-MSAMXMSMSA
-AMXSXMAAMM
-MSAMASMSMX
-XMASAMXAMM
-XXAMMXXAMA
-SMSMSASXSS
-SAXAMASAAA
-MAMMMXMMMM
-MXMXAXMASX
-"""
 
 function main(path)
     input = read(path, String)

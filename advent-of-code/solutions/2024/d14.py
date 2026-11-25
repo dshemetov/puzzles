@@ -4,6 +4,8 @@
 # ///
 """14. https://adventofcode.com/2024/day/14"""
 
+import ast
+import inspect
 import sys
 import time
 import re
@@ -12,12 +14,7 @@ import numpy as np
 from numba import int64, njit
 
 
-def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    12
-    """
+def part_a(s: str, width: int = 101, height: int = 103) -> int:
     lines = s.strip().split("\n")
     nums = []
 
@@ -25,11 +22,6 @@ def part_a(s: str) -> int:
         matches = re.findall(r"-?\d+", line)
         nums.append([int(x) for x in matches])
     nums = np.array(nums, dtype=np.int64)  # n x 4
-
-    if len(lines) <= 12:  # Test case
-        width, height = 11, 7
-    else:  # Real input
-        width, height = 101, 103
 
     return solve_a_core(nums, width, height)
 
@@ -62,23 +54,13 @@ def solve_a_core(nums: np.ndarray, width: int, height: int) -> int:
     return get_score(nums, width, height)
 
 
-def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    1
-    """
+def part_b(s: str, width: int = 101, height: int = 103) -> int:
     lines = s.strip().split("\n")
     nums = []
     for line in lines:
         matches = re.findall(r"-?\d+", line)
         nums.append([int(x) for x in matches])
     nums = np.array(nums, dtype=np.int64)  # n x 4
-
-    if len(lines) <= 12:  # Test case
-        width, height = 11, 7
-    else:  # Real input
-        width, height = 101, 103
 
     return solve_b_core(nums, width, height)
 
@@ -115,25 +97,16 @@ def solve_b_core(nums: np.ndarray, width: int, height: int) -> int:
     return step_of_smallest_score
 
 
-test_string = """
-p=0,4 v=3,-3
-p=6,3 v=-1,-3
-p=10,3 v=-1,2
-p=2,0 v=2,-1
-p=0,0 v=1,3
-p=3,0 v=-2,-2
-p=7,6 v=-1,-3
-p=3,0 v=-1,-2
-p=9,3 v=2,3
-p=7,3 v=-1,2
-p=2,4 v=2,-3
-p=9,5 v=-3,-3
-"""
+def params_for(part, extra: list[str]) -> dict:
+    """The key=value arguments after the input file that this part declares as keyword parameters."""
+    pairs = [arg.split("=", 1) for arg in extra]
+    wanted = inspect.signature(part).parameters
+    return {k: ast.literal_eval(v) for k, v in pairs if k in wanted}
 
 
 if __name__ == "__main__":
     s = open(sys.argv[1]).read()
     for part in (part_a, part_b):
         t = time.perf_counter()
-        print(part(s))
+        print(part(s, **params_for(part, sys.argv[2:])))
         print(f"{part.__name__}: {time.perf_counter() - t:.4f}s", file=sys.stderr)

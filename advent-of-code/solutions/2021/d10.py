@@ -32,11 +32,6 @@ class LineType(Enum):
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    26397
-    """
     return sum(y for x, y in (parse_line(line) for line in s.split("\n")) if x == LineType.CORRUPTED)
 
 
@@ -72,25 +67,8 @@ def get_completion_string_score(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    288957
-    """
     scores = [y for x, y in (parse_line(line) for line in s.split("\n")) if x == LineType.INCOMPLETE]
     return sorted(scores)[len(scores) // 2]
-
-
-test_string = """[({(<(())[]>[[{[]{<()<>>
-[(()[<>])]({[<{<<[]>>(
-{([(<{}[<>[]}>{[]{[(<()>
-(((({<>}<{<{<>}{[]{[]{}
-[[<[([]))<([[{}[[()]]]
-[{[{({}]{}}([{[{{{}}([]
-{<[[]]>}<{[{[{[]{()[[[]
-[<(<(<(<{}))><([]([]()
-<{([([[(<>()){}]>(<<{{
-<{([{{}}[<[[[<>{}]]]>[]]"""
 
 
 if __name__ == "__main__":

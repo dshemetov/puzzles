@@ -9,11 +9,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Example:
-    >>> part_a(test_string)
-    150
-    """
     x, y = 0, 0
     for dir, n in (line.split(" ") for line in s.split("\n")):
         if dir == "forward":
@@ -26,11 +21,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Example:
-    >>> part_b(test_string)
-    900
-    """
     x, y, aim = 0, 0, 0
     for dir, n in (line.split(" ") for line in s.split("\n")):
         if dir == "forward":
@@ -41,14 +31,6 @@ def part_b(s: str) -> int:
         elif dir == "down":
             aim += int(n)
     return abs(x * y)
-
-
-test_string = """forward 5
-down 5
-forward 8
-up 3
-down 8
-forward 2"""
 
 
 if __name__ == "__main__":

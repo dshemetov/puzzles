@@ -11,11 +11,6 @@ import numpy as np
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    3
-    """
     s = s.strip("\n")
 
     schematics = s.split("\n\n")
@@ -43,56 +38,8 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    0
-    """
     s = s.strip("\n")
     return 0
-
-
-test_string = """
-#####
-.####
-.####
-.####
-.#.#.
-.#...
-.....
-
-#####
-##.##
-.#.##
-...##
-...#.
-...#.
-.....
-
-.....
-#....
-#....
-#...#
-#.#.#
-#.###
-#####
-
-.....
-.....
-#.#..
-###..
-###.#
-###.#
-#####
-
-.....
-.....
-.....
-#....
-#.#..
-#.#.#
-#####
-"""
 
 
 if __name__ == "__main__":

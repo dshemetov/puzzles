@@ -11,11 +11,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    10
-    """
     a, b = [int(x) for x in s.split("-")]
     total = 0
     for i in range(a, b + 1):
@@ -31,11 +26,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    1
-    """
     a, b = [int(x) for x in s.split("-")]
     total = 0
     for i in range(a, b + 1):
@@ -57,9 +47,6 @@ def part_b(s: str) -> int:
                 total += 1
 
     return total
-
-
-test_string = """111111-111122"""
 
 
 if __name__ == "__main__":

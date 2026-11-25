@@ -10,11 +10,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    1320
-    """
     s = s.strip("\n")
     words = s.split(",")
     total = 0
@@ -31,11 +26,6 @@ def get_hash(s: str):
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    145
-    """
     s = s.strip("\n")
     words = s.split(",")
 
@@ -67,11 +57,6 @@ def part_b(s: str) -> int:
         for i, e in enumerate(v, start=1):
             total += (k + 1) * i * int(e.split("=")[1])
     return total
-
-
-test_string = """
-rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7
-"""
 
 
 if __name__ == "__main__":

@@ -1,7 +1,6 @@
 # 5. https://adventofcode.com/2024/day/5
 
 
-
 function part_a(input::AbstractString)
     s = strip(input, '\n')
     rules_str::String, updates_str::String = split(s, "\n\n")
@@ -77,37 +76,6 @@ function part_b(input::AbstractString)
     end
     return total
 end
-
-test_string_2024_05 = """
-47|53
-97|13
-97|61
-97|47
-75|29
-61|13
-75|53
-29|13
-97|29
-53|29
-61|53
-97|53
-61|29
-47|13
-75|47
-97|75
-47|61
-75|61
-47|29
-75|13
-53|13
-
-75,47,61,53,29
-97,61,53,29,13
-75,29,13
-75,97,47,61,53
-61,13,29
-97,13,75,29,47
-"""
 
 function main(path)
     input = read(path, String)

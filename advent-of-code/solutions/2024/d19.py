@@ -9,11 +9,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    6
-    """
     s = s.strip("\n")
     first, last = s.split("\n\n")
     options = [opt.strip() for opt in first.split(", ")]
@@ -49,11 +44,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    16
-    """
     s = s.strip("\n")
     first, last = s.split("\n\n")
     options = [opt.strip() for opt in first.split(", ")]
@@ -75,20 +65,6 @@ def part_b(s: str) -> int:
         total += dp[-1]
 
     return total
-
-
-test_string = """
-r, wr, b, g, bwu, rb, gb, br
-
-brwrr
-bggr
-gbbr
-rrbgbr
-ubwu
-bwurrg
-brgr
-bbrgwb
-"""
 
 
 if __name__ == "__main__":

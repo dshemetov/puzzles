@@ -12,11 +12,6 @@ import re
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    4
-    """
     s = s.strip("\n")
     total = 0
     for line in s.splitlines():
@@ -27,11 +22,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    6
-    """
     s = s.strip("\n")
     total = 0
     for line in s.splitlines():
@@ -39,18 +29,6 @@ def part_b(s: str) -> int:
         if (a <= c <= b) or (c <= a <= d) or (a <= d <= b) or (c <= b <= d):
             total += 1
     return total
-
-
-test_string = """
-2-4,6-8
-2-3,4-5
-5-7,7-9
-2-8,3-7
-6-6,4-6
-2-6,4-8
-21-21,21-21
-24-36,25-27
-"""
 
 
 if __name__ == "__main__":

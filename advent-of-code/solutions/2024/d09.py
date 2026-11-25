@@ -13,11 +13,6 @@ from numba import int64
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    1928
-    """
     s = s.strip("\n")
 
     # Parse input and calculate total size
@@ -80,11 +75,6 @@ def solve_a_numba(nums: np.ndarray, total_size: int) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    2858
-    """
     s = s.strip("\n")
 
     # Parse input and calculate total size
@@ -160,11 +150,6 @@ def solve_b_numba(nums: np.ndarray, total_size: int) -> int:
             checksum += file_id * (pos + offset)
 
     return checksum
-
-
-test_string = """
-2333133121414131402
-"""
 
 
 if __name__ == "__main__":

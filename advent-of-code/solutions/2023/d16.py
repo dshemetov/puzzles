@@ -81,11 +81,6 @@ def bounce(grid: list[list[str]], i: int, j: int, d: str) -> int:
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    46
-    """
     s = s.strip("\n")
     grid = [list(line) for line in s.splitlines()]
 
@@ -93,11 +88,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    51
-    """
     s = s.strip("\n")
     grid = [list(line) for line in s.splitlines()]
     m, n = len(grid), len(grid[0])
@@ -111,20 +101,6 @@ def part_b(s: str) -> int:
         max_seen = max(max_seen, bounce(grid, m - 1, j, "^"))
 
     return max_seen
-
-
-test_string = r"""
-.|...\....
-|.-.\.....
-.....|-...
-........|.
-..........
-.........\
-..../.\\..
-.-.-/..|..
-.|....-|.\
-..//.|....
-"""
 
 
 if __name__ == "__main__":

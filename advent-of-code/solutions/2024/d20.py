@@ -4,6 +4,8 @@
 # ///
 """20. https://adventofcode.com/2024/day/20"""
 
+import ast
+import inspect
 import sys
 import time
 from collections import deque
@@ -52,17 +54,8 @@ def pairwise_cheat_solver(path: np.ndarray, radius: int, time_diff_thresh: int) 
     return cheats
 
 
-def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    1
-    """
+def part_a(s: str, time_diff_thresh: int = 100) -> int:
     s = s.strip("\n")
-    if s == test_string.strip("\n"):
-        time_diff_thresh = 50
-    else:
-        time_diff_thresh = 100
     radius = 2
 
     # Parse grid
@@ -87,17 +80,8 @@ def part_a(s: str) -> int:
     return pairwise_cheat_solver(path, radius, time_diff_thresh)
 
 
-def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    285
-    """
+def part_b(s: str, time_diff_thresh: int = 100) -> int:
     s = s.strip("\n")
-    if s == test_string.strip("\n"):
-        time_diff_thresh = 50
-    else:
-        time_diff_thresh = 100
     radius = 20
 
     grid_lines = s.strip().split("\n")
@@ -121,28 +105,16 @@ def part_b(s: str) -> int:
     return pairwise_cheat_solver(path, radius, time_diff_thresh)
 
 
-test_string = """
-###############
-#...#...#.....#
-#.#.#.#.#.###.#
-#S#...#.#.#...#
-#######.#.#.###
-#######.#.#...#
-#######.#.###.#
-###..E#...#...#
-###.#######.###
-#...###...#...#
-#.#####.#.###.#
-#.#...#.#.#...#
-#.#.#.#.#.#.###
-#...#...#...###
-###############
-"""
+def params_for(part, extra: list[str]) -> dict:
+    """The key=value arguments after the input file that this part declares as keyword parameters."""
+    pairs = [arg.split("=", 1) for arg in extra]
+    wanted = inspect.signature(part).parameters
+    return {k: ast.literal_eval(v) for k, v in pairs if k in wanted}
 
 
 if __name__ == "__main__":
     s = open(sys.argv[1]).read()
     for part in (part_a, part_b):
         t = time.perf_counter()
-        print(part(s))
+        print(part(s, **params_for(part, sys.argv[2:])))
         print(f"{part.__name__}: {time.perf_counter() - t:.4f}s", file=sys.stderr)

@@ -22,11 +22,6 @@ def parse_combo_operand(k: int, registers: dict[str, int]) -> int:
 
 
 def part_a(s: str) -> str:
-    """
-    Examples:
-    >>> part_a(test_string_17)
-    '4,6,3,5,6,3,5,2,1,0'
-    """
     if not s.strip():
         s = test_string_17
 

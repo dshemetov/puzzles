@@ -14,11 +14,6 @@ from scipy.sparse import dok_matrix
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    1588
-    """
     template, rules = s.split("\n\n")
     A, v = rules_to_matrix(rules), template_to_vector(template)
     result = v
@@ -69,11 +64,6 @@ def char_counts(v: dok_matrix, template: str) -> Counter[int]:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    2188189693529
-    """
     template, rules = s.split("\n\n")
     A, v = rules_to_matrix(rules), template_to_vector(template)
     result = v
@@ -81,26 +71,6 @@ def part_b(s: str) -> int:
         result = A @ result
     counts = char_counts(result, template)
     return int(max(counts.values()) - min(counts.values()))
-
-
-test_string = """NNCB
-
-CH -> B
-HH -> N
-CB -> H
-NH -> C
-HB -> C
-HC -> B
-HN -> C
-NN -> C
-BH -> H
-NC -> B
-NB -> B
-BN -> B
-BB -> N
-BC -> B
-CC -> N
-CN -> C"""
 
 
 if __name__ == "__main__":

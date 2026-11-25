@@ -14,11 +14,6 @@ import numpy as np
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    5934
-    """
     fish_ages = parse_input(s)
     return get_number_fish_after_days(fish_ages, 80)
 

@@ -24,11 +24,6 @@ import numpy as np
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    31
-    """
     s = s.strip("\n")
     m = np.array([list(e) for e in s.splitlines()], dtype=str)
     start_ix = np.where(m == "S")
@@ -106,11 +101,6 @@ def print_path_lengths(mat: np.ndarray, best_cost: dict):
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    29
-    """
     s = s.strip("\n")
     m = np.array([list(e) for e in s.splitlines()], dtype=str)
     start_ix = np.where(m == "S")
@@ -120,15 +110,6 @@ def part_b(s: str) -> int:
     start_pos_x, start_pos_y = np.where(m == "a")
     priority_queue = [(x, y) for x, y in zip(start_pos_x, start_pos_y)]
     return get_minimum_cost(m, priority_queue, (end_ix[0][0], end_ix[1][0]))
-
-
-test_string = """
-Sabqponm
-abcryxxl
-accszExk
-acctuvwj
-abdefghi
-"""
 
 
 if __name__ == "__main__":

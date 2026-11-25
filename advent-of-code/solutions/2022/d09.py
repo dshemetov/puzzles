@@ -12,11 +12,6 @@ import numpy as np
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    13
-    """
     s = s.strip("\n")
 
     def update_tail(tail, head):
@@ -85,13 +80,6 @@ def print_tails_on_grid(
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    1
-    >>> part_b(test_string2)
-    36
-    """
     s = s.strip("\n")
     n = 10
     tails = {i: [0, 0] for i in range(n)}
@@ -140,29 +128,6 @@ def part_b(s: str) -> int:
                     break
 
     return len(visited)
-
-
-test_string = """
-R 4
-U 4
-L 3
-D 1
-R 4
-D 1
-L 5
-R 2
-"""
-
-test_string2 = """
-R 5
-U 8
-L 8
-D 3
-R 17
-D 10
-L 25
-U 20
-"""
 
 
 if __name__ == "__main__":

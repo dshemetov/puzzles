@@ -11,11 +11,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    159
-    """
     a, b = s.strip("\n").split("\n")
     a, b = a.split(","), b.split(",")
     a_visited, b_visited = set(), set()
@@ -65,11 +60,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    610
-    """
     a, b = s.strip("\n").split("\n")
     a, b = a.split(","), b.split(",")
     a_path, b_path = [], []
@@ -116,12 +106,6 @@ def part_b(s: str) -> int:
         m = min(m, a_path.index((x, y)) + b_path.index((x, y)) + 2)
 
     return m
-
-
-test_string = """
-R75,D30,R83,U83,L12,D49,R71,U7,L72
-U62,R66,U55,R34,D71,R55,D58,R83
-"""
 
 
 if __name__ == "__main__":

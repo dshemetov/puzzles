@@ -73,17 +73,6 @@ function part_b(input::AbstractString)
     return total
 end
 
-test_string_2024_10 = """
-89010123
-78121874
-87430965
-96549874
-45678903
-32019012
-01329801
-10456732
-"""
-
 function main(path)
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))

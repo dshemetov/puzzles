@@ -59,6 +59,15 @@ EXAMPLE2 = """
   #A#D#C#A#
   #########
 """
+HEURISTIC_BOARD = """
+#############
+#...........#
+###A#B#D#D###
+  #A#B#C#D#
+  #A#B#C#D#
+  #A#B#C#C#
+  #########
+"""
 EXAMPLE4 = """
 #############
 #...........#
@@ -208,6 +217,16 @@ def check_valid_move(
 
 
 def make_move(b: BoardState, i: int, t: tuple[int, int]) -> BoardState:
+    """
+    >>> print(make_move(BoardState.from_string(EXAMPLE4), 0, (10, 0)))
+    #############
+    #..........B#
+    ###.#C#B#D###
+      #D#C#B#A#
+      #D#B#A#C#
+      #A#D#C#A#
+      #########
+    """
     s = b.amphipods[i][0:2]
     type = b.amphipods[i].type
     b_ = BoardState(b.amphipods.copy(), b.cost, b.moves.copy())
@@ -291,6 +310,9 @@ def get_heuristic_cost(b: BoardState) -> int:
     destination room (times amphipod step cost). The complication is that we
     don't want to accidentally reorder amphipods that are in the same room, so
     we make sure they keep their relative order.
+
+    >>> get_heuristic_cost(BoardState.from_string(HEURISTIC_BOARD))
+    7700
     """
     room_size = 2 if len(b.amphipods) == 8 else 4
     heuristic_costs = defaultdict(list)
@@ -340,11 +362,6 @@ def a_star_search(
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(EXAMPLE1)
-    12521
-    """
     start_board = BoardState.from_string(s)
     ans_board = a_star_search(start_board, GOAL2.strip(), get_heuristic_cost)
 
@@ -353,11 +370,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(EXAMPLE1)
-    44169
-    """
     lines = s.strip().splitlines()
     lines.insert(3, "  #D#B#A#C#")
     lines.insert(3, "  #D#C#B#A#")
@@ -368,34 +380,6 @@ def part_b(s: str) -> int:
 
     if ans_board:
         return ans_board.cost
-
-
-board = BoardState.from_string(EXAMPLE4)
-board = make_move(board, 0, (10, 0))
-assert (
-    str(board)
-    == """
-#############
-#..........B#
-###.#C#B#D###
-  #D#C#B#A#
-  #D#B#A#C#
-  #A#D#C#A#
-  #########
-""".strip()
-)
-board = BoardState.from_string(
-    """
-#############
-#...........#
-###A#B#D#D###
-  #A#B#C#D#
-  #A#B#C#D#
-  #A#B#C#C#
-  #########
-"""
-)
-assert get_heuristic_cost(board) == 7700
 
 
 if __name__ == "__main__":

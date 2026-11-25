@@ -20,41 +20,11 @@ Operator = collections.namedtuple("Operator", ["data", "len_type", "len", "op"])
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a("8A004A801A8002F478")
-    16
-    >>> part_a("620080001611562C8802118E34")
-    12
-    >>> part_a("C0015000016115A2E0802F182340")
-    23
-    >>> part_a("A0016C880162017C3686B18A3D4780")
-    31
-    """
     packet = bin(int(data := s.strip("\n"), 16))[2:].zfill(len(data) * 4)
     return parse(packet, "a")
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b("C200B40A82")
-    3
-    >>> part_b("04005AC33890")
-    54
-    >>> part_b("880086C3E88112")
-    7
-    >>> part_b("CE00C43D881120")
-    9
-    >>> part_b("D8005AC2A8F0")
-    1
-    >>> part_b("F600BC2D8F")
-    0
-    >>> part_b("9C005AC2F8F0")
-    0
-    >>> part_b("9C0141080250320F1802104A08")
-    1
-    """
     packet = bin(int(data := s.strip("\n"), 16))[2:].zfill(len(data) * 4)
     return parse(packet, "b")
 
@@ -92,7 +62,7 @@ def parse(packet: str, part: str) -> int:
             if val.op == 8 and part == "a":
                 return sum(versions)
             elif val.op == 8 and part == "b":
-                return val.data[-1]
+                return int(val.data[-1])
             val = ops[val.op](val.data) if val.op < 5 else ops[val.op](*val.data)
             if len(stack) > 0:
                 stack[-1].data.append(val)

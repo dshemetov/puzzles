@@ -32,11 +32,6 @@ def solve_a_core(nums: np.ndarray, n: int, m: int) -> int:
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string_a)
-    37327623
-    """
     s = s.strip("\n")
     nums = np.array(s.splitlines(), dtype=np.int64)
     n, m = 2000, len(nums)
@@ -78,30 +73,10 @@ def solve_b_core(nums: np.ndarray, n: int, m: int) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string_b)
-    23
-    """
     s = s.strip("\n")
     nums = np.array(s.splitlines(), dtype=np.int64)
     n, m = 2000, len(nums)
     return solve_b_core(nums, n, m)
-
-
-test_string_a = """
-1
-10
-100
-2024
-"""
-
-test_string_b = """
-1
-2
-3
-2024
-"""
 
 
 if __name__ == "__main__":

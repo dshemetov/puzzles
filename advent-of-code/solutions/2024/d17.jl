@@ -99,14 +99,6 @@ function part_b(input::AbstractString)
     return minimum(valid)
 end
 
-test_string_2024_17 = """
-Register A: 729
-Register B: 0
-Register C: 0
-
-Program: 0,1,5,4,3,0
-"""
-
 function main(path)
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))

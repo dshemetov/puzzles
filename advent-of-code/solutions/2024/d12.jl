@@ -180,37 +180,6 @@ function count_sides(region::Vector{Tuple{Int,Int}})::Int
     return total_sides
 end
 
-test_string_2024_12 = """
-AAAA
-BBCD
-BBCC
-EEEC
-
-RRRRIICCFF
-RRRRIICCCF
-VVRRRCCFFF
-VVRCCCJFFF
-VVVVCJJCFE
-VVIVCCJJEE
-VVIIICJJEE
-MIIIIIJJEE
-MIIISIJEEE
-MMMISSJEEE
-
-EEEEE
-EXXXX
-EEEEE
-EXXXX
-EEEEE
-
-AAAAAA
-AAABBA
-AAABBA
-ABBAAA
-ABBAAA
-AAAAAA
-"""
-
 function main(path)
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))

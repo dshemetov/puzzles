@@ -91,19 +91,6 @@ function part_b(input::AbstractString)
     return total
 end
 
-test_string_2024_19 = """
-r, wr, b, g, bwu, rb, gb, br
-
-brwrr
-bggr
-gbbr
-rrbgbr
-ubwu
-bwurrg
-brgr
-bbrgwb
-"""
-
 function main(path)
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))

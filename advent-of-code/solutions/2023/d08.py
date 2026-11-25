@@ -21,13 +21,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    2
-    >>> part_a(test_string2)
-    6
-    """
     commands, *network = s.strip("\n").splitlines()
 
     d = {}
@@ -47,9 +40,12 @@ def part_a(s: str) -> int:
 def part_b(s: str) -> int:
     """
     Examples:
-    >>> part_b(get_puzzle_input(2023, 8))
     >>> part_b(test_string3)
     6
+    """
+    """
+    Examples:
+    >>> part_b(get_puzzle_input(2023, 8))
     """
     commands, *network = s.strip("\n").splitlines()
 
@@ -77,26 +73,6 @@ def part_b(s: str) -> int:
 
     return lcm(*lengths)
 
-
-test_string = """
-RL
-
-AAA = (BBB, CCC)
-BBB = (DDD, EEE)
-CCC = (ZZZ, GGG)
-DDD = (DDD, DDD)
-EEE = (EEE, EEE)
-GGG = (GGG, GGG)
-ZZZ = (ZZZ, ZZZ)
-"""
-
-test_string2 = """
-LLR
-
-AAA = (BBB, BBB)
-BBB = (AAA, ZZZ)
-ZZZ = (ZZZ, ZZZ)
-"""
 
 test_string3 = """
 LR

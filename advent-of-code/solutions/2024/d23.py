@@ -19,11 +19,6 @@ def inv_ix(ix: int) -> tuple[str, str]:
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    7
-    """
     s = s.strip("\n")
     lines = s.split("\n")
 
@@ -69,11 +64,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> str:
-    """
-    Examples:
-    >>> part_b(test_string)
-    "('c', 'o')-('d', 'e')-('k', 'a')-('t', 'a')"
-    """
     s = s.strip("\n")
     lines = s.split("\n")
 
@@ -151,41 +141,6 @@ def part_b(s: str) -> str:
     result.sort()
 
     return "-".join([f"('{c1}', '{c2}')" for c1, c2 in result])
-
-
-test_string = """kh-tc
-qp-kh
-de-cg
-ka-co
-yn-aq
-qp-ub
-cg-tb
-vc-aq
-tb-ka
-wh-tc
-yn-cg
-kh-ub
-ta-co
-de-co
-tc-td
-tb-wq
-wh-td
-ta-ka
-td-qp
-aq-cg
-wq-ub
-ub-vc
-de-ta
-wq-aq
-wq-vc
-wh-yn
-ka-de
-kh-ta
-co-tc
-wh-qp
-tb-vc
-td-yn
-"""
 
 
 if __name__ == "__main__":

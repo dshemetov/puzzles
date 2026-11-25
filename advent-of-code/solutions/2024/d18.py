@@ -4,6 +4,8 @@
 # ///
 """18. https://adventofcode.com/2024/day/18"""
 
+import ast
+import inspect
 import sys
 import time
 import heapq
@@ -66,22 +68,11 @@ def solve_maze(grid: list[list[str]], n: int, m: int) -> tuple[int, list[tuple[i
     return -1, []
 
 
-def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string_18)
-    22
-    """
+def part_a(s: str, n: int = 71, m: int = 71, num_bytes: int = 1024) -> int:
     s = s.strip("\n")
     lines = s.split("\n")
 
     # Determine grid size and number of bytes based on input
-    if not s or s == test_string_18.strip("\n"):
-        n, m = 7, 7
-        num_bytes = 12
-    else:
-        n, m = 71, 71
-        num_bytes = 1024
 
     grid = [["." for _ in range(m + 1)] for _ in range(n + 1)]
 
@@ -95,21 +86,10 @@ def part_a(s: str) -> int:
     return cost
 
 
-def part_b(s: str) -> str:
-    """
-    Examples:
-    >>> part_b(test_string_18)
-    '6,1'
-    """
+def part_b(s: str, n: int = 71, m: int = 71, num_bytes: int = 1024) -> str:
     s = s.strip("\n")
     lines = s.split("\n")
 
-    if not s or s == test_string_18.strip("\n"):
-        n, m = 7, 7
-        num_bytes = 12
-    else:
-        n, m = 71, 71
-        num_bytes = 1024
 
     grid = [["." for _ in range(m + 1)] for _ in range(n + 1)]
 
@@ -138,37 +118,18 @@ def part_b(s: str) -> str:
 
 
 # Test string from Julia solution
-test_string_18 = """5,4
-4,2
-4,5
-3,0
-2,1
-6,3
-2,4
-1,5
-0,6
-3,3
-2,6
-5,1
-1,2
-5,5
-2,5
-6,5
-1,4
-0,4
-6,4
-1,1
-6,1
-1,0
-0,5
-1,6
-2,0
-"""
+
+
+def params_for(part, extra: list[str]) -> dict:
+    """The key=value arguments after the input file that this part declares as keyword parameters."""
+    pairs = [arg.split("=", 1) for arg in extra]
+    wanted = inspect.signature(part).parameters
+    return {k: ast.literal_eval(v) for k, v in pairs if k in wanted}
 
 
 if __name__ == "__main__":
     s = open(sys.argv[1]).read()
     for part in (part_a, part_b):
         t = time.perf_counter()
-        print(part(s))
+        print(part(s, **params_for(part, sys.argv[2:])))
         print(f"{part.__name__}: {time.perf_counter() - t:.4f}s", file=sys.stderr)

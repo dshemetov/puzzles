@@ -9,11 +9,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    15
-    """
     s = s.strip("\n")
     total = 0
     for line in s.splitlines():
@@ -41,11 +36,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    12
-    """
     s = s.strip("\n")
     total = 0
     for line in s.splitlines():
@@ -70,13 +60,6 @@ def part_b(s: str) -> int:
                 total += 6 + 1
 
     return total
-
-
-test_string = """
-A Y
-B X
-C Z
-"""
 
 
 if __name__ == "__main__":

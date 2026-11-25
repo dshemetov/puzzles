@@ -13,11 +13,6 @@ from numba import int32
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    14
-    """
     s = s.strip("\n")
     lines = s.splitlines()
 
@@ -33,11 +28,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    34
-    """
     s = s.strip("\n")
     lines = s.splitlines()
 
@@ -118,22 +108,6 @@ def solve_b_numba(grid: np.ndarray, m: int, n: int) -> int:
                     x, y = x - dx, y - dy
 
     return np.sum(antinodes)
-
-
-test_string = """
-............
-........0...
-.....0......
-.......0....
-....0.......
-......A.....
-............
-............
-........A...
-.........A..
-............
-............
-"""
 
 
 if __name__ == "__main__":

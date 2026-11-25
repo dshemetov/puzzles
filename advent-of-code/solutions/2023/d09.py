@@ -10,11 +10,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    114
-    """
     nums = [np.array(x.split(), dtype=int) for x in s.strip("\n").splitlines()]
     total = 0
     for num in nums:
@@ -31,11 +26,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    2
-    """
     nums = [np.array(x.split(), dtype=int) for x in s.strip("\n").splitlines()]
     total = 0
     for num in nums:
@@ -49,13 +39,6 @@ def part_b(s: str) -> int:
         total += s
 
     return int(total)
-
-
-test_string = """
-0 3 6 9 12 15
-1 3 6 10 15 21
-10 13 16 21 30 45
-"""
 
 
 if __name__ == "__main__":

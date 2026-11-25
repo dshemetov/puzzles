@@ -91,36 +91,25 @@ function pairwise_cheat_solver(s::AbstractString, radius::Int, time_diff_thresh:
     return cheats
 end
 
-test_string_2024_20 = """
-###############
-#...#...#.....#
-#.#.#.#.#.###.#
-#S#...#.#.#...#
-#######.#.#.###
-#######.#.#...#
-#######.#.###.#
-###..E#...#...#
-###.#######.###
-#...###...#...#
-#.#####.#.###.#
-#.#...#.#.#...#
-#.#.#.#.#.#.###
-#...#...#...###
-###############
-"""
+# The key=value arguments after the input file that this part declares as keyword parameters.
+function params_for(part, data, extra)
+    pairs = [Symbol(k) => something(tryparse(Int, v), v) for (k, v) in split.(extra, "="; limit=2)]
+    return filter(p -> hasmethod(part, Tuple{typeof(data)}, (first(p),)), pairs)
+end
 
-function main(path)
+function main(path, extra=String[])
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))
-        first_call = @elapsed answer = part(input)
+        params = params_for(part, input, extra)
+        first_call = @elapsed answer = part(input; params...)
         println(answer)
         # The first call includes compiling. Call again (if it was quick) to time just the work.
-        warm = first_call < 2 ? @elapsed(part(input)) : first_call
+        warm = first_call < 2 ? @elapsed(part(input; params...)) : first_call
         println(stderr, name, ": ", round(warm, digits=4), "s (first call ", round(first_call, digits=4), "s)")
     end
 end
 
 # Only runs as a script, so `include`-ing this file in a REPL stays quiet.
 if abspath(PROGRAM_FILE) == @__FILE__
-    main(ARGS[1])
+    main(ARGS[1], ARGS[2:end])
 end

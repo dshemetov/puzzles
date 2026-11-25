@@ -18,11 +18,21 @@ just year=2024 run 3        # pick a year (this goes before the recipe name)
 just right 1 a              # record the current part a answer as correct
 just wrong 1 b              # record the current part b answer as rejected (can repeat)
 just check                  # run every file this year, labelling each answer (just all=1 check includes skipped)
+just test 1                 # run the day on examples/<year>/d01*.txt and compare with d01*.expected
+just example 14              # run a day on its example with the .params (`example 12 3` for d12.3); shows expected answers
+just debug 14 2              # Python day under pdb on example 2 (`debug 14 real` for the real input)
 just variant=blocks run 9   # run solutions/<year>/d09-blocks.<ext>, an alternative approach to the same day
 just setup-julia           # one time: the shared Julia environment (@aoc) that days with packages use
 just jl-repl 1              # Julia REPL with day 1 loaded (`input`, `lines`); re-include after edits
 just time 1                 # hyperfine one day; `just time-year` for the whole year
 ```
+
+`just test` runs a day's file on each `examples/<year>/dNN[.k].txt` (the puzzle's example input) and compares
+with `dNN[.k].expected`: one line per part, `a` then `b`, blank to skip a part. An optional `dNN[.k].params`
+(`key=value` lines, like `width=11`) is passed after the input file, so an example can shrink a grid or lower a
+threshold. A part opts in by declaring a keyword parameter with the real-input default (`def part_a(s, width=101)`);
+the Python and Julia templates' `main` forward only the keys a part declares. Python files also run their doctests
+(for helper functions) and Rust files their `#[test]`s.
 
 `just check` runs every language's file for every day against the same `answers/<year>.txt`,
 so a second language is also a cross-check. Adding a language means one `match` branch in

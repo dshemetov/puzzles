@@ -135,11 +135,6 @@ def transition_length(c1: str, c2: str, levels: int) -> int:
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    126384
-    """
     s = s.strip("\n")
 
     if not s:
@@ -186,11 +181,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    0
-    """
     s = s.strip("\n")
 
     if not s:

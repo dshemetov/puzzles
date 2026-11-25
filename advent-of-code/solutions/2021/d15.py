@@ -12,11 +12,6 @@ import numpy as np
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    40
-    """
     mat = np.array([list(line) for line in s.split("\n")], dtype=int)
     n, m = mat.shape
     actual_cost, _ = get_minimum_path(mat, (0, 0), (n - 1, m - 1))
@@ -45,11 +40,6 @@ def get_minimum_path(mat: np.ndarray, start_ix: tuple[int, int], end_ix: tuple[i
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    315
-    """
     mat = np.array([list(line) for line in s.split("\n")], dtype=int)
     big_mat = expand_mat(mat)
     n, m = big_mat.shape
@@ -69,18 +59,6 @@ def expand_mat(mat):
             graph_tiled[xs:xe, ys:ye] = (mat + xtile + ytile - 1) % 9 + 1
 
     return graph_tiled
-
-
-test_string = """1163751742
-1381373672
-2136511328
-3694931569
-7463417111
-1319128137
-1359912421
-3125421639
-1293138521
-2311944581"""
 
 
 if __name__ == "__main__":

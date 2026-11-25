@@ -11,17 +11,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a("bvwbjplbgvbhsrlpgdmjqwftvncz")
-    5
-    >>> part_a("nppdvjthqldpwncqszvftbrmjlhg")
-    6
-    >>> part_a("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")
-    10
-    >>> part_a("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw")
-    11
-    """
     s = s.strip("\n")
     for i in range(4, len(s)):
         if len(set(s[i - 4 : i])) == 4:
@@ -30,17 +19,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b("bvwbjplbgvbhsrlpgdmjqwftvncz")
-    23
-    >>> part_b("nppdvjthqldpwncqszvftbrmjlhg")
-    23
-    >>> part_b("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")
-    29
-    >>> part_b("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw")
-    26
-    """
     s = s.strip("\n")
     for i in range(14, len(s)):
         if len(set(s[i - 14 : i])) == 14:

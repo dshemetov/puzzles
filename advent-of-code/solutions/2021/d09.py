@@ -27,11 +27,6 @@ def nlargest(n: int, it: Iterable) -> list:
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    15
-    """
     mat = [list(x) for x in s.strip("\n").split("\n")]
     n, m = len(mat), len(mat[0])
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
@@ -48,11 +43,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    1134
-    """
     mat = [list(x) for x in s.strip("\n").split("\n")]
     directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 
@@ -83,15 +73,6 @@ def part_b(s: str) -> int:
 
     a, b, c = nlargest(3, basin_sizes)
     return a * b * c
-
-
-test_string = """
-2199943210
-3987894921
-9856789892
-8767896789
-9899965678
-"""
 
 
 if __name__ == "__main__":

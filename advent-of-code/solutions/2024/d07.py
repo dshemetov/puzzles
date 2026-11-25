@@ -10,11 +10,6 @@ import re
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    3749
-    """
     s = s.strip("\n")
     lines = [[int(x) for x in re.findall(r"\d+", x)] for x in s.splitlines()]
 
@@ -27,11 +22,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    11387
-    """
     s = s.strip("\n")
     lines = [[int(x) for x in re.findall(r"\d+", x)] for x in s.splitlines()]
 
@@ -69,19 +59,6 @@ def backtrack(target: int, idx: int, numbers: list[int], with_combination: bool)
                     return True
 
     return False
-
-
-test_string = """
-190: 10 19
-3267: 81 40 27
-83: 17 5
-156: 15 6
-7290: 6 8 6 15
-161011: 16 10 13
-192: 17 8 14
-21037: 9 7 18 13
-292: 11 6 16 20
-"""
 
 
 if __name__ == "__main__":

@@ -65,19 +65,6 @@ function part_b(input::AbstractString)
     return maximum(prefix_profits)
 end
 
-test_string_2024_22_a = """
-1
-10
-100
-2024
-"""
-
-test_string_2024_22_b = """
-1
-2
-3
-2024
-"""
 
 function main(path)
     input = read(path, String)

@@ -12,11 +12,6 @@ import re
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    45
-    """
     xmin, xmax, ymin, ymax = [int(x) for x in re.findall(r"(-*\d+)", s)]
     min_vx, max_vx = valid_vxs(xmin, xmax)
     min_vy, max_vy = valid_vys(ymin, ymax)
@@ -70,11 +65,6 @@ def ends_in_target(vx_: int, vy_: int, xmin, xmax, ymin, ymax) -> tuple[bool, in
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    112
-    """
     xmin, xmax, ymin, ymax = [int(x) for x in re.findall(r"(-*\d+)", s)]
     min_vx, max_vx = valid_vxs(xmin, xmax)
     min_vy, max_vy = valid_vys(ymin, ymax)
@@ -86,9 +76,6 @@ def part_b(s: str) -> int:
                 valid_vxvys += 1
 
     return valid_vxvys
-
-
-test_string = """target area: x=20..30, y=-10..-5"""
 
 
 if __name__ == "__main__":

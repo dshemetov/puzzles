@@ -19,15 +19,6 @@ function part_b(input::AbstractString)
     sum(abs.(x * c[x] for x in m[:, 1]))
 end
 
-test_string_2024_01 = """
-3   4
-4   3
-2   5
-1   3
-3   9
-3   3
-"""
-
 function main(path)
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))

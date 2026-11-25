@@ -84,46 +84,25 @@ function part_b(input::AbstractString; n=71, m=71, num_bytes=1024)
     return -1
 end
 
-test_string_2024_18 = """
-5,4
-4,2
-4,5
-3,0
-2,1
-6,3
-2,4
-1,5
-0,6
-3,3
-2,6
-5,1
-1,2
-5,5
-2,5
-6,5
-1,4
-0,4
-6,4
-1,1
-6,1
-1,0
-0,5
-1,6
-2,0
-"""
+# The key=value arguments after the input file that this part declares as keyword parameters.
+function params_for(part, data, extra)
+    pairs = [Symbol(k) => something(tryparse(Int, v), v) for (k, v) in split.(extra, "="; limit=2)]
+    return filter(p -> hasmethod(part, Tuple{typeof(data)}, (first(p),)), pairs)
+end
 
-function main(path)
+function main(path, extra=String[])
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))
-        first_call = @elapsed answer = part(input)
+        params = params_for(part, input, extra)
+        first_call = @elapsed answer = part(input; params...)
         println(answer)
         # The first call includes compiling. Call again (if it was quick) to time just the work.
-        warm = first_call < 2 ? @elapsed(part(input)) : first_call
+        warm = first_call < 2 ? @elapsed(part(input; params...)) : first_call
         println(stderr, name, ": ", round(warm, digits=4), "s (first call ", round(first_call, digits=4), "s)")
     end
 end
 
 # Only runs as a script, so `include`-ing this file in a REPL stays quiet.
 if abspath(PROGRAM_FILE) == @__FILE__
-    main(ARGS[1])
+    main(ARGS[1], ARGS[2:end])
 end

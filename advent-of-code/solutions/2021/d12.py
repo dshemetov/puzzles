@@ -15,15 +15,6 @@ Graph = dict[str, list[str]]
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_strings[0])
-    10
-    >>> part_a(test_strings[1])
-    19
-    >>> part_a(test_strings[2])
-    226
-    """
     return len(get_paths(parse_input(s)))
 
 
@@ -74,55 +65,7 @@ def get_valid_steps(path: Path, node_map: dict, part: str) -> list[str]:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_strings[0])
-    36
-    >>> part_b(test_strings[1])
-    103
-    >>> part_b(test_strings[2])
-    3509
-    """
     return len(get_paths(parse_input(s), part="b"))
-
-
-test_strings = [
-    """start-A
-start-b
-A-c
-A-b
-b-d
-A-end
-b-end""",
-    """dc-end
-HN-start
-start-kj
-dc-start
-dc-HN
-LN-dc
-HN-end
-kj-sa
-kj-HN
-kj-dc""",
-    """fs-end
-he-DX
-fs-he
-start-DX
-pj-DX
-end-zg
-zg-sl
-zg-pj
-pj-he
-RW-he
-fs-DX
-pj-RW
-zg-RW
-start-pj
-he-WI
-zg-he
-pj-fs
-start-RW""",
-]
 
 
 if __name__ == "__main__":

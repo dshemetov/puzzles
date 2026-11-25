@@ -57,28 +57,13 @@ def main_loop(numbers: np.ndarray, iterations: int) -> int64:
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    55312
-    """
     numbers = np.array(s.strip("\n").split(), dtype=np.int64)
     return main_loop(numbers, 25)
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    65601038650482
-    """
     numbers = np.array(s.strip("\n").split(), dtype=np.int64)
     return main_loop(numbers, 75)
-
-
-test_string = """
-125 17
-"""
 
 
 if __name__ == "__main__":

@@ -24,11 +24,6 @@ def binary_to_int(ls: list[int]) -> int:
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    198
-    """
     mat = np.array([list(line) for line in s.strip("\n").split("\n")], dtype=int)
     n, _ = mat.shape
     max_rows = mat.sum(axis=0) >= n / 2
@@ -40,11 +35,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    230
-    """
     mat = np.array([list(line) for line in s.strip("\n").split("\n")], dtype=int)
     _, m = mat.shape
 
@@ -65,22 +55,6 @@ def part_b(s: str) -> int:
     co2_rating = binary_to_int(mat_[0])
 
     return oxygen_rating * co2_rating
-
-
-test_string = """
-00100
-11110
-10110
-10111
-10101
-01111
-00111
-11100
-10000
-11001
-00010
-01010
-"""
 
 
 if __name__ == "__main__":

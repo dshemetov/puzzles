@@ -55,10 +55,6 @@ function part_b(input::AbstractString)
     return sum(values(counts))
 end
 
-test_string_2024_11 = """
-125 17
-"""
-
 function main(path)
     input = read(path, String)
     for (name, part) in (("part_a", part_a), ("part_b", part_b))

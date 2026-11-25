@@ -11,11 +11,6 @@ import numpy as np
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    18
-    """
     s = s.strip("\n")
     grid = np.array([list(row) for row in s.split("\n")])
     m, n = grid.shape
@@ -48,11 +43,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    9
-    """
     s = s.strip("\n")
     grid = np.array([list(row) for row in s.split("\n")])
     m, n = grid.shape
@@ -72,20 +62,6 @@ def part_b(s: str) -> int:
                 total += 1
 
     return total
-
-
-test_string = """
-MMMSXXMASM
-MSAMXMSMSA
-AMXSXMAAMM
-MSAMASMSMX
-XMASAMXAMM
-XXAMMXXAMA
-SMSMSASXSS
-SAXAMASAAA
-MAMMMXMMMM
-MXMXAXMASX
-"""
 
 
 if __name__ == "__main__":

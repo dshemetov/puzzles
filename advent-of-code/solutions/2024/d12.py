@@ -9,25 +9,8 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    1930
-    """
     s = s.strip("\n")
-    grids = s.split("\n\n")
-
-    if len(grids) > 1:
-        grid_str = grids[1].strip()
-        return solve_single_grid_a(grid_str)
-
-    total = 0
-    for grid_str in grids:
-        if not grid_str.strip():
-            continue
-        total += solve_single_grid_a(grid_str.strip())
-
-    return total
+    return solve_single_grid_a(s)
 
 
 def solve_single_grid_a(s: str) -> int:
@@ -86,25 +69,8 @@ def solve_single_grid_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    368
-    """
     s = s.strip("\n")
-    grids = s.split("\n\n")
-
-    if len(grids) > 3:
-        grid_str = grids[3].strip()
-        return solve_single_grid_b(grid_str)
-
-    total = 0
-    for grid_str in grids:
-        if not grid_str.strip():
-            continue
-        total += solve_single_grid_b(grid_str.strip())
-
-    return total
+    return solve_single_grid_b(s)
 
 
 def solve_single_grid_b(s: str) -> int:
@@ -191,38 +157,6 @@ def count_sides(region):
                     total_sides += 1
 
     return total_sides
-
-
-test_string = """
-AAAA
-BBCD
-BBCC
-EEEC
-
-RRRRIICCFF
-RRRRIICCCF
-VVRRRCCFFF
-VVRCCCJFFF
-VVVVCJJCFE
-VVIVCCJJEE
-VVIIICJJEE
-MIIIIIJJEE
-MIIISIJEEE
-MMMISSJEEE
-
-EEEEE
-EXXXX
-EEEEE
-EXXXX
-EEEEE
-
-AAAAAA
-AAABBA
-AAABBA
-ABBAAA
-ABBAAA
-AAAAAA
-"""
 
 
 if __name__ == "__main__":

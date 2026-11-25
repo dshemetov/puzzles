@@ -36,11 +36,6 @@ def apply_until_fixed(func):
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> assert part_a(test_strings[0]) == 39
-    >>> assert part_a(test_strings[1]) == 590784
-    """
     slices = parse_input(s)
     xmin_ = ymin_ = zmin_ = -50
     xmax_ = ymax_ = zmax_ = 50
@@ -319,8 +314,6 @@ def part_b(s: str) -> int:
     >>> cube.add_slice(cubes[3])
     >>> expected_points |= set([(10, 10, 10)])
     >>> assert set(cube.points_iter()) == expected_points
-    >>> assert part_b(test_strings[0]) == 39
-    >>> assert part_b(test_strings[2]) == 2758514936282235
     """
     slices = parse_input(s)
     cube = Cube()

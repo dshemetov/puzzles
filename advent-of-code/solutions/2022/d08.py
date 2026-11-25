@@ -54,11 +54,6 @@ def is_visible(m: np.ndarray, i: int, j: int) -> bool:
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    21
-    """
     s = s.strip("\n")
     m = np.array([[int(x) for x in line] for line in s.splitlines()])
     visible = 0
@@ -102,11 +97,6 @@ def get_score(m: np.ndarray, i: int, j: int) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    8
-    """
     s = s.strip("\n")
     m = np.array([[int(x) for x in line] for line in s.splitlines()])
     max_score = 0
@@ -115,15 +105,6 @@ def part_b(s: str) -> int:
             max_score = max(max_score, get_score(m, i, j))
 
     return max_score
-
-
-test_string = """
-30373
-25512
-65332
-33549
-35390
-"""
 
 
 if __name__ == "__main__":

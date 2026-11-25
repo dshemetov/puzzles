@@ -9,11 +9,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    405
-    """
     patterns = s.strip("\n").split("\n\n")
     total = 0
     for pattern in patterns:
@@ -61,11 +56,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    400
-    """
     patterns = s.strip("\n").split("\n\n")
     total = 0
     for pattern in patterns:
@@ -168,25 +158,6 @@ def part_b(s: str) -> int:
                 break
 
     return total
-
-
-test_string = """
-#.##..##.
-..#.##.#.
-##......#
-##......#
-..#.##.#.
-..##..##.
-#.#.##.#.
-
-#...##..#
-#....#..#
-..##..###
-#####.##.
-#####.##.
-..##..###
-#....#..#
-"""
 
 
 if __name__ == "__main__":

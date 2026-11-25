@@ -40,11 +40,6 @@ def solve_a_numba(grid, start_pos, m, n):
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    41
-    """
     s = s.strip("\n")
     # Convert to uint8 for better Numba performance
     grid = np.array([[ord(c) for c in row] for row in s.split("\n")], dtype=np.uint8)
@@ -114,11 +109,6 @@ def creates_loop_numba(grid, start_pos, obstacle_pos, m, n):
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    6
-    """
     s = s.strip("\n")
     # Convert to uint8 for better Numba performance
     grid = np.array([[ord(c) for c in row] for row in s.split("\n")], dtype=np.uint8)
@@ -143,20 +133,6 @@ def part_b(s: str) -> int:
             total += 1
 
     return total
-
-
-test_string = """
-....#.....
-.........#
-..........
-..#.......
-.......#..
-..........
-.#..^.....
-........#.
-#.........
-......#...
-"""
 
 
 if __name__ == "__main__":

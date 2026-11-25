@@ -46,6 +46,24 @@ run day input="" year=year:
     use aoc.nu
     aoc run-day {{day}} {{year}} "{{input}}" "{{lang}}" "{{variant}}"
 
+# Run a day's tests: doctests for Python, `#[test]` for Rust.
+test day year=year:
+    #!/usr/bin/env -S nu --no-config-file
+    use aoc.nu
+    aoc test {{day}} {{year}} "{{lang}}" "{{variant}}"
+
+# Run a day on one example and its params: `just example 14` (first), `just example 12 3` (dNN.3). Shows expected answers.
+example day k="" year=year:
+    #!/usr/bin/env -S nu --no-config-file
+    use aoc.nu
+    aoc example {{day}} {{year}} "{{k}}" "{{lang}}" "{{variant}}"
+
+# Python day under pdb on an example (`just debug 14 2`), or on the real input (`just debug 14 real`).
+debug day k="" year=year:
+    #!/usr/bin/env -S nu --no-config-file
+    use aoc.nu
+    aoc debug {{day}} {{year}} "{{k}}" "{{lang}}" "{{variant}}"
+
 # One-time: create the shared Julia environment `@aoc` that .jl days run in (packages that need installing go here).
 setup-julia:
     julia --startup-file=no -e 'using Pkg; Pkg.activate("aoc", shared=true); Pkg.add("DataStructures")'

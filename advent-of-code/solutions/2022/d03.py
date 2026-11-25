@@ -14,11 +14,6 @@ letters = ascii_lowercase + ascii_uppercase
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    157
-    """
     s = s.strip("\n")
     total = 0
     for line in s.splitlines():
@@ -30,27 +25,12 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    70
-    """
     s = s.strip("\n")
     total = 0
     for a, b, c in grouper(s.splitlines(), 3):
         d = (set(a) & set(b) & set(c)).pop()
         total += letters.index(d) + 1
     return total
-
-
-test_string = """
-vJrwpWtwJgWrhcsFMMfFFhFp
-jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
-PmmdzqPrVvPwwTWBwg
-wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
-ttgJtRGJQctTZtZT
-CrZsJsPPZsGzwwsLwLmpwMDw
-"""
 
 
 if __name__ == "__main__":

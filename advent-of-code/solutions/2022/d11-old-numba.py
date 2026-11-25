@@ -32,11 +32,6 @@ r = re.compile(
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    10605
-    """
     s = s.strip("\n")
     monkey_datas = {}
     for monkey in s.split("\n\n"):
@@ -129,11 +124,6 @@ def do_monkey_throws(items_matrix: np.ndarray, monkey_datas: np.ndarray, mod: in
 
 
 def solve_b_numba(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    2713310158
-    """
     s = s.strip("\n")
     monkey_items = []
     monkey_datas = []
@@ -170,37 +160,6 @@ def solve_b_numba(s: str) -> int:
 
 def part_b(s: str) -> int:
     return solve_b_numba(s)
-
-
-test_string = """
-Monkey 0:
-  Starting items: 79, 98
-  Operation: new = old * 19
-  Test: divisible by 23
-    If true: throw to monkey 2
-    If false: throw to monkey 3
-
-Monkey 1:
-  Starting items: 54, 65, 75, 74
-  Operation: new = old + 6
-  Test: divisible by 19
-    If true: throw to monkey 2
-    If false: throw to monkey 0
-
-Monkey 2:
-  Starting items: 79, 60, 97
-  Operation: new = old * old
-  Test: divisible by 13
-    If true: throw to monkey 1
-    If false: throw to monkey 3
-
-Monkey 3:
-  Starting items: 74
-  Operation: new = old + 3
-  Test: divisible by 17
-    If true: throw to monkey 0
-    If false: throw to monkey 1
-"""
 
 
 if __name__ == "__main__":

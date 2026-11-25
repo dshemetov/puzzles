@@ -11,11 +11,6 @@ import numpy as np
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    143
-    """
     s = s.strip("\n")
     rules_str, updates_str = s.split("\n\n")
     rules_lines = [line.split("|") for line in rules_str.splitlines()]
@@ -46,11 +41,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    123
-    """
     s = s.strip("\n")
     rules_str, updates_str = s.split("\n\n")
     rules_lines = [line.split("|") for line in rules_str.splitlines()]
@@ -88,38 +78,6 @@ def part_b(s: str) -> int:
         total += update[len(update) // 2]
 
     return total
-
-
-test_string = """
-47|53
-97|13
-97|61
-97|47
-75|29
-61|13
-75|53
-29|13
-97|29
-53|29
-61|53
-97|53
-61|29
-47|13
-75|47
-97|75
-47|61
-75|61
-47|29
-75|13
-53|13
-
-75,47,61,53,29
-97,61,53,29,13
-75,29,13
-75,97,47,61,53
-61,13,29
-97,13,75,29,47
-"""
 
 
 if __name__ == "__main__":

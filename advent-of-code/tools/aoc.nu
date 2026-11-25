@@ -86,9 +86,10 @@ def build [src: string, bin: string, compile: list<string>, input: string]: noth
 }
 
 # Run a day (fetching its input if no file is given) and return its output lines.
-export def answers [day: int, year: int, input: string = "", lang: string = "", variant: string = ""]: nothing -> list<string> {
+# `params` are `key=value` strings passed after the input file; a solution reads the ones it declares.
+export def answers [day: int, year: int, input: string = "", lang: string = "", variant: string = "", params: list<string> = []]: nothing -> list<string> {
     let input = if $input == "" { fetch $day $year; input-path $day $year } else { $input }
-    let argv = runner (solution-file $day $year $lang $variant) $input
+    let argv = runner (solution-file $day $year $lang $variant) $input | append $params
     run-external ($argv | first) ...($argv | skip 1) | lines
 }
 
@@ -165,6 +166,93 @@ export def check [year: int, timeout: int, ext: string, all: bool] {
         print ($labels | if ($in | is-empty) { ["  run failed or timed out"] } else { $in } | str join "\n")
     }
     if $skipped > 0 { print $"skipped ($skipped) files marked 'aoc: skip' \(just all=1 check includes them\)" }
+}
+
+# The `key=value` lines of an example's .params file, or none.
+def example-params [input: string]: nothing -> list<string> {
+    let file = $input | str replace --regex '\.txt$' '.params'
+    if not ($file | path exists) { return [] }
+    open --raw $file | lines | where {|l| $l | str trim | is-not-empty }
+}
+
+# Which input and params to use for a day: example `k` (empty for the first, `2` for dNN.2), or "real".
+def pick-input [day: int, year: int, k: string]: nothing -> record<input: string, params: list<string>> {
+    if $k == "real" { fetch $day $year; return {input: (input-path $day $year), params: []} }
+    let suffix = if $k == "" { "" } else { $".($k)" }
+    let input = $"examples/($year)/d(pad $day)($suffix).txt"
+    if not ($input | path exists) { error make {msg: $"no example ($input)"} }
+    {input: $input, params: (example-params $input)}
+}
+
+# Run a day on one example (with its params) and show the answers next to the expected ones.
+export def example [day: int, year: int, k: string = "", lang: string = "", variant: string = ""] {
+    let pick = pick-input $day $year $k
+    let expected = $pick.input | str replace --regex '\.txt$' '.expected'
+    let want = if ($expected | path exists) { open --raw $expected | lines } else { [] }
+    let got = answers $day $year $pick.input $lang $variant $pick.params
+    for part in (["a" "b"] | enumerate) {
+        let w = $want | get -o $part.index | default ""
+        let g = $got | get -o $part.index | default ""
+        print $"($part.item): got ($g), expected ($w | if $in == "" { '-' } else { $in })"
+    }
+}
+
+# Start a Python day under pdb on one example (or `real`). Set breakpoints with `b file:line`, or call `breakpoint()`.
+export def debug [day: int, year: int, k: string = "", lang: string = "", variant: string = ""] {
+    let file = solution-file $day $year (if $lang == "" { "py" } else { $lang }) $variant
+    if ($file | path parse | get extension) != py { error make {msg: "debug supports Python days only (Julia: `just jl-repl`)"} }
+    let pick = pick-input $day $year $k
+    exec uv run --no-project --with-requirements $file python -m pdb $file $pick.input ...$pick.params
+}
+
+# Run a day's tests. Every language runs its normal entry point on each examples/<year>/dNN[.k].txt and
+# compares with dNN[.k].expected (one line per part, a then b; a blank line means that part is not checked).
+# An optional dNN[.k].params holds `key=value` lines (like `width=11`) passed to the solution after the input file.
+# Python also runs doctests (for helper functions) and Rust its `#[test]` functions.
+export def test [day: int, year: int, lang: string = "", variant: string = ""] {
+    let file = solution-file $day $year $lang $variant
+    let ext = $file | path parse | get extension
+    mut ran = false
+    mut failed = false
+
+    if $ext == py and (open --raw $file | str contains ">>>") {
+        $ran = true
+        let r = ^uv run --no-project --with-requirements $file python -m doctest -v $file | complete
+        print ($r.stdout | lines | last 3 | str join "\n")
+        if $r.exit_code != 0 { $failed = true }
+    }
+    if $ext == rs and (open --raw $file | str contains "#[test]") {
+        $ran = true
+        mkdir .cache/bin
+        let bin = $".cache/bin/test_($file | path parse | get stem)_($year)"
+        ^rustc --test -O --edition 2024 -o $bin $file
+        let r = ^$bin | complete
+        print ($r.stdout | lines | last 3 | str join "\n")
+        if $r.exit_code != 0 { $failed = true }
+    }
+
+    let stem = $"d(pad $day)"
+    let pattern = $"/($stem)" + '(\.[0-9]+)?\.txt$'
+    let inputs = try { ls $"examples/($year)" | get name } catch { [] }
+    | where {|f| $f =~ $pattern } | sort
+    for input in $inputs {
+        $ran = true
+        let want = open --raw ($input | str replace --regex '\.txt$' '.expected') | lines
+        let got = answers $day $year $input $lang $variant (example-params $input)
+        let name = $input | path basename
+        for part in (["a" "b"] | enumerate) {
+            let w = $want | get -o $part.index | default ""
+            let g = $got | get -o $part.index | default ""
+            if $w == "" { continue }
+            if $w == $g { print $"  ($name) ($part.item): ok" } else {
+                print $"  ($name) ($part.item): FAILED, expected ($w), got ($g)"
+                $failed = true
+            }
+        }
+    }
+
+    if not $ran { error make {msg: $"no tests for ($file) \(no doctests, and no examples/($year)/($stem).txt\)"} }
+    if $failed { error make {msg: "tests failed"} }
 }
 
 # Time one day with hyperfine (whole process, including interpreter startup).

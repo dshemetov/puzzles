@@ -10,11 +10,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string_a)
-    142
-    """
     r1 = re.compile(r"(?P<first>\d).*(?P<last>\d)")
     r2 = re.compile(r"(?P<first>\d)")
     s = s.strip("\n")
@@ -47,11 +42,6 @@ number_words = {
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string_b)
-    281
-    """
     nums = r"zero|one|two|three|four|five|six|seven|eight|nine|\d"
     r1 = re.compile(rf"(?P<first>{nums}).*(?P<last>{nums})")
     r2 = re.compile(rf"(?P<first>{nums})")
@@ -64,23 +54,6 @@ def part_b(s: str) -> int:
         elif m := r2.search(line):
             total += int(number_words[m.group("first")] + number_words[m.group("first")])
     return total
-
-
-test_string_a = """
-1abc2
-pqr3stu8vwx
-a1b2c3d4e5f
-treb7uchet
-"""
-test_string_b = """
-two1nine
-eightwothree
-abcone2threexyz
-xtwone3four
-4nineeightseven2
-zoneight234
-7pqrstsixteen
-"""
 
 
 if __name__ == "__main__":

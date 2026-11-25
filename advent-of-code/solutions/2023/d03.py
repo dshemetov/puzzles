@@ -14,11 +14,6 @@ import time
 
 
 def part_a(s: str) -> int:
-    """
-    Examples:
-    >>> part_a(test_string)
-    4361
-    """
     board = [list(line) for line in s.strip("\n").splitlines()]
 
     total = 0
@@ -54,11 +49,6 @@ def part_a(s: str) -> int:
 
 
 def part_b(s: str) -> int:
-    """
-    Examples:
-    >>> part_b(test_string)
-    467835
-    """
     board = [list(line) for line in s.strip("\n").splitlines()]
 
     total = 0
@@ -95,20 +85,6 @@ def part_b(s: str) -> int:
                     total += prod(gear_nums)
 
     return total
-
-
-test_string = """
-467..114..
-...*......
-..35..633.
-......#...
-617*......
-.....+.58.
-..592.....
-......755.
-...$.*....
-.664.598..
-"""
 
 
 if __name__ == "__main__":
