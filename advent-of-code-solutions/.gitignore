@@ -12,8 +12,6 @@ venv
 build
 .coverage
 puzzles.db
-rust/target/
-rust/.cache
 zig/test
 lisp/.cache
 

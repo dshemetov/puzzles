@@ -35,8 +35,7 @@ five lines contain `aoc: skip <reason>` (in the language's own comment syntax) i
 `time-year` unless `all=1` is set, so a deliberately slow solution doesn't slow down every batch.
 
 `tools/viz_d24.py` draws the 2024 day 24 circuit (`uv run tools/viz_d24.py inputs/2024/24.txt`).
-All 25 Julia days of 2024 live in `solutions/2024/d*.jl`. Python 2015-2024 and the Rust 2023/2025 days
-use the older runners below.
+All 25 Julia days of 2024 live in `solutions/2024/d*.jl`, and the Rust days (2023 days 17-18, 2025 days 1-12) in `solutions/<year>/d*.rs`. Python 2015-2024 uses the older runner below.
 
 ## Python Usage
 
@@ -63,15 +62,6 @@ advent solve -y 2021 -d 2 -c
 
 # See help for more
 advent solve --help
-```
-
-## Rust Usage
-
-In the `rust` directory, run the following commands.
-
-```sh
-# Compile and run all solutions.
-cargo run --release
 ```
 
 ## Stats
